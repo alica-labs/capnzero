@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package>
+  <name>discovery</name>
+  <version>0.0.0</version>
+  <description>The discovery package</description>
+
+  <maintainer email="opfer@vs.uni-kassel.de">Stephan Opfer</maintainer>
+
+  <license>MIT</license>
+  
+  <build_depend>event_handling</build_depend>
+  <build_depend>discovery_msgs</build_depend>
+  <build_depend>capnzero</build_depend>
+  
+  <run_depend>event_handling</run_depend>
+  <run_depend>discovery_msgs</run_depend>
+  <run_depend>capnzero</run_depend>
+  
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <export>
+  </export>
+</package>

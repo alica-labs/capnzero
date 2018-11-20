@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<package>
+  <name>discovery_msgs</name>
+  <version>0.0.0</version>
+  <description>Includes the CapnProto messages for the discovery package.</description>
+  <maintainer email="opfer@vs.uni-kassel.de">Stephan Opfer</maintainer>
+  <license>MIT</license>
+  <author email="opfer@vs.uni-kassel.de">Stephan Opfer</author>
+  <buildtool_depend>catkin</buildtool_depend>
+  <export>
+  </export>
+</package>

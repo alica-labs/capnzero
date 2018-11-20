@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+# Ignore CMake Builds
+**/cmake-build-debug/
+**/.idea/
