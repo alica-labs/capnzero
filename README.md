@@ -1,6 +1,6 @@
 # Cap'n Zero
 
-A communication middleware based on [Cap'n Proto](capnproto.org) and [ZeroMQ](zeromq.org). It runs under Ubuntu 18.04 and utilises C++ Standard 11 and maybe higher.
+A communication middleware based on [Cap'n Proto](capnproto.org) and [ZeroMQ](zeromq.org). It runs under Ubuntu 18.04 and utilises C++ Standard 11 and maybe higher. It is designed with the application domain of a small service robot team in mind.
 
 ## Install Cap'n Proto
 
