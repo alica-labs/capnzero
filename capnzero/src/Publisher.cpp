@@ -21,21 +21,22 @@ Publisher::~Publisher()
 void Publisher::bind(CommType commType, std::string address)
 {
     switch (commType) {
-        case CommType::UDP:
-            this->socket = zmq_socket(this->context, ZMQ_RADIO);
-            check(zmq_bind(this->socket, ("udp://" + address).c_str()), "zmq_bind");
-            break;
-        case CommType::TCP:
-            this->socket = zmq_socket(this->context, ZMQ_RADIO);
-            check(zmq_bind(this->socket, ("tcp://" + address).c_str()), "zmq_bind");
-            break;
-        case CommType::IPC:
-            this->socket = zmq_socket(this->context, ZMQ_PUB);
-            check(zmq_bind(this->socket, ("ipc://" + address).c_str()), "zmq_bind");
-            break;
-        default:
-            // Unknown communication type!
-            assert(false);
+    case CommType::UDP:
+        this->commType = commType;
+        this->socket = zmq_socket(this->context, ZMQ_RADIO);
+        check(zmq_connect(this->socket, ("udp://" + address).c_str()), "zmq_connect");
+        break;
+    case CommType::TCP:
+        this->socket = zmq_socket(this->context, ZMQ_PUB);
+        check(zmq_bind(this->socket, ("tcp://" + address).c_str()), "zmq_bind");
+        break;
+    case CommType::IPC:
+        this->socket = zmq_socket(this->context, ZMQ_PUB);
+        check(zmq_bind(this->socket, ("ipc://" + address).c_str()), "zmq_bind");
+        break;
+    default:
+        // Unknown communication type!
+        assert(false);
     }
 }
 
@@ -54,7 +55,10 @@ int Publisher::send(::capnp::MallocMessageBuilder& msgBuilder)
     check(zmq_msg_init_data(&msg, wordArrayPtr->begin(), wordArrayPtr->size() * sizeof(capnp::word), &cleanUpMsgData, wordArrayPtr), "zmq_msg_init_data");
 
     // set group
-//    check(zmq_msg_set_group(&msg, this->groupName.c_str()), "zmq_msg_set_group");
+    if (this->commType == capnzero::CommType::UDP) {
+        std::cout << "Group: " << this->groupName << std::endl;
+        check(zmq_msg_set_group(&msg, this->groupName.c_str()), "zmq_msg_set_group");
+    }
 
     // send
     int numBytesSend = zmq_msg_send(&msg, this->socket, 0);

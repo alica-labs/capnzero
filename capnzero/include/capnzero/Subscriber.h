@@ -62,7 +62,6 @@ const int Subscriber::wordSize = sizeof(capnp::word);
 
 Subscriber::~Subscriber()
 {
-    std::cout << "Subscriber: Destructor Called! " << std::endl;
     this->running = false;
     this->runThread->join();
     delete this->runThread;
@@ -75,13 +74,14 @@ void Subscriber::connect(CommType commType, std::string address)
     case CommType::UDP:
         this->socket = zmq_socket(this->context, ZMQ_DISH);
         check(zmq_setsockopt(this->socket, ZMQ_RCVTIMEO, &rcvTimeout, sizeof(rcvTimeout)), "zmq_setsockopt");
+        std::cout << "Group: " << this->groupName << std::endl;
         check(zmq_join(this->socket, this->groupName.c_str()), "zmq_join");
-        check(zmq_connect(this->socket, ("udp://" + address).c_str()), "zmq_connect");
+        check(zmq_bind(this->socket, ("udp://" + address).c_str()), "zmq_bind");
         break;
     case CommType::TCP:
-        this->socket = zmq_socket(this->context, ZMQ_DISH);
+        this->socket = zmq_socket(this->context, ZMQ_SUB);
         check(zmq_setsockopt(this->socket, ZMQ_RCVTIMEO, &rcvTimeout, sizeof(rcvTimeout)), "zmq_setsockopt");
-        check(zmq_join(this->socket, this->groupName.c_str()), "zmq_join");
+        check(zmq_setsockopt(this->socket, ZMQ_SUBSCRIBE, "", 0), "zmq_setsockopt");
         check(zmq_connect(this->socket, ("tcp://" + address).c_str()), "zmq_connect");
         break;
     case CommType::IPC:
@@ -153,7 +153,7 @@ void Subscriber::receive()
         }
 
         // Check whether message is memory aligned
-//        assert(reinterpret_cast<uintptr_t>(zmq_msg_data(&msg)) % Subscriber::wordSize == 0);
+        assert(reinterpret_cast<uintptr_t>(zmq_msg_data(&msg)) % Subscriber::wordSize == 0);
 
         int numWordsInMsg = zmq_msg_size(&msg);
         auto wordArray = kj::ArrayPtr<capnp::word const>(reinterpret_cast<capnp::word const*>(zmq_msg_data(&msg)), numWordsInMsg);
