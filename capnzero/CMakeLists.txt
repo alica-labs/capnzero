@@ -7,8 +7,10 @@ add_definitions(-std=c++11)
 # Define where to find modules for ZeroMQ and UUID
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake CACHE INTERNAL "" FORCE)
 
+
 # this enables the draft part of the api
-add_definitions(-DZMQ_BUILD_DRAFT_API=1)
+#add_definitions(-DZMQ_BUILD_DRAFT_API=1)
+
 find_package(ZeroMQ)
 
 # Introduce CapnProto
@@ -21,8 +23,8 @@ find_package(catkin QUIET)
 if(catkin_FOUND)
   catkin_package(
     INCLUDE_DIRS include
-    LIBRARIES capnzero
-    DEPENDS ZeroMQ
+    LIBRARIES capnzero capnzero-base-msgs
+    DEPENDS ZeroMQ CapnProto
   )
 endif(catkin_FOUND)
 
@@ -55,12 +57,18 @@ add_library(capnzero-base-msgs
 add_library(${PROJECT_NAME}
   src/Publisher.cpp
   src/Subscriber.cpp
-        include/capnzero/CapnZero.h)
+  include/capnzero/CapnZero.h
+)
+
+target_compile_definitions(${PROJECT_NAME} PUBLIC ZMQ_BUILD_DRAFT_API=1)
 
 target_link_libraries(${PROJECT_NAME}
+  PUBLIC
   ${ZeroMQ_LIBRARIES}
   ${CAPNP_LIBRARIES}
 )
+
+
 
 if (NOT catkin_FOUND)
  target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")

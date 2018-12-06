@@ -9,9 +9,8 @@ Publisher::Publisher(void* context, std::string groupName)
         : socket(nullptr)
         , groupName(groupName)
         , commType(commType)
+        , context(context)
 {
-//    this->socket = zmq_socket(context, ZMQ_PUB);
-    this->socket = zmq_socket(context, ZMQ_RADIO);
 }
 
 Publisher::~Publisher()
@@ -23,12 +22,15 @@ void Publisher::bind(CommType commType, std::string address)
 {
     switch (commType) {
         case CommType::UDP:
+            this->socket = zmq_socket(this->context, ZMQ_RADIO);
             check(zmq_bind(this->socket, ("udp://" + address).c_str()), "zmq_bind");
             break;
         case CommType::TCP:
+            this->socket = zmq_socket(this->context, ZMQ_RADIO);
             check(zmq_bind(this->socket, ("tcp://" + address).c_str()), "zmq_bind");
             break;
         case CommType::IPC:
+            this->socket = zmq_socket(this->context, ZMQ_PUB);
             check(zmq_bind(this->socket, ("ipc://" + address).c_str()), "zmq_bind");
             break;
         default:

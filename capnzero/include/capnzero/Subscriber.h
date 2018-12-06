@@ -30,12 +30,8 @@ public:
             , running(true)
             , runThread(nullptr)
             , rcvTimeout(500)
+            , context(context)
     {
-        //        this->socket = zmq_socket(context, ZMQ_SUB);
-        this->socket = zmq_socket(context, ZMQ_DISH);
-        check(zmq_setsockopt(this->socket, ZMQ_RCVTIMEO, &rcvTimeout, sizeof(rcvTimeout)), "zmq_setsockopt");
-//        check(zmq_setsockopt(this->socket, ZMQ_SUBSCRIBE, "", 0), "zmq_setsockopt");
-        //        check(zmq_join(this->socket, this->groupName.c_str()), "zmq_join");
     }
 
     virtual ~Subscriber();
@@ -52,6 +48,7 @@ public:
     callbackFunction callbackFunction_;
 
 protected:
+    void* context;
     void* socket;
     int rcvTimeout;
     std::string groupName;
@@ -65,6 +62,7 @@ const int Subscriber::wordSize = sizeof(capnp::word);
 
 Subscriber::~Subscriber()
 {
+    std::cout << "Subscriber: Destructor Called! " << std::endl;
     this->running = false;
     this->runThread->join();
     delete this->runThread;
@@ -75,13 +73,22 @@ void Subscriber::connect(CommType commType, std::string address)
 {
     switch (commType) {
     case CommType::UDP:
-        check(zmq_connect(this->socket, ("udp://" + address).c_str()), "zmq_bind");
+        this->socket = zmq_socket(this->context, ZMQ_DISH);
+        check(zmq_setsockopt(this->socket, ZMQ_RCVTIMEO, &rcvTimeout, sizeof(rcvTimeout)), "zmq_setsockopt");
+        check(zmq_join(this->socket, this->groupName.c_str()), "zmq_join");
+        check(zmq_connect(this->socket, ("udp://" + address).c_str()), "zmq_connect");
         break;
     case CommType::TCP:
-        check(zmq_connect(this->socket, ("tcp://" + address).c_str()), "zmq_bind");
+        this->socket = zmq_socket(this->context, ZMQ_DISH);
+        check(zmq_setsockopt(this->socket, ZMQ_RCVTIMEO, &rcvTimeout, sizeof(rcvTimeout)), "zmq_setsockopt");
+        check(zmq_join(this->socket, this->groupName.c_str()), "zmq_join");
+        check(zmq_connect(this->socket, ("tcp://" + address).c_str()), "zmq_connect");
         break;
     case CommType::IPC:
-        check(zmq_connect(this->socket, ("ipc://" + address).c_str()), "zmq_bind");
+        this->socket = zmq_socket(this->context, ZMQ_SUB);
+        check(zmq_setsockopt(this->socket, ZMQ_RCVTIMEO, &rcvTimeout, sizeof(rcvTimeout)), "zmq_setsockopt");
+        check(zmq_setsockopt(this->socket, ZMQ_SUBSCRIBE, "", 0), "zmq_setsockopt");
+        check(zmq_connect(this->socket, ("ipc://" + address).c_str()), "zmq_connect");
         break;
     default:
         // Unknown communication type!
@@ -120,7 +127,7 @@ void Subscriber::receive()
         if (nbytes == -1) {
             if (errno != EAGAIN) // receiving a message was unsuccessful
             {
-                std::cerr << "Subscriber::receive(): zmq_msg_recv returned: -1 - " << zmq_strerror(errno) << std::endl;
+                std::cerr << "Subscriber::receive(): zmq_msg_recv received no bytes! " << errno << " - zmq_strerror(errno)" << std::endl;
             }
 #ifdef DEBUG_SUBSCRIBER
             else // no message available
@@ -146,7 +153,7 @@ void Subscriber::receive()
         }
 
         // Check whether message is memory aligned
-        assert(reinterpret_cast<uintptr_t>(zmq_msg_data(&msg)) % Subscriber::wordSize == 0);
+//        assert(reinterpret_cast<uintptr_t>(zmq_msg_data(&msg)) % Subscriber::wordSize == 0);
 
         int numWordsInMsg = zmq_msg_size(&msg);
         auto wordArray = kj::ArrayPtr<capnp::word const>(reinterpret_cast<capnp::word const*>(zmq_msg_data(&msg)), numWordsInMsg);

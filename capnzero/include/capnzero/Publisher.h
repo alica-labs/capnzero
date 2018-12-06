@@ -10,6 +10,8 @@
 #include <string>
 #include <vector>
 
+
+
 namespace capnzero
 {
 
@@ -24,6 +26,7 @@ public:
     int send(capnp::MallocMessageBuilder& msgBuilder);
 
 protected:
+    void* context;
     void* socket;
     std::string groupName;
     CommType commType;

@@ -49,13 +49,18 @@ int main(int argc, char** argv)
     }
 
     void* ctx = zmq_ctx_new();
-    capnzero::Subscriber sub = capnzero::Subscriber(ctx, argv[1]);
-    sub.connect(capnzero::CommType::IPC, "@capnzero.ipc");
-    sub.subscribe(&callback);
+    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, argv[1]);
+    sub->connect(capnzero::CommType::IPC, "@capnzero.ipc");
+//    sub->connect(capnzero::CommType::UDP, "*:5555");
+    sub->subscribe(&callback);
 
     while (!interrupted) {
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
+
+    delete sub;
+
+    zmq_ctx_term(ctx);
 
     return 0;
 }
