@@ -7,7 +7,7 @@ find_package(catkin REQUIRED COMPONENTS  roscpp std_msgs )
 ##generate_messages(DEPENDENCIES std_msgs)
 catkin_package(
         #INCLUDE_DIRS include
-        LIBRARIES rosperformace_test
+        LIBRARIES rosperformance_test
         CATKIN_DEPENDS roscpp std_msgs
         DEPENDS roscpp
 )

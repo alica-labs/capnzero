@@ -28,7 +28,9 @@ int main(int argc,char **argv)
     // enables the scape sequence ,So when we press Ctrl-C ,it returns 0 ,the loops stoped
     while (ros::ok())
     {
-        ros::spinOnce();
+       // ros::spin();
+        ros::AsyncSpinner spinner(4);
+        spinner.start();
         loop_rate.sleep();
     }
     return 0;
