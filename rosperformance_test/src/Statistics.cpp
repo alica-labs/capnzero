@@ -5,6 +5,7 @@
 #include "Statistics.h"
 #include <cmath>
 #include <algorithm>
+#include <iostream>
 
 double Statistics::mean(double numbers[], double count) {
     double caculated_mean=0.0;

@@ -1,12 +1,4 @@
-//
-// Created by tonmoy on 02.01.19.
-//
-
-#ifndef ROSPERFORMACE_TEST_STATISTICS_H
-#define ROSPERFORMACE_TEST_STATISTICS_H
-
-#include <iostream>
-#include <algorithm>
+#pragma once
 
 class Statistics {
 
@@ -20,7 +12,5 @@ public:
     double max(double numbers[], int count);
     double mini(double numbers[], int count);
 
+
 };
-
-
-#endif //ROSPERFORMACE_TEST_STATISTICS_H
