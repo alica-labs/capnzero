@@ -4,6 +4,26 @@
 #include "Statistics.h"
 #include <iostream>
 #include <cmath>
+void Statistics::refrencemean(std::map<long, double> &mYmap) {
+    double mean = 0;
+    int n=0;
+    for (auto it = mYmap.begin();
+         it != mYmap.end(); ++it){
+        n += 1;
+        mean = mean + (((it->second) - mean) /n);
+
+    }
+std::cout<< "Mena from our STL map Libraray "<<mean<<std::endl;
+}
+
+
+
+
+
+
+
+
+
 double Statistics::Onlinemean(double numbers[], double count) {
 /*    double caculated_mean=0.0;
     int n=0;

@@ -101,6 +101,7 @@ int main(int argc,char **argv)
     st.meanprinter(Traditionalmean);
     double OnlineMeani=st.Onlinemean(arr,datasize);
     st.Onlinemeanprinter(OnlineMeani);
+    st.refrencemean(Mymap);
 
     double Traditionalstd_dev=st.standard_dev(arr,datasize);
     st.stdvprinter(Traditionalstd_dev);
