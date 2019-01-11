@@ -11,13 +11,26 @@ void Statistics::refrencemean(std::map<long, double> &mYmap) {
          it != mYmap.end(); ++it){
         n += 1;
         mean = mean + (((it->second) - mean) /n);
-
     }
-std::cout<< "Mena from our STL map Libraray "<<mean<<std::endl;
+std::cout<< "Mean from our STL map Libraray "<<mean<<std::endl;
 }
 
-
-
+void Statistics::refrencestd_dev(std::map<long, double> &mYmap) {
+    double mean = 0;
+    auto st_dev=0.0;
+    double temp_dev=0;
+    int n=0;
+    for (auto it = mYmap.begin();it != mYmap.end(); ++it){
+        n += 1;
+        mean = mean + (((it->second) - mean) /n);
+    }for (auto i = mYmap.begin(); i!= mYmap.end() ; ++i){
+        temp_dev=((i->second)-mean);
+          st_dev += temp_dev* temp_dev;
+    }
+    st_dev /=(n);
+    st_dev = std::sqrt(st_dev);
+    std::cout<< "Std_dev from our STL map Libraray "<<st_dev<<std::endl;
+}
 
 
 
@@ -76,6 +89,7 @@ double Statistics::standard_dev(double numbers[], double count) {
     st_dev /=(count);
     st_dev = std::sqrt(st_dev);
     return st_dev;
+    std::cout<<"The Standard deviation of the elapsed time:"<<st_dev<<std::endl;
 }
 void Statistics::meanprinter(double kuku) {
     std::cout<<"The mean of the elapsed time:"<<kuku<<std::endl;
@@ -119,8 +133,6 @@ double Statistics::mini(double numbers[], int count) {
         {
             mini=numbers[k];
         }
-
-
     }
     return mini;
 }
