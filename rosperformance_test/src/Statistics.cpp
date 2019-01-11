@@ -5,23 +5,33 @@
 #include <iostream>
 #include <cmath>
 double Statistics::Onlinemean(double numbers[], double count) {
-    double caculated_mean=0.0;
+/*    double caculated_mean=0.0;
     int n=0;
     double Xn = 0.0;
     double Xnminusone = 0.0;
     double post_mean=0.0;
     double Mean=0.0;
-    for (int a=0;a < count; a++)
-    {   n =+ 1;
+*/
+    double mean = 0;
+    for (int i = 0; i < count; i++) {
+	mean = mean + (numbers[i] - mean) / (i+1);
+	std::cout << "Number " << i << " is " << numbers[i] << std::endl;
+	std::cout << i << " Mean: " << mean << std::endl;
+    }
+
+    return mean;
+
+
+/*
+	n =+ 1;
         caculated_mean+=numbers[a];
         Xn=(caculated_mean/n);
         for (int a = 1; a <count ; ++a) {
             post_mean+=numbers[a];
             Xnminusone=(post_mean/a);
-            Mean=Xn+(Xnminusone+((Xn+Xnminusone)/a));
+            Mean= (Xnminusone+((Xn-Xnminusone)/a));
         }
-    }
-    return Mean;
+    return Mean;*/
 }
 double Statistics::mean(double numbers[], double count) {
     double caculated_mean=0.0;

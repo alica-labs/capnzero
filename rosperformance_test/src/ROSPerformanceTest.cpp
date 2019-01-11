@@ -108,10 +108,13 @@ int main(int argc,char **argv)
     st.maxiprinter(maximum);
     auto minimum=st.mini(arr,datasize);
     st.miniprinter(minimum);
+
+    std::cout << "Cleaning up now."  << std::endl;
+    //delete arr;
     v.clear();
     Mymap.clear();
-    delete arr;
     measuringMap.clear();
+    
     return 0;
 
 }
