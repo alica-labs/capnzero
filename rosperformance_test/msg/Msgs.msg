@@ -1,3 +1,3 @@
 int64  number
-string firstname
-string lastname
+string firstdata
+string seconddata

@@ -3,6 +3,8 @@
 
 #include <ros/ros.h>
 #include <std_msgs/Int32.h>
+//#include <std_msgs/>
+#include <sstream>
 #include <vector>
 #include <time.h>
 #include <chrono>
@@ -15,7 +17,7 @@
 long k=0;
 std::map<long, std::chrono::time_point<std::chrono::high_resolution_clock >> measuringMap;
 //tired to creat a map array  with rcvd msg nmbr and time took to rcv the msg
-std::map<long, double >zeit;
+std::map<long, double >Mymap;
 std::vector<double >v;
 void chatterCallback(const rosperformance_test::Msgs::ConstPtr& echo_msg)
 {
@@ -28,7 +30,7 @@ void chatterCallback(const rosperformance_test::Msgs::ConstPtr& echo_msg)
         double time_passed=double(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - mapEntry->second).count() );
 
         // here is my zeit Map
-        zeit.emplace(msgCount,time_passed);
+        Mymap.emplace(msgCount,time_passed);
         //zeit.insert(std::make_pair(msgCount,time_passed));
 
         measuringMap.erase(msgCount);
@@ -57,8 +59,8 @@ int main(int argc,char **argv)
         std::cout << "Sending " << k << std::endl;
         rosperformance_test::Msgs msg;
         msg.number =k ;
-        msg.firstname= "Mr.Ros";
-        msg.lastname="Was ist ROS?\n"
+        msg.firstdata= "Mr.Ros";
+        msg.seconddata="Was ist ROS?\n"
                      "\n"
                      "ROS ist ein Open Source, Meta-Betriebssystem für deinen Roboter. Es stellt Dienste zur Verfügung, welche du von einem Betriebssystem erwartest: Hardwareabstraktion, Gerätetreiber, Utilityfunktionen, Interprozesskommunikation und Paketmanagment. Des Weiteren sind Werkzeuge und Bibliotheken für das Beziehen, Builden, Schreiben und Ausführen von Code über mehrere Computer vorhanden. ROS kann in einigen Aspekten mit anderen Roboterframeworks verglichen werden. Dazu gehören: Player, YARP, Orocos, CARMEN, Orca, MOOS sowie Microsoft Robotics Studio.\n"
                      "\n"
@@ -88,25 +90,34 @@ int main(int argc,char **argv)
     }
     // taking all data into array
     std::map<long, double>::iterator p;
-    for (p= zeit.begin(); p != zeit.end(); ++p){
+    for (p= Mymap.begin(); p != Mymap.end(); ++p){
         v.push_back(p->second);
     }
     // Vectror to array conversion
     double *arr= v.data();
-    double mumu=(v.size()) ;
-    std::cout << "number of rcvd msg: "<<mumu<<std::endl ;
-    double kuku=st.mean(arr,mumu) ;
-    st.meanprinter(kuku);
-    double muku=st.standard_dev(arr,mumu);
-    st.stdvprinter(muku);
-    auto maximum=st.max(arr,mumu);
+    double datasize=(v.size()) ;
+    std::cout << "number of rcvd msg: "<<datasize<<std::endl ;
+    double Traditionalmean=st.mean(arr,datasize) ;
+    st.meanprinter(Traditionalmean);
+    double OnlineMeani=st.Onlinemean(arr,datasize);
+    st.Onlinemeanprinter(OnlineMeani);
+
+    double Traditionalstd_dev=st.standard_dev(arr,datasize);
+    st.stdvprinter(Traditionalstd_dev);
+    auto maximum=st.max(arr,datasize);
     st.maxiprinter(maximum);
-    auto minimum=st.mini(arr,mumu);
+    auto minimum=st.mini(arr,datasize);
     st.miniprinter(minimum);
     v.clear();
-    zeit.clear();
+    Mymap.clear();
     delete arr;
     measuringMap.clear();
     return 0;
 
 }
+
+
+
+
+
+

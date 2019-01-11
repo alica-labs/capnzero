@@ -1,17 +1,35 @@
 //
 // Created by tonmoy on 02.01.19.
 //
-
 #include "Statistics.h"
-#include <cmath>
-#include <algorithm>
 #include <iostream>
-
+#include <cmath>
+double Statistics::Onlinemean(double numbers[], double count) {
+    double caculated_mean=0.0;
+    int n=0;
+    double Xn = 0.0;
+    double Xnminusone = 0.0;
+    double post_mean=0.0;
+    double Mean=0.0;
+    for (int a=0;a < count; a++)
+    {   n =+ 1;
+        caculated_mean+=numbers[a];
+        Xn=(caculated_mean/n);
+        for (int a = 1; a <count ; ++a) {
+            post_mean+=numbers[a];
+            Xnminusone=(post_mean/a);
+            Mean=Xn+(Xnminusone+((Xn+Xnminusone)/a));
+        }
+    }
+    return Mean;
+}
 double Statistics::mean(double numbers[], double count) {
     double caculated_mean=0.0;
+
+    double post_mean=0.0;
     for (int a=0;a < count; a++)
     {
-        caculated_mean+=numbers[a] ;
+        caculated_mean+=numbers[a];
     }
     caculated_mean/= double(count);
     return caculated_mean;
@@ -26,9 +44,9 @@ double Statistics::standard_dev(double numbers[], double count) {
         st_dev +=temp_dev*temp_dev;
     }
     st_dev /=(count);
-    st_dev = sqrt(st_dev);
+    st_dev = std::sqrt(st_dev);
     return st_dev;
-    }
+}
 void Statistics::meanprinter(double kuku) {
     std::cout<<"The mean of the elapsed time:"<<kuku<<std::endl;
 }
@@ -40,6 +58,10 @@ void Statistics::maxiprinter(double kuku) {
 }
 void Statistics::miniprinter(double kuku) {
     std::cout<<"The min of the elapsed time:"<<kuku<<std::endl;
+
+}
+void Statistics::Onlinemeanprinter(double Mean) {
+    std::cout<<"The Online mean of the elapsed time:"<<Mean<<std::endl;
 }
 double Statistics::max(double numbers[], int count) {
     double maxi=numbers[0];
@@ -50,7 +72,7 @@ double Statistics::max(double numbers[], int count) {
         {
             maxi=numbers[j];
         }
-else
+        else
         {
             maxi=numbers[j-1];
         }
@@ -72,3 +94,4 @@ double Statistics::mini(double numbers[], int count) {
     }
     return mini;
 }
+
