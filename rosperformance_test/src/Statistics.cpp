@@ -34,10 +34,10 @@ double Statistics::Onlinemean(double numbers[], double count) {
 */
     double mean = 0;
     for (int i = 0; i < count; i++) {
-	mean = mean + (numbers[i] - mean) / (i+1);
-	std::cout << "Number " << i << " is " << numbers[i] << std::endl;
+	mean = mean + (numbers[i] - mean) / (i+1);}
+	/* std::cout << "Number " << i << " is " << numbers[i] << std::endl;
 	std::cout << i << " Mean: " << mean << std::endl;
-    }
+    }*/
 
     return mean;
 
