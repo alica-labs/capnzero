@@ -37,40 +37,44 @@ void Statistics::refrencestd_dev(std::map<long, double> &mYmap) {
 
 void Statistics::rmax(std::map<long, double> &mYmap) {
     std::vector<double> v;
-    double maxi = 0.0;
+    /*double maxi = 0.0;
     int n = 0;
-    //v[] = {0};
+    //v[] = {0};  */
     for (auto it = mYmap.begin(); it != mYmap.end(); ++it) {
         v.push_back(it->second);
 
     }
-    for (int i=0; i <v.size(); ++i){
+    /*for (int i=0; i <v.size(); ++i){
         if (v[i] > v[(i - 1)]) {
             maxi = v[i];
         } else {
             maxi = v[(i - 1)];
         }
-    }
-    std::cout << "The maximum value from our STL map  library :" << maxi <<std::endl;
+    } */
+    auto maxV=*max_element(v.begin(),v.end());
+    ///std::cout << "The maximum value from our STL map  library :" << maxi <<std::endl;
+    std::cout << "The maximum value from our STL map  library :" << maxV <<std::endl;
 }
 void Statistics::rmin(std::map<long, double> &mYmap) {
     std::vector<double> v;
-    double mini = 0.0;
+    /*double mini = 0.0;
     int n = 0;
-    //v[] = {0};
+    //v[] = {0};    */
     for (auto it = mYmap.begin(); it != mYmap.end(); ++it)
     {
         v.push_back(it->second);
     }
-    for (int i=0; i <v.size(); ++i){
+    /*for (int i=0; i <v.size(); ++i){
 
         if (v[i] < v[(i - 1)]) {
             mini = v[i];
         } else {
             mini = v[(i - 1)];
         }
-    }
-    std::cout << "The Minimum value from our STL map  library :" << mini <<std::endl;
+    }*/
+    auto minV=*min_element(v.begin(),v.end());
+    //std::cout << "The Minimum value from our STL map  library :" << mini <<std::endl;
+    std::cout << "The Minimum value from our STL map  library :" << minV <<std::endl;
 }
 double Statistics::Onlinemean(double numbers[], double count) {
 /*    double caculated_mean=0.0;
@@ -138,7 +142,8 @@ void Statistics::miniprinter(double mIn) {
     std::cout<<"The min of the elapsed time:"<<mIn<<std::endl;
 
 }
-void Statistics::Onlinemeanprinter(double meAn) {
+void Statistics::Onlinemeanprinter(double meAn
+) {
     std::cout<<"The Online mean of the elapsed time:"<<meAn<<std::endl;
 }
 double Statistics::max(double numbers[], int count) {
