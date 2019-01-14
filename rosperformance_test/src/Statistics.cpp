@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <algorithm>
 void Statistics::refrencemean(std::map<long, double> &mYmap) {
     double mean = 0;
     int n=0;
@@ -41,16 +42,36 @@ void Statistics::rmax(std::map<long, double> &mYmap) {
     //v[] = {0};
     for (auto it = mYmap.begin(); it != mYmap.end(); ++it) {
         v.push_back(it->second);
-        n =+ 1;
-        if (v[n] > v[(n - 1)]) {
-            maxi = v[n];
+
+    }
+    for (int i=0; i <v.size(); ++i){
+        if (v[i] > v[(i - 1)]) {
+            maxi = v[i];
         } else {
-            maxi = v[n - 1];
+            maxi = v[(i - 1)];
         }
     }
-    std::cout << "The Max value from our STL map  library :" << maxi << std::endl;
+    std::cout << "The Maximum value from our STL map  library :" << maxi <<std::endl;
 }
+void Statistics::rmin(std::map<long, double> &mYmap) {
+    std::vector<double> v;
+    double mini = 0.0;
+    int n = 0;
+    //v[] = {0};
+    for (auto it = mYmap.begin(); it != mYmap.end(); ++it)
+    {
+        v.push_back(it->second);
+    }
+    for (int i=0; i <v.size(); ++i){
 
+        if (v[i] < v[(i - 1)]) {
+            mini = v[i];
+        } else {
+            mini = v[(i - 1)];
+        }
+    }
+    std::cout << "The Minimum value from our STL map  library :" << mini <<std::endl;
+}
 double Statistics::Onlinemean(double numbers[], double count) {
 /*    double caculated_mean=0.0;
     int n=0;

@@ -101,6 +101,7 @@ int main(int argc,char **argv)
     st.refrencemean(Mymap);
     st.refrencestd_dev(Mymap);
     st.rmax(Mymap);
+    st.rmin(Mymap);
 
 
 

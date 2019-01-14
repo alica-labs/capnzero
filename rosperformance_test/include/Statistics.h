@@ -18,6 +18,7 @@ public:
     void refrencemean(std::map<long,double >& mYmap);
     void refrencestd_dev(std::map<long,double >& mYmap);
     void rmax(std::map<long,double >& mYmap);
+    void rmin(std::map<long,double >& mYmap);
 
 
 };
