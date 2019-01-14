@@ -51,7 +51,7 @@ void Statistics::rmax(std::map<long, double> &mYmap) {
             maxi = v[(i - 1)];
         }
     }
-    std::cout << "The Maximum value from our STL map  library :" << maxi <<std::endl;
+    std::cout << "The maximum value from our STL map  library :" << maxi <<std::endl;
 }
 void Statistics::rmin(std::map<long, double> &mYmap) {
     std::vector<double> v;
@@ -124,23 +124,22 @@ double Statistics::standard_dev(double numbers[], double count) {
     st_dev /=(count);
     st_dev = std::sqrt(st_dev);
     return st_dev;
-    std::cout<<"The Standard deviation of the elapsed time:"<<st_dev<<std::endl;
 }
-void Statistics::meanprinter(double kuku) {
-    std::cout<<"The mean of the elapsed time:"<<kuku<<std::endl;
+void Statistics::meanprinter(double mEan) {
+    std::cout<<"The mean of the elapsed time:"<<mEan<<std::endl;
 }
-void Statistics::stdvprinter(double kuku) {
-    std::cout<<"The Standard deviation of the elapsed time:"<<kuku<<std::endl;
+void Statistics::stdvprinter(double sTddv) {
+    std::cout<<"The Standard deviation of the elapsed time:"<<sTddv<<std::endl;
 }
-void Statistics::maxiprinter(double kuku) {
-    std::cout<<"The max of the elapsed time:"<<kuku<<std::endl;
+void Statistics::maxiprinter(double mAx) {
+    std::cout<<"The max of the elapsed time:"<<mAx<<std::endl;
 }
-void Statistics::miniprinter(double kuku) {
-    std::cout<<"The min of the elapsed time:"<<kuku<<std::endl;
+void Statistics::miniprinter(double mIn) {
+    std::cout<<"The min of the elapsed time:"<<mIn<<std::endl;
 
 }
-void Statistics::Onlinemeanprinter(double Mean) {
-    std::cout<<"The Online mean of the elapsed time:"<<Mean<<std::endl;
+void Statistics::Onlinemeanprinter(double meAn) {
+    std::cout<<"The Online mean of the elapsed time:"<<meAn<<std::endl;
 }
 double Statistics::max(double numbers[], int count) {
     double maxi=numbers[0];
