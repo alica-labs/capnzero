@@ -4,6 +4,7 @@
 #include "Statistics.h"
 #include <iostream>
 #include <cmath>
+#include <vector>
 void Statistics::refrencemean(std::map<long, double> &mYmap) {
     double mean = 0;
     int n=0;
@@ -12,7 +13,7 @@ void Statistics::refrencemean(std::map<long, double> &mYmap) {
         n += 1;
         mean = mean + (((it->second) - mean) /n);
     }
-std::cout<< "Mean from our STL map Libraray "<<mean<<std::endl;
+std::cout<< "Mean from our STL map library "<<mean<<std::endl;
 }
 
 void Statistics::refrencestd_dev(std::map<long, double> &mYmap) {
@@ -29,13 +30,26 @@ void Statistics::refrencestd_dev(std::map<long, double> &mYmap) {
     }
     st_dev /=(n);
     st_dev = std::sqrt(st_dev);
-    std::cout<< "Std_dev from our STL map Libraray "<<st_dev<<std::endl;
+    std::cout<< "Std_dev from our STL map library "<<st_dev<<std::endl;
 }
 
 
-
-
-
+void Statistics::rmax(std::map<long, double> &mYmap) {
+    std::vector<double> v;
+    double maxi = 0.0;
+    int n = 0;
+    //v[] = {0};
+    for (auto it = mYmap.begin(); it != mYmap.end(); ++it) {
+        v.push_back(it->second);
+        n =+ 1;
+        if (v[n] > v[(n - 1)]) {
+            maxi = v[n];
+        } else {
+            maxi = v[n - 1];
+        }
+    }
+    std::cout << "The Max value from our STL map  library :" << maxi << std::endl;
+}
 
 double Statistics::Onlinemean(double numbers[], double count) {
 /*    double caculated_mean=0.0;

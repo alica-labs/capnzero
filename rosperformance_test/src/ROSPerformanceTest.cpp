@@ -97,13 +97,18 @@ int main(int argc,char **argv)
     double *arr= v.data();
     double datasize=(v.size()) ;
     std::cout << "number of rcvd msg: "<<datasize<<std::endl ;
-    double Traditionalmean=st.mean(arr,datasize) ;
-    st.meanprinter(Traditionalmean);
-    double OnlineMeani=st.Onlinemean(arr,datasize);
-    st.Onlinemeanprinter(OnlineMeani);
+
     st.refrencemean(Mymap);
     st.refrencestd_dev(Mymap);
+    st.rmax(Mymap);
 
+
+
+
+    double OnlineMeani=st.Onlinemean(arr,datasize);
+    st.Onlinemeanprinter(OnlineMeani);
+    double Traditionalmean=st.mean(arr,datasize) ;
+    st.meanprinter(Traditionalmean);
     double Traditionalstd_dev=st.standard_dev(arr,datasize);
     st.stdvprinter(Traditionalstd_dev);
     auto maximum=st.max(arr,datasize);

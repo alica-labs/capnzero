@@ -17,6 +17,7 @@ public:
     double mini(double numbers[], int count);
     void refrencemean(std::map<long,double >& mYmap);
     void refrencestd_dev(std::map<long,double >& mYmap);
+    void rmax(std::map<long,double >& mYmap);
 
 
 };
