@@ -60,14 +60,9 @@ int main(int argc,char **argv)
         rosperformance_test::Msgs msg;
         msg.number =k ;
         msg.firstdata= "Mr.Ros";
-        msg.seconddata="Was ist ROS?\n"
-                     "\n"
-                     "ROS ist ein Open Source, Meta-Betriebssystem für deinen Roboter. Es stellt Dienste zur Verfügung, welche du von einem Betriebssystem erwartest: Hardwareabstraktion, Gerätetreiber, Utilityfunktionen, Interprozesskommunikation und Paketmanagment. Des Weiteren sind Werkzeuge und Bibliotheken für das Beziehen, Builden, Schreiben und Ausführen von Code über mehrere Computer vorhanden. ROS kann in einigen Aspekten mit anderen Roboterframeworks verglichen werden. Dazu gehören: Player, YARP, Orocos, CARMEN, Orca, MOOS sowie Microsoft Robotics Studio.\n"
-                     "\n"
-                     "Ziele\n"
-                     "\n"
-                     "Viele fragen sich worin sich ROS von anderen Roboter Frameworks unterscheidet. Diese Frage ist schwer zu beantworten, da ROS nicht zum Ziel hat ein Framework mit den meisten Funktionen zu sein. Stattdessen ist der Hauptzweck von ROS die Wiederverwendung von Code in der Roboterforschung und -entwicklung. ROS ist ein verteiltes System von Prozessen (Nodes), welches die lose Kopplung von individuellen Komponenten ermöglic ";
-        //std_msgs::Int32 msg;
+        msg.seconddata="A vector is a dynamically sized sequence of objects that provides array-style operator[] random access. The member function push_back copies its argument via copy constructor, adds that copy as the last item in the vector, and increments its size by one. pop_back does the exact opposite, by removing the last element. Inserting or deleting items from the end of a vector takes amortized constant time, and inserting or deleting from any other location takes linear time. These are the basics of vectors. There is a lot more to them.\n"
+                       "\n"
+                       "In most cases, a vector should be your first choice over a C-style array. First of all, they are dynamically sized, which means they can grow as needed. You don’t have to do all sorts of research to figure out an optimal static size, as in the case of C arrays; a vector grows as needed, and it can be resized larger or smaller manually if you need to. Second, vectors offer bounds checking with the at member function (but not with operator[]), so that you can do something if you reference a nonexistent index instead of simply watching your program crash or worse, continuing execution with corrupt data. Look at Example 4-7. It shows how to deal with out-of-bounds indexes";
         //msg.data = count;
 
         measuringMap.emplace(k, std::chrono::high_resolution_clock::now());
