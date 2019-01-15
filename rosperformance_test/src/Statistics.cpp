@@ -7,7 +7,7 @@
 #include <vector>
 #include <algorithm>
 
-template <class x>
+template <typename x>
 void Statistics<x>::referencemean(std::map<long, double> &mYmap) {
     x mean = 0;
     int n=0;
@@ -18,7 +18,7 @@ void Statistics<x>::referencemean(std::map<long, double> &mYmap) {
     }
 std::cout<< "Mean from our STL map library "<<mean<<std::endl;
 }
-template <class x>
+template <typename x>
 void Statistics<x>::referencestd_dev(std::map<long, double> &mYmap) {
     x mean = 0;
     auto st_dev=0.0;
@@ -36,7 +36,7 @@ void Statistics<x>::referencestd_dev(std::map<long, double> &mYmap) {
     std::cout<< "Std_dev from our STL map library "<<st_dev<<std::endl;
 }
 
-template <class x>
+template <typename x>
 void Statistics<x>::rmax(std::map<long, double> &mYmap) {
     std::vector<x> v;
     /*double maxi = 0.0;
@@ -79,7 +79,7 @@ void Statistics<x>::rmin(std::map<long, double> &mYmap) {
     //std::cout << "The Minimum value from our STL map  library :" << mini <<std::endl;
     std::cout << "The Minimum value from our STL map  library :" << minV <<std::endl;
 }
-template <class x>
+template <typename x>
 x  Statistics<x>::Onlinemean(x  numbers[], x  count) {
 /*    double caculated_mean=0.0;
     int n=0;
@@ -109,7 +109,7 @@ x  Statistics<x>::Onlinemean(x  numbers[], x  count) {
         }
     return Mean;*/
 }
-template <class x>
+template <typename x>
 x  Statistics<x>::mean(x  numbers[], x  count) {
     x  caculated_mean=0.0;
 
@@ -121,7 +121,7 @@ x  Statistics<x>::mean(x  numbers[], x  count) {
     caculated_mean/= x (count);
     return caculated_mean;
 }
-template <class x>
+template <typename x>
 x  Statistics<x>::standard_dev(x  numbers[], x  count) {
     x  st_dev=0.0;
     x  average= mean(numbers,count);
@@ -135,28 +135,28 @@ x  Statistics<x>::standard_dev(x  numbers[], x  count) {
     st_dev = std::sqrt(st_dev);
     return st_dev;
 }
-template <class x>
+template <typename x>
 void Statistics<x>::meanprinter(x  mEan) {
     std::cout<<"The mean of the elapsed time:"<<mEan<<std::endl;
 }
-template <class x>
+template <typename x>
 void Statistics<x>::stdvprinter(x  sTddv) {
     std::cout<<"The Standard deviation of the elapsed time:"<<sTddv<<std::endl;
 }
-template <class x>
+template <typename x>
 void Statistics<x>::maxiprinter(x  mAx) {
     std::cout<<"The max of the elapsed time:"<<mAx<<std::endl;
 }
-template <class x>
+template <typename x>
 void Statistics<x>::miniprinter(x  mIn) {
     std::cout<<"The min of the elapsed time:"<<mIn<<std::endl;
 
 }
-template <class x>
+template <typename x>
 void Statistics<x>::Onlinemeanprinter(x  meAn) {
     std::cout<<"The Online mean of the elapsed time:"<<meAn<<std::endl;
 }
-template <class x>
+template <typename x>
 x  Statistics<x>::max(x  numbers[], int count) {
     x  maxi=numbers[0];
 
@@ -175,7 +175,7 @@ x  Statistics<x>::max(x  numbers[], int count) {
 
     return maxi;
 }
-template <class x>
+template <typename x>
 x  Statistics<x>::mini(x  numbers[], int count) {
     x  mini=numbers[0];
     for (int k = 1; k < (count); ++k) {
