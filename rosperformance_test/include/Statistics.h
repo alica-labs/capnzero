@@ -15,8 +15,8 @@ public:
     void Onlinemeanprinter(double meAn);
     double max(double numbers[], int count);
     double mini(double numbers[], int count);
-    void refrencemean(std::map<long,double >& mYmap);
-    void refrencestd_dev(std::map<long,double >& mYmap);
+    void referencemean(std::map<long,double >& mYmap);
+    void referencestd_dev(std::map<long,double >& mYmap);
     void rmax(std::map<long,double >& mYmap);
     void rmin(std::map<long,double >& mYmap);
 

@@ -6,7 +6,7 @@
 #include <cmath>
 #include <vector>
 #include <algorithm>
-void Statistics::refrencemean(std::map<long, double> &mYmap) {
+void Statistics::referencemean(std::map<long, double> &mYmap) {
     double mean = 0;
     int n=0;
     for (auto it = mYmap.begin();
@@ -17,7 +17,7 @@ void Statistics::refrencemean(std::map<long, double> &mYmap) {
 std::cout<< "Mean from our STL map library "<<mean<<std::endl;
 }
 
-void Statistics::refrencestd_dev(std::map<long, double> &mYmap) {
+void Statistics::referencestd_dev(std::map<long, double> &mYmap) {
     double mean = 0;
     auto st_dev=0.0;
     double temp_dev=0;

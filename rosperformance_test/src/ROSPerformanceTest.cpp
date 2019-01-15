@@ -93,8 +93,8 @@ int main(int argc,char **argv)
     double datasize=(v.size()) ;
     std::cout << "number of rcvd msg: "<<datasize<<std::endl ;
 
-    st.refrencemean(Mymap);
-    st.refrencestd_dev(Mymap);
+    st.referencemean(Mymap);
+    st.referencestd_dev(Mymap);
     st.rmax(Mymap);
     st.rmin(Mymap);
 
