@@ -2,19 +2,20 @@
 
 #include <iostream>
 #include <map>
+template <typename x>
 class Statistics {
 
 public:
-    double Onlinemean(double numbers[], double count);
-    double mean(double numbers[], double count);
-    double standard_dev(double numbers[], double count);
-    void meanprinter(double mEan);
-    void stdvprinter(double sTddv);
-    void maxiprinter(double mAx);
-    void miniprinter(double mIn);
-    void Onlinemeanprinter(double meAn);
-    double max(double numbers[], int count);
-    double mini(double numbers[], int count);
+    x Onlinemean(x numbers[], x count);
+    x mean(x numbers[], x count);
+    x standard_dev(x numbers[], x count);
+    void meanprinter(x  mEan);
+    void stdvprinter(x  sTddv);
+    void maxiprinter(x  mAx);
+    void miniprinter(x  mIn);
+    void Onlinemeanprinter(x  meAn);
+    x  max(x  numbers[], int count);
+    x  mini(x  numbers[], int count);
     void referencemean(std::map<long,double >& mYmap);
     void referencestd_dev(std::map<long,double >& mYmap);
     void rmax(std::map<long,double >& mYmap);

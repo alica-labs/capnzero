@@ -13,6 +13,7 @@
 #include "rosperformance_test/Msgs.h"
 #include "Statistics.h"
 
+template class Statistics<double>;
 
 long k=0;
 std::map<long, std::chrono::time_point<std::chrono::high_resolution_clock >> measuringMap;
@@ -51,7 +52,7 @@ int main(int argc,char **argv)
     ros::Rate loop_rate(1.0);
     //int count = 0;
 
-    Statistics st;
+
 
     // enables the scape sequence ,So when we press Ctrl-C ,it returns 0 ,the loops stoped
     while (ros::ok() )
@@ -92,6 +93,8 @@ int main(int argc,char **argv)
     double *arr= v.data();
     double datasize=(v.size()) ;
     std::cout << "number of rcvd msg: "<<datasize<<std::endl ;
+
+    Statistics<double> st;
 
     st.referencemean(Mymap);
     st.referencestd_dev(Mymap);

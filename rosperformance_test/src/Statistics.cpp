@@ -6,8 +6,10 @@
 #include <cmath>
 #include <vector>
 #include <algorithm>
-void Statistics::referencemean(std::map<long, double> &mYmap) {
-    double mean = 0;
+
+template <class x>
+void Statistics<x>::referencemean(std::map<long, double> &mYmap) {
+    x mean = 0;
     int n=0;
     for (auto it = mYmap.begin();
          it != mYmap.end(); ++it){
@@ -16,11 +18,11 @@ void Statistics::referencemean(std::map<long, double> &mYmap) {
     }
 std::cout<< "Mean from our STL map library "<<mean<<std::endl;
 }
-
-void Statistics::referencestd_dev(std::map<long, double> &mYmap) {
-    double mean = 0;
+template <class x>
+void Statistics<x>::referencestd_dev(std::map<long, double> &mYmap) {
+    x mean = 0;
     auto st_dev=0.0;
-    double temp_dev=0;
+    x temp_dev=0;
     int n=0;
     for (auto it = mYmap.begin();it != mYmap.end(); ++it){
         n += 1;
@@ -34,9 +36,9 @@ void Statistics::referencestd_dev(std::map<long, double> &mYmap) {
     std::cout<< "Std_dev from our STL map library "<<st_dev<<std::endl;
 }
 
-
-void Statistics::rmax(std::map<long, double> &mYmap) {
-    std::vector<double> v;
+template <class x>
+void Statistics<x>::rmax(std::map<long, double> &mYmap) {
+    std::vector<x> v;
     /*double maxi = 0.0;
     int n = 0;
     //v[] = {0};  */
@@ -55,8 +57,9 @@ void Statistics::rmax(std::map<long, double> &mYmap) {
     ///std::cout << "The maximum value from our STL map  library :" << maxi <<std::endl;
     std::cout << "The maximum value from our STL map  library :" << maxV <<std::endl;
 }
-void Statistics::rmin(std::map<long, double> &mYmap) {
-    std::vector<double> v;
+template <typename x>
+void Statistics<x>::rmin(std::map<long, double> &mYmap) {
+    std::vector<x> v;
     /*double mini = 0.0;
     int n = 0;
     //v[] = {0};    */
@@ -76,7 +79,8 @@ void Statistics::rmin(std::map<long, double> &mYmap) {
     //std::cout << "The Minimum value from our STL map  library :" << mini <<std::endl;
     std::cout << "The Minimum value from our STL map  library :" << minV <<std::endl;
 }
-double Statistics::Onlinemean(double numbers[], double count) {
+template <class x>
+x  Statistics<x>::Onlinemean(x  numbers[], x  count) {
 /*    double caculated_mean=0.0;
     int n=0;
     double Xn = 0.0;
@@ -84,7 +88,7 @@ double Statistics::Onlinemean(double numbers[], double count) {
     double post_mean=0.0;
     double Mean=0.0;
 */
-    double mean = 0;
+    x  mean = 0;
     for (int i = 0; i < count; i++) {
 	mean = mean + (numbers[i] - mean) / (i+1);}
 	/* std::cout << "Number " << i << " is " << numbers[i] << std::endl;
@@ -105,21 +109,23 @@ double Statistics::Onlinemean(double numbers[], double count) {
         }
     return Mean;*/
 }
-double Statistics::mean(double numbers[], double count) {
-    double caculated_mean=0.0;
+template <class x>
+x  Statistics<x>::mean(x  numbers[], x  count) {
+    x  caculated_mean=0.0;
 
-    double post_mean=0.0;
+    x  post_mean=0.0;
     for (int a=0;a < count; a++)
     {
         caculated_mean+=numbers[a];
     }
-    caculated_mean/= double(count);
+    caculated_mean/= x (count);
     return caculated_mean;
 }
-double Statistics::standard_dev(double numbers[], double count) {
-    double st_dev=0.0;
-    double average= mean(numbers,count);
-    double temp_dev;
+template <class x>
+x  Statistics<x>::standard_dev(x  numbers[], x  count) {
+    x  st_dev=0.0;
+    x  average= mean(numbers,count);
+    x  temp_dev;
     for (int a=0;a < count; a++)
     {
         temp_dev=numbers[a]-average;
@@ -129,25 +135,30 @@ double Statistics::standard_dev(double numbers[], double count) {
     st_dev = std::sqrt(st_dev);
     return st_dev;
 }
-void Statistics::meanprinter(double mEan) {
+template <class x>
+void Statistics<x>::meanprinter(x  mEan) {
     std::cout<<"The mean of the elapsed time:"<<mEan<<std::endl;
 }
-void Statistics::stdvprinter(double sTddv) {
+template <class x>
+void Statistics<x>::stdvprinter(x  sTddv) {
     std::cout<<"The Standard deviation of the elapsed time:"<<sTddv<<std::endl;
 }
-void Statistics::maxiprinter(double mAx) {
+template <class x>
+void Statistics<x>::maxiprinter(x  mAx) {
     std::cout<<"The max of the elapsed time:"<<mAx<<std::endl;
 }
-void Statistics::miniprinter(double mIn) {
+template <class x>
+void Statistics<x>::miniprinter(x  mIn) {
     std::cout<<"The min of the elapsed time:"<<mIn<<std::endl;
 
 }
-void Statistics::Onlinemeanprinter(double meAn
-) {
+template <class x>
+void Statistics<x>::Onlinemeanprinter(x  meAn) {
     std::cout<<"The Online mean of the elapsed time:"<<meAn<<std::endl;
 }
-double Statistics::max(double numbers[], int count) {
-    double maxi=numbers[0];
+template <class x>
+x  Statistics<x>::max(x  numbers[], int count) {
+    x  maxi=numbers[0];
 
     for (int j = 1; j < (count); ++j)
     {
@@ -164,8 +175,9 @@ double Statistics::max(double numbers[], int count) {
 
     return maxi;
 }
-double Statistics::mini(double numbers[], int count) {
-    double mini=numbers[0];
+template <class x>
+x  Statistics<x>::mini(x  numbers[], int count) {
+    x  mini=numbers[0];
     for (int k = 1; k < (count); ++k) {
 
         if(mini>numbers[k])
@@ -176,3 +188,7 @@ double Statistics::mini(double numbers[], int count) {
     return mini;
 }
 
+//Explicitly instantiate the template, and its member definitions
+// in this approach, you should ensure that all the of the implementation is placed into one .cpp file (i.e. one translation unit) and that the explicit instantation is placed after the definition of all the functions (i.e. at the end of the file
+// more info --https://stackoverflow.com/questions/8752837/undefined-reference-to-template-class-constructor
+template class Statistics<double>;
