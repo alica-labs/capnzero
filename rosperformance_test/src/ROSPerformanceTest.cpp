@@ -72,7 +72,7 @@ int main(int argc,char **argv)
 
         publisherobject.publish(msg);
         //ros::spinOnce();
-        std::cout<<"The first pair of missing signal:"<<p1.first<<"   Time took to publish :"<<std::chrono::duration_cast<std::chrono::seconds>(p1.second.time_since_epoch()).count() <<std::endl;
+        std::cout<<"The published signal:"<<p1.first<<"   Time took to publish :"<<std::chrono::duration_cast<std::chrono::seconds>(p1.second.time_since_epoch()).count() <<std::endl;
         ros::AsyncSpinner spinner(4);
         spinner.start();
         loop_rate.sleep();
@@ -124,7 +124,6 @@ int main(int argc,char **argv)
     v.clear();
     Mymap.clear();
     measuringMap.clear();
-    
     return 0;
 
 }
