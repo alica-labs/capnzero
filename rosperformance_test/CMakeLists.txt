@@ -32,3 +32,4 @@ add_dependencies(parrot rosperformance_test_generate_messages_cpp)
 
 add_executable(Rospcommunication src/ROSPerformanceTest.cpp src/Statistics.cpp)
 target_link_libraries(Rospcommunication   ${catkin_LIBRARIES})
+add_dependencies(Rospcommunication rosperformance_test_generate_messages_cpp)
