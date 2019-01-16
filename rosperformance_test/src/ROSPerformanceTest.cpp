@@ -18,8 +18,9 @@
 long k=0;
 std::map<long, std::chrono::time_point<std::chrono::high_resolution_clock >> measuringMap;
 //tired to creat a map array  with rcvd msg nmbr and time took to rcv the msg
-std::map<long, double >Mymap;
+std::map<long, double >Mymap; //container with data type long and double
 std::vector<double >v;
+std::pair<long ,std::chrono::time_point<std::chrono::high_resolution_clock >>p1;
 void chatterCallback(const rosperformance_test::Msgs::ConstPtr& echo_msg)
 {
     long msgCount = echo_msg->number;
@@ -67,10 +68,11 @@ int main(int argc,char **argv)
         //msg.data = count;
 
         measuringMap.emplace(k, std::chrono::high_resolution_clock::now());
+        p1 = std::make_pair(k,std::chrono::high_resolution_clock::now());
 
         publisherobject.publish(msg);
         //ros::spinOnce();
-
+        std::cout<<"The first pair of missing signal:"<<p1.first<<"   Time took to publish :"<<std::chrono::duration_cast<std::chrono::seconds>(p1.second.time_since_epoch()).count() <<std::endl;
         ros::AsyncSpinner spinner(4);
         spinner.start();
         loop_rate.sleep();
@@ -84,6 +86,8 @@ int main(int argc,char **argv)
     for (auto& entry : measuringMap) {
         std::cout << "ID: " << entry.first << " StartTime: " << std::chrono::duration_cast<std::chrono::milliseconds>(entry.second.time_since_epoch()).count() << std::endl;
     }
+
+
     // taking all data into array
     std::map<long, double>::iterator p;
     for (p= Mymap.begin(); p != Mymap.end(); ++p){
