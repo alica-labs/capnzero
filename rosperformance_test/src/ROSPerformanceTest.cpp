@@ -13,7 +13,7 @@
 #include "rosperformance_test/Msgs.h"
 #include "Statistics.h"
 
-template class Statistics<double>;
+// template class Statistics<double>;
 
 long k=0;
 std::map<long, std::chrono::time_point<std::chrono::high_resolution_clock >> measuringMap;
