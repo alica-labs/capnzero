@@ -14,9 +14,9 @@ void Statistics<x>::referencemean(std::map<long, double> &mYmap) {
     for (auto it = mYmap.begin();
          it != mYmap.end(); ++it){
         n += 1;
-        mean = mean + (((it->second) - mean) /n);
+        mean = mean + (((it->second) - mean) /n); // how double divided by int value -declare n as a double upcast to double mean ,lost of precission
     }
-std::cout<< "Mean from our STL map library "<<mean<<std::endl;
+std::cout<< "Mean from our STL map library: "<<mean<<std::endl;
 }
 template <typename x>
 void Statistics<x>::referencestd_dev(std::map<long, double> &mYmap) {
@@ -33,72 +33,54 @@ void Statistics<x>::referencestd_dev(std::map<long, double> &mYmap) {
     }
     st_dev /=(n);
     st_dev = std::sqrt(st_dev);
-    std::cout<< "Std_dev from our STL map library "<<st_dev<<std::endl;
+    std::cout<< "Std_dev from our STL map library: "<<st_dev<<std::endl;
 }
 
 template <typename x>
 void Statistics<x>::rmax(std::map<long, double> &mYmap) {
     std::vector<x> v;
-    /*double maxi = 0.0;
-    int n = 0;
-    //v[] = {0};  */
+
     for (auto it = mYmap.begin(); it != mYmap.end(); ++it) {
         v.push_back(it->second);
 
     }
-    /*for (int i=0; i <v.size(); ++i){
-        if (v[i] > v[(i - 1)]) {
-            maxi = v[i];
-        } else {
-            maxi = v[(i - 1)];
-        }
-    } */
     auto maxV=*max_element(v.begin(),v.end());
-    ///std::cout << "The maximum value from our STL map  library :" << maxi <<std::endl;
-    std::cout << "The maximum value from our STL map  library :" << maxV <<std::endl;
+    std::cout << "The maximum value from our STL map  library: " << maxV <<std::endl;
 }
 template <typename x>
 void Statistics<x>::rmin(std::map<long, double> &mYmap) {
     std::vector<x> v;
-    /*double mini = 0.0;
-    int n = 0;
-    //v[] = {0};    */
     for (auto it = mYmap.begin(); it != mYmap.end(); ++it)
     {
         v.push_back(it->second);
     }
-    /*for (int i=0; i <v.size(); ++i){
-
-        if (v[i] < v[(i - 1)]) {
-            mini = v[i];
-        } else {
-            mini = v[(i - 1)];
-        }
-    }*/
     auto minV=*min_element(v.begin(),v.end());
-    //std::cout << "The Minimum value from our STL map  library :" << mini <<std::endl;
-    std::cout << "The Minimum value from our STL map  library :" << minV <<std::endl;
+    std::cout << "The Minimum value from our STL map  library: " << minV <<std::endl;
 }
+
+template class Statistics<double>;
+
+/*
 template <typename x>
 x  Statistics<x>::Onlinemean(x  numbers[], x  count) {
-/*    double caculated_mean=0.0;
+    double caculated_mean=0.0;
     int n=0;
     double Xn = 0.0;
     double Xnminusone = 0.0;
     double post_mean=0.0;
     double Mean=0.0;
-*/
+
     x  mean = 0;
     for (int i = 0; i < count; i++) {
 	mean = mean + (numbers[i] - mean) / (i+1);}
-	/* std::cout << "Number " << i << " is " << numbers[i] << std::endl;
+	 std::cout << "Number " << i << " is " << numbers[i] << std::endl;
 	std::cout << i << " Mean: " << mean << std::endl;
-    }*/
+    }
 
     return mean;
 
 
-/*
+
 	n =+ 1;
         caculated_mean+=numbers[a];
         Xn=(caculated_mean/n);
@@ -107,7 +89,7 @@ x  Statistics<x>::Onlinemean(x  numbers[], x  count) {
             Xnminusone=(post_mean/a);
             Mean= (Xnminusone+((Xn-Xnminusone)/a));
         }
-    return Mean;*/
+    return Mean;
 }
 template <typename x>
 x  Statistics<x>::mean(x  numbers[], x  count) {
@@ -137,7 +119,7 @@ x  Statistics<x>::standard_dev(x  numbers[], x  count) {
 }
 template <typename x>
 void Statistics<x>::meanprinter(x  mEan) {
-    std::cout<<"The mean of the elapsed time:"<<mEan<<std::endl;
+    std::cout<<"The mean of the elapsed time: "<<mEan<<std::endl;
 }
 template <typename x>
 void Statistics<x>::stdvprinter(x  sTddv) {
@@ -162,13 +144,13 @@ x  Statistics<x>::max(x  numbers[], int count) {
 
     for (int j = 1; j < (count); ++j)
     {
-        if(numbers[j]>numbers[j-1])
+        if(numbers[j]>maxi)
         {
             maxi=numbers[j];
         }
         else
         {
-            maxi=numbers[j-1];
+            //maxi=numbers[j-1];
         }
 
     }
@@ -186,9 +168,8 @@ x  Statistics<x>::mini(x  numbers[], int count) {
         }
     }
     return mini;
-}
+}*/
 
 //Explicitly instantiate the template, and its member definitions
 // in this approach, you should ensure that all the of the implementation is placed into one .cpp file (i.e. one translation unit) and that the explicit instantation is placed after the definition of all the functions (i.e. at the end of the file
 // more info --https://stackoverflow.com/questions/8752837/undefined-reference-to-template-class-constructor
-template class Statistics<double>;

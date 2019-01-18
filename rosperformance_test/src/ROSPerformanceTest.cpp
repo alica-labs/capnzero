@@ -67,19 +67,19 @@ int main(int argc,char **argv)
                       "Knowing the word count of a text can be important. For example, if an author has to write a minimum or maximum amount of words for an article, essay, report, story, book, paper, you name it. WordCounter will help to make sure its word count reaches a specific requirement or stays within a certain limit."
                       "+"
                       "In the Details overview you can see the average speaking and reading time for y.This can predgfdgdfgg";
-        msg.seconddata =  s1;
-
-        /*"A vector is a dynamically sized sequence of objects that provides array-style operator[] random access. The member function push_back copies its argument via copy constructor, adds that copy as the last item in the vector, and increments its size by one. pop_back does the exact opposite, by removing the last element. Inserting or deleting items from the end of a vector takes amortized constant time, and inserting or deleting from any other location takes linear time. These are the basics of vectors. There is a lot more to them.\n"
+        msg.seconddata =s1;
+         /*
+        "A vector is a dynamically sized sequence of objects that provides array-style operator[] random access. The member function push_back copies its argument via copy constructor, adds that copy as the last item in the vector, and increments its size by one. pop_back does the exact opposite, by removing the last element. Inserting or deleting items from the end of a vector takes amortized constant time, and inserting or deleting from any other location takes linear time. These are the basics of vectors. There is a lot more to them.\n"
                        "\n"
-                       "In most cases, a vector should be your first choice over a C-style array. First of all, they are dynamically sized, which means they can grow as needed. You don’t have to do all sorts of research to figure out an optimal static size, as in the case of C arrays; a vector grows as needed, and it can be resized larger or smaller manually if you need to. Second, vectors offer bounds checking with the at member function (but not with operator[]), so that you can do something if you reference a nonexistent index instead of simply watching your program crash or worse, continuing execution with corrupt data. Look at Example 4-7. It shows how to deal with out-of-bounds indexes";
-        //msg.data = count;   */
+                       "In most cases, a vector should be your first choice over a C-style array. First of all, they are dynamically sized, which means they can grow as needed. You don’t have to do all sorts of research to figure out an optimal static size, as in the case of C arrays; a vector grows as needed, and it can be resized larger or smaller manually if you need to. Second, vectors offer bounds checking with the at member function (but not with operator[]), so that you can do something if you reference a nonexistent index instead of simply watching your program crash or worse, continuing execution with corrupt data. Look at Example 4-7. It shows how to deal with out-of-bounds indexes";*/
+
 
         measuringMap.emplace(k, std::chrono::high_resolution_clock::now());
         p1 = std::make_pair(k,std::chrono::high_resolution_clock::now());
 
         publisherobject.publish(msg);
         //ros::spinOnce();
-        std::cout<<"The published signal:"<<p1.first<<"   Time took to publish :"<<std::chrono::duration_cast<std::chrono::seconds>(p1.second.time_since_epoch()).count() <<std::endl;
+        std::cout<<"The published signal: "<<p1.first<<"   Time took to publish: "<<std::chrono::duration_cast<std::chrono::seconds>(p1.second.time_since_epoch()).count() <<std::endl;
         ros::AsyncSpinner spinner(4);
         spinner.start();
         loop_rate.sleep();
@@ -100,10 +100,13 @@ int main(int argc,char **argv)
     for (p= Mymap.begin(); p != Mymap.end(); ++p){
         v.push_back(p->second);
     }
+    /*
     // Vectror to array conversion
     double *arr= v.data();
-    double datasize=(v.size()) ;
-    std::cout << "number of rcvd msg: "<<datasize<<std::endl ;
+    double datasize=(v.size()) ;*/
+
+
+    std::cout << "number of rcvd msg: "<<Mymap.size()<<std::endl ;
 
     Statistics<double> st;
 
@@ -115,7 +118,7 @@ int main(int argc,char **argv)
 
 
 
-    double OnlineMeani=st.Onlinemean(arr,datasize);
+    /*double OnlineMeani=st.Onlinemean(arr,datasize);
     st.Onlinemeanprinter(OnlineMeani);
     double Traditionalmean=st.mean(arr,datasize) ;
     st.meanprinter(Traditionalmean);
@@ -124,11 +127,11 @@ int main(int argc,char **argv)
     auto maximum=st.max(arr,datasize);
     st.maxiprinter(maximum);
     auto minimum=st.mini(arr,datasize);
-    st.miniprinter(minimum);
+    st.miniprinter(minimum); */
 
-    std::cout << "Cleaning up now."  << std::endl;
+    std::cout << "Cleaning up now. "  << std::endl;
     //delete arr;
-    v.clear();
+    //v.clear();
     Mymap.clear();
     measuringMap.clear();
     return 0;
