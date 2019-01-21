@@ -27,11 +27,11 @@ void chatterCallback(const rosperformance_test::Msgs::ConstPtr& echo_msg)
     auto mapEntry = measuringMap.find(msgCount);
     if (mapEntry != measuringMap.end()) {
         std::cout<<"Received ID: " << msgCount << " Time elapsed is: "
-                 << std::chrono::duration_cast<std::chrono::milliseconds> (std::chrono::high_resolution_clock::now() - mapEntry->second).count()<< std::endl;
+                 << std::chrono::duration_cast<std::chrono::milliseconds> (std::chrono::high_resolution_clock::now() - mapEntry->second).count()<<" ms"<<std::endl;
         //tired to store the duration inside time_passed variable
         double time_passed=double(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - mapEntry->second).count() );
 
-        // here is my zeit Map
+        // here is my Mymap is the Map containner
         Mymap.emplace(msgCount,time_passed);
         //zeit.insert(std::make_pair(msgCount,time_passed));
 
@@ -66,7 +66,7 @@ int main(int argc,char **argv)
                       "+"
                       "Knowing the word count of a text can be important. For example, if an author has to write a minimum or maximum amount of words for an article, essay, report, story, book, paper, you name it. WordCounter will help to make sure its word count reaches a specific requirement or stays within a certain limit."
                       "+"
-                      "In the Details overview you can see the average speaking and reading time for y.This can predgfdgdfgg";
+                      "In the Details overview you can see the average speaking and reading time for y.This can perform really well depending on the usages";
         msg.seconddata =s1;
          /*
         "A vector is a dynamically sized sequence of objects that provides array-style operator[] random access. The member function push_back copies its argument via copy constructor, adds that copy as the last item in the vector, and increments its size by one. pop_back does the exact opposite, by removing the last element. Inserting or deleting items from the end of a vector takes amortized constant time, and inserting or deleting from any other location takes linear time. These are the basics of vectors. There is a lot more to them.\n"
@@ -79,7 +79,7 @@ int main(int argc,char **argv)
 
         publisherobject.publish(msg);
         //ros::spinOnce();
-        std::cout<<"The published signal: "<<p1.first<<"   Time took to publish: "<<std::chrono::duration_cast<std::chrono::seconds>(p1.second.time_since_epoch()).count() <<std::endl;
+        std::cout<<"The published signal: "<<p1.first<<"   Time took to publish: "<<std::chrono::duration_cast<std::chrono::seconds>(p1.second.time_since_epoch()).count() <<" ms "<<std::endl;
         ros::AsyncSpinner spinner(4);
         spinner.start();
         loop_rate.sleep();
