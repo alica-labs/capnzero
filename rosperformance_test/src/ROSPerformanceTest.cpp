@@ -25,7 +25,7 @@ void chatterCallback(const rosperformance_test::Msgs::ConstPtr& echo_msg)
     auto mapEntry = measuringMap.find(msgCount);
     if (mapEntry != measuringMap.end()) {
         std::cout<<"Received ID: " << msgCount << " Time elapsed is: "
-                 << std::chrono::duration_cast<std::chrono::milliseconds> (std::chrono::high_resolution_clock::now() - mapEntry->second).count()<<" ms"<<std::endl;
+                 << std::chrono::duration_cast<std::chrono::milliseconds> (std::chrono::high_resolution_clock::now() - mapEntry->second).count()<<" s"<<std::endl;
         //tired to store the duration inside time_passed variable
         double time_passed=double(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - mapEntry->second).count() );
 
