@@ -78,7 +78,7 @@ int main(int argc,char **argv)
 
     std::cout << "We must have missed " << measuringMap.size() << " Number of Msgs!" <<std::endl;
     for (auto& entry : measuringMap) {
-        std::cout << "ID: " << entry.first << " StartTime: " << std::chrono::duration_cast<std::chrono::milliseconds>(entry.second.time_since_epoch()).count() << std::endl;
+        std::cout << "ID: " << entry.first << " StartTime: " << std::chrono::duration_cast<std::chrono::milliseconds>(entry.second.time_since_epoch()).count() <<" ms"<< std::endl;
     }
 
 
