@@ -118,7 +118,9 @@ int main(int argc,char **argv)
     std::cout << "Cleaning up now. "  << std::endl;
     //delete arr;
     //v.clear();
+    delete [] st;
     Mymap.clear();
+
     measuringMap.clear();
     return 0;
 
