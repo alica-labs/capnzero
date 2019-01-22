@@ -4,8 +4,9 @@
 #include <map>
 template <typename x>
 class Statistics {
-
 public:
+    Statistics();
+    ~Statistics();
     /*
     x Onlinemean(x numbers[], x count);
     x mean(x numbers[], x count);

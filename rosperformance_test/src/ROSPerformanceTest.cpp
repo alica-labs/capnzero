@@ -94,12 +94,12 @@ int main(int argc,char **argv)
 
     std::cout << "number of rcvd msg: "<<Mymap.size()<<std::endl ;
 
-    Statistics<double> st;
+    Statistics<double> *st;
 
-    st.referencemean(Mymap);
-    st.referencestd_dev(Mymap);
-    st.rmax(Mymap);
-    st.rmin(Mymap);
+    st->referencemean(Mymap);
+    st->referencestd_dev(Mymap);
+    st->rmax(Mymap);
+    st->rmin(Mymap);
 
 
 
@@ -123,9 +123,4 @@ int main(int argc,char **argv)
     return 0;
 
 }
-
-
-
-
-
 

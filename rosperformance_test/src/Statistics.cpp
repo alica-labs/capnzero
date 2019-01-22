@@ -8,6 +8,15 @@
 #include <algorithm>
 
 template <typename x>
+ Statistics<x>::Statistics() {
+
+}
+
+template <typename x>
+Statistics<x>::~Statistics() {
+
+}
+template <typename x>
 void Statistics<x>::referencemean(std::map<long, double> &mYmap) {
     x mean = 0;
     int n=0;
