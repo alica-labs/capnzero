@@ -94,7 +94,9 @@ int main(int argc,char **argv)
 
     std::cout << "number of rcvd msg: "<<Mymap.size()<<std::endl ;
 
-    Statistics<double> *st;
+    Statistics<double> *st =new Statistics<double > ;
+    //passing address of measurement object to st pointer variable.;
+
 
     st->referencemean(Mymap);
     st->referencestd_dev(Mymap);
@@ -118,10 +120,13 @@ int main(int argc,char **argv)
     std::cout << "Cleaning up now. "  << std::endl;
     //delete arr;
     //v.clear();
-    delete [] st;
-    Mymap.clear();
+    delete  st;
 
+    Mymap.clear();
     measuringMap.clear();
+
+
+
     return 0;
 
 }
