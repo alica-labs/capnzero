@@ -6,7 +6,7 @@
 
 #include <capnzero/Subscriber.h>
 #include <discovery_msgs/beacon.capnp.h>
-#include <supplementary/Worker.h>
+#include <essentials/Worker.h>
 
 #include <uuid/uuid.h>
 #include <zmq.h>
@@ -25,7 +25,7 @@ class Publisher;
 namespace discovery
 {
 
-class Agent : public supplementary::Worker
+class Agent : public essentials::Worker
 {
 public:
     Agent(std::string name, bool sender);
