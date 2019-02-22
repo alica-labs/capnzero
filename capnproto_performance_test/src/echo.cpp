@@ -19,47 +19,15 @@ struct argvVar
     const char **value;  // the address of the variable to set the value
 };
 int16_t l;
-//char** argv;
+
 std::string s0, s3;
-//const char *p;
-//#define DEBUG_SENDER
+
+#define DEBUG_SENDER
+
 int16_t j;
-std::vector<capnproto::Capnprotoperformancetest>v;
 
-void callback(::capnp::FlatArrayMessageReader& k) {
+void callback(::capnp::FlatArrayMessageReader& k);
 
-    std::cout << "subscriber called for port 5500 and rcvd message ...." << std::endl;
-    k.getRoot<capnproto::Capnprotoperformancetest>().toString().flatten().cStr();
-
-    s3=k.getRoot<capnproto::Capnprotoperformancetest>().getString();
-
-    //std::cout << k.getRoot<capnzero::Capnprotoperformancetest>().getNumber()<<std::endl;//
-           // .toString().flatten().cStr() << std::endl;
-           j=int16_t (k.getRoot<capnproto::Capnprotoperformancetest>().getNumber());
-    s0 = k.getRoot<capnproto::Capnprotoperformancetest>().toString().flatten().cStr();
-    //=s0[2];
-   // auto [s0.size()]=s0.data();
-
-   std::cout << "Called callback..."<<s3 << std::endl;
-/*
-    ::capnp::MallocMessageBuilder s1;
-
-    capnzero::String::Builder lu=s1.initRoot<capnzero::String>();
-    lu.setString(s0);{
-    std::cout << "Called callback..." << s0<<std::endl;
-
-    void *ctx = zmq_ctx_new();
-    capnzero::Publisher pub = capnzero::Publisher(ctx,);
-//    pub.bind(capnzero::CommType::IPC, "@capnzero.ipc");
-    pub.bind(capnzero::CommType::UDP, "223.0.0.2:5554");
-
-
-    // pub.bind(capnzero::CommType::TCP, "141.51.122.62:5555");
-    pub.send(s0);
-
-*/
-
- }
 
 
 static bool interrupted = false;
@@ -67,7 +35,7 @@ static void s_signal_handler(int signal_value)
 {
     interrupted = true;
 }
-/*
+
 static void s_catch_signals(void)
 {
     struct sigaction action;
@@ -77,10 +45,10 @@ static void s_catch_signals(void)
     sigaction(SIGINT, &action, NULL);
     sigaction(SIGTERM, &action, NULL);
 }
-*/
+
 int main(int argc, char** argv)
 {
-    /*s_catch_signals();
+    s_catch_signals();
 
     if (argc <= 1) {
         std::cerr << "Synopsis: rosrun capnzero echo \"Topic that should be listened to!\"" << std::endl;
@@ -90,7 +58,7 @@ int main(int argc, char** argv)
     for (size_t i = 0; i < argc; i++) {
         std::cout << "Param " << i << ": '" << argv[i] << "'" << std::endl;
     }
-*/
+
     void* ctx = zmq_ctx_new();
     capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, argv[1]);
 
@@ -159,3 +127,37 @@ delete sub;
 
 }
 
+void callback(::capnp::FlatArrayMessageReader& k) {
+
+    std::cout << "subscriber called for port 5500 and rcvd message ...." << std::endl;
+    k.getRoot<capnproto::Capnprotoperformancetest>().toString().flatten().cStr();
+
+    s3=k.getRoot<capnproto::Capnprotoperformancetest>().getString();
+
+    //std::cout << k.getRoot<capnzero::Capnprotoperformancetest>().getNumber()<<std::endl;//
+    // .toString().flatten().cStr() << std::endl;
+    j=int16_t (k.getRoot<capnproto::Capnprotoperformancetest>().getNumber());
+    s0 = k.getRoot<capnproto::Capnprotoperformancetest>().toString().flatten().cStr();
+    //=s0[2];
+    // auto [s0.size()]=s0.data();
+
+    std::cout << "Called callback..."<<s3 << std::endl;
+/*
+    ::capnp::MallocMessageBuilder s1;
+
+    capnzero::String::Builder lu=s1.initRoot<capnzero::String>();
+    lu.setString(s0);{
+    std::cout << "Called callback..." << s0<<std::endl;
+
+    void *ctx = zmq_ctx_new();
+    capnzero::Publisher pub = capnzero::Publisher(ctx,);
+//    pub.bind(capnzero::CommType::IPC, "@capnzero.ipc");
+    pub.bind(capnzero::CommType::UDP, "223.0.0.2:5554");
+
+
+    // pub.bind(capnzero::CommType::TCP, "141.51.122.62:5555");
+    pub.send(s0);
+
+*/
+
+}
