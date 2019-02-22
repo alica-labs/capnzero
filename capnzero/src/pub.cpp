@@ -1,8 +1,6 @@
 #include "capnzero-base-msgs/string.capnp.h"
-
 #include <capnzero/Publisher.h>
 #include <capnzero/Common.h>
-
 #include <capnp/common.h>
 #include <capnp/message.h>
 #include <capnp/serialize-packed.h>
