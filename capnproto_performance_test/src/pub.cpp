@@ -14,7 +14,7 @@
 #include <map>
 #include "Statistics.h"
 //#define DEBUG_PUB
-int16_t counter=0;
+
 std::map<int16_t , std::chrono::time_point<std::chrono::high_resolution_clock >> measuringMap;
 std::map<long, double >Mymap;
 static bool interrupted = false;
@@ -36,6 +36,7 @@ static void s_catch_signals(void)
 
 int main(int argc, char** argv)
 {
+    int16_t counter=0;
     s_catch_signals();
 
     if (argc <= 1) {
@@ -79,7 +80,8 @@ int main(int argc, char** argv)
             int numBytesSent = pub.send(msgBuilder);
             measuringMap.emplace(counter, std::chrono::high_resolution_clock::now());
             {
-                std::cout << "Publisher is going to publish: "<< numBytesSent << " Bytes sent!" << std::endl;}
+                std::cout << "Publisher is going to publish: "<< numBytesSent << " Bytes sent!" << std::endl;
+                std::cout << "Publisher is going to publish: "<< counter <<" Message" << std::endl;}
 #ifdef DEBUG_PUB
             std::cout << "I am going to publish the following message : "<< numBytesSent << " Bytes sent!" << std::endl;
 #endif
@@ -135,4 +137,5 @@ void callback(::capnp::FlatArrayMessageReader& reader)
     {
         std::cerr << "That is Strange!" << std::endl;
     }
+
 }
