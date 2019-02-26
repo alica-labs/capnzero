@@ -28,7 +28,7 @@ static const ::capnp::_::AlignedData<49> b_ff46b507b3665c0b = {
       0,   0,   0,   0,   0,   0,   0,   0,
       0,   0,   1,   0,   0,   0,   0,   0,
       0,   0,   0,   0,   0,   0,   0,   0,
-     41,   0,   0,   0,  58,   0,   0,   0,
+     41,   0,   0,   0,  66,   0,   0,   0,
       0,   0,   0,   0,   0,   0,   0,   0,
      36,   0,   0,   0,   3,   0,   1,   0,
      48,   0,   0,   0,   2,   0,   1,   0,
@@ -39,7 +39,7 @@ static const ::capnp::_::AlignedData<49> b_ff46b507b3665c0b = {
       0,   0,   0,   0,   0,   0,   0,   0,
      40,   0,   0,   0,   3,   0,   1,   0,
      52,   0,   0,   0,   2,   0,   1,   0,
-    115, 116, 114, 105, 110, 103,   0,   0,
+    109, 101, 115, 115,  97, 103, 101,   0,
      12,   0,   0,   0,   0,   0,   0,   0,
       0,   0,   0,   0,   0,   0,   0,   0,
       0,   0,   0,   0,   0,   0,   0,   0,
@@ -58,7 +58,7 @@ static const ::capnp::_::AlignedData<49> b_ff46b507b3665c0b = {
 };
 ::capnp::word const* const bp_ff46b507b3665c0b = b_ff46b507b3665c0b.words;
 #if !CAPNP_LITE
-static const uint16_t m_ff46b507b3665c0b[] = {1, 0};
+static const uint16_t m_ff46b507b3665c0b[] = {0, 1};
 static const uint16_t i_ff46b507b3665c0b[] = {0, 1};
 const ::capnp::_::RawSchema s_ff46b507b3665c0b = {
   0xff46b507b3665c0b, b_ff46b507b3665c0b.words, 49, nullptr, m_ff46b507b3665c0b,

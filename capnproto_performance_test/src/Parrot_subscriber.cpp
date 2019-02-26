@@ -68,10 +68,10 @@ int main(int argc, char** argv)
         int numBytesSent = pub.send(msgBuilder);
         {
             std::cout << "I am going to publish the following message: "<< numBytesSent << " Bytes sent!" << std::endl;
-            dataHolder.setString(rcvmsgstring);
+            dataHolder.setMessage(rcvmsgstring);
             dataHolder.setNumber(rcvmsgnumber);
             rcvmsgstring.clear();
-            dataHolder.hasString();
+            dataHolder.hasMessage();
             std::this_thread::sleep_for(std::chrono::seconds(1));
         }
     }
@@ -83,7 +83,7 @@ void callback(::capnp::FlatArrayMessageReader& reader) {
 
     std::cout << "Subscriber called for port 5500 and rcvd message: " << std::endl;
     reader.getRoot<capnproto::Capnprotoperformancetest>().toString().flatten().cStr();
-    rcvmsgstring=reader.getRoot<capnproto::Capnprotoperformancetest>().getString();
+    rcvmsgstring=reader.getRoot<capnproto::Capnprotoperformancetest>().getMessage();
     rcvmsgnumber=int16_t (reader.getRoot<capnproto::Capnprotoperformancetest>().getNumber());
     std::cout << "Received string message: "<<rcvmsgstring << std::endl;
     std::cout << "Received int message: "<<rcvmsgnumber << std::endl;

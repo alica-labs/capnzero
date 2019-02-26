@@ -55,8 +55,8 @@ public:
   }
 #endif  // !CAPNP_LITE
 
-  inline bool hasString() const;
-  inline  ::capnp::Text::Reader getString() const;
+  inline bool hasMessage() const;
+  inline  ::capnp::Text::Reader getMessage() const;
 
   inline  ::int16_t getNumber() const;
 
@@ -88,12 +88,12 @@ public:
   inline ::kj::StringTree toString() const { return asReader().toString(); }
 #endif  // !CAPNP_LITE
 
-  inline bool hasString();
-  inline  ::capnp::Text::Builder getString();
-  inline void setString( ::capnp::Text::Reader value);
-  inline  ::capnp::Text::Builder initString(unsigned int size);
-  inline void adoptString(::capnp::Orphan< ::capnp::Text>&& value);
-  inline ::capnp::Orphan< ::capnp::Text> disownString();
+  inline bool hasMessage();
+  inline  ::capnp::Text::Builder getMessage();
+  inline void setMessage( ::capnp::Text::Reader value);
+  inline  ::capnp::Text::Builder initMessage(unsigned int size);
+  inline void adoptMessage(::capnp::Orphan< ::capnp::Text>&& value);
+  inline ::capnp::Orphan< ::capnp::Text> disownMessage();
 
   inline  ::int16_t getNumber();
   inline void setNumber( ::int16_t value);
@@ -126,36 +126,36 @@ private:
 
 // =======================================================================================
 
-inline bool Capnprotoperformancetest::Reader::hasString() const {
+inline bool Capnprotoperformancetest::Reader::hasMessage() const {
   return !_reader.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS).isNull();
 }
-inline bool Capnprotoperformancetest::Builder::hasString() {
+inline bool Capnprotoperformancetest::Builder::hasMessage() {
   return !_builder.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS).isNull();
 }
-inline  ::capnp::Text::Reader Capnprotoperformancetest::Reader::getString() const {
+inline  ::capnp::Text::Reader Capnprotoperformancetest::Reader::getMessage() const {
   return ::capnp::_::PointerHelpers< ::capnp::Text>::get(_reader.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS));
 }
-inline  ::capnp::Text::Builder Capnprotoperformancetest::Builder::getString() {
+inline  ::capnp::Text::Builder Capnprotoperformancetest::Builder::getMessage() {
   return ::capnp::_::PointerHelpers< ::capnp::Text>::get(_builder.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS));
 }
-inline void Capnprotoperformancetest::Builder::setString( ::capnp::Text::Reader value) {
+inline void Capnprotoperformancetest::Builder::setMessage( ::capnp::Text::Reader value) {
   ::capnp::_::PointerHelpers< ::capnp::Text>::set(_builder.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS), value);
 }
-inline  ::capnp::Text::Builder Capnprotoperformancetest::Builder::initString(unsigned int size) {
+inline  ::capnp::Text::Builder Capnprotoperformancetest::Builder::initMessage(unsigned int size) {
   return ::capnp::_::PointerHelpers< ::capnp::Text>::init(_builder.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS), size);
 }
-inline void Capnprotoperformancetest::Builder::adoptString(
+inline void Capnprotoperformancetest::Builder::adoptMessage(
     ::capnp::Orphan< ::capnp::Text>&& value) {
   ::capnp::_::PointerHelpers< ::capnp::Text>::adopt(_builder.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS), kj::mv(value));
 }
-inline ::capnp::Orphan< ::capnp::Text> Capnprotoperformancetest::Builder::disownString() {
+inline ::capnp::Orphan< ::capnp::Text> Capnprotoperformancetest::Builder::disownMessage() {
   return ::capnp::_::PointerHelpers< ::capnp::Text>::disown(_builder.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS));
 }

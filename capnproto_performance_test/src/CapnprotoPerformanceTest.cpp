@@ -55,7 +55,7 @@ int main(int argc, char** argv)
     capnproto::Capnprotoperformancetest::Builder beaconMsgBuilder = msgBuilder.initRoot<capnproto::Capnprotoperformancetest>();
 
     // set content
-    beaconMsgBuilder.setString(argv[2]);
+    beaconMsgBuilder.setMessage(argv[2]);
 #ifdef DEBUG_PUB
     std::cout << "pub: Message to send: " << beaconMsgBuilder.toString().flatten().cStr() << std::endl;
 #endif
@@ -111,7 +111,7 @@ void callback(::capnp::FlatArrayMessageReader& reader)
     std::cout << "I have received the following from the subscriber: " << std::endl;
     std::string rcvdmsg = reader.getRoot<capnproto::Capnprotoperformancetest>().toString().flatten().cStr() ;
     int16_t rcvmsgnumber=reader.getRoot<capnproto::Capnprotoperformancetest>().getNumber();
-    std::string rcvmsgstring=reader.getRoot<capnproto::Capnprotoperformancetest>().getString();
+    std::string rcvmsgstring=reader.getRoot<capnproto::Capnprotoperformancetest>().getMessage();
     std::cout << "Size of the received str is: " << rcvdmsg.length() << " \n";
     std::cout << "String data inside received msg: " << rcvmsgstring << " \n";
     std::cout << "Integer data inside received msg: "<< rcvmsgnumber << " \n";
