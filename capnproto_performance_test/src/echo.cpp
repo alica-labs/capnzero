@@ -105,10 +105,10 @@ int main(int argc, char** argv)
             std::this_thread::sleep_for(std::chrono::milliseconds(2));
         }
 
-/*#ifdef DEBUG_PUB
+#ifdef DEBUG_PUB
             std::cout << "I am going to publish the following message : "<< numBytesSent << " Bytes sent!" << std::endl;
 #endif
-  */
+
         //std::this_thread::sleep_for(std::chrono::seconds(3));
     }// wait until everything is send
     //std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -142,22 +142,6 @@ void callback(::capnp::FlatArrayMessageReader& k) {
     // auto [s0.size()]=s0.data();
 
     std::cout << "Called callback..."<<s3 << std::endl;
-/*
-    ::capnp::MallocMessageBuilder s1;
 
-    capnzero::String::Builder lu=s1.initRoot<capnzero::String>();
-    lu.setString(s0);{
-    std::cout << "Called callback..." << s0<<std::endl;
-
-    void *ctx = zmq_ctx_new();
-    capnzero::Publisher pub = capnzero::Publisher(ctx,);
-//    pub.bind(capnzero::CommType::IPC, "@capnzero.ipc");
-    pub.bind(capnzero::CommType::UDP, "223.0.0.2:5554");
-
-
-    // pub.bind(capnzero::CommType::TCP, "141.51.122.62:5555");
-    pub.send(s0);
-
-*/
 
 }
