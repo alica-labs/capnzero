@@ -13,21 +13,13 @@
 #include <bitset>
 #include <nl_types.h>
 
-struct argvVar
-{
-    const char *name;    // the name of the variable to look for
-    const char **value;  // the address of the variable to set the value
-};
-int16_t l;
-
-std::string s0, s3;
+std::string  rcvmsgstring;
+int16_t rcvmsgnumber;
 
 #define DEBUG_SENDER
 
-int16_t j;
 
-void callback(::capnp::FlatArrayMessageReader& k);
-
+void callback(::capnp::FlatArrayMessageReader& reader) ;
 
 
 static bool interrupted = false;
@@ -58,90 +50,43 @@ int main(int argc, char** argv)
     for (size_t i = 0; i < argc; i++) {
         std::cout << "Param " << i << ": '" << argv[i] << "'" << std::endl;
     }
-
     void* ctx = zmq_ctx_new();
     capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, argv[1]);
-
     capnzero::Publisher pub = capnzero::Publisher(ctx, argv[1]);
-//    sub->connect(capnzero::CommType::IPC, "@capnzero.ipc");
     sub->connect(capnzero::CommType::UDP, "224.0.0.2:5500");
-//    sub->connect(capnzero::CommType::TCP, "141.51.122.62:5555");
     sub->subscribe(&callback);
 
+    // init builder
+    ::capnp::MallocMessageBuilder msgBuilder;
+    capnproto::Capnprotoperformancetest::Builder dataHolder= msgBuilder.initRoot<capnproto::Capnprotoperformancetest>();
 
-
-
-   // init builder
-    ::capnp::MallocMessageBuilder s1;
-
-  //  s3="hi";
-    capnproto::Capnprotoperformancetest::Builder lu= s1.initRoot<capnproto::Capnprotoperformancetest>();
-
-   // std::cout<<"Data inside my strin lu: "<<s1.getRoot<capnzero::String>().toString().flatten().cStr()<<std::endl;
     //Publisher  part
-
-//    pub.bind(capnzero::CommType::IPC, "@capnzero.ipc");
-      pub.bind(capnzero::CommType::UDP, "224.0.0.2:5554");
-   // pub.bind(capnzero::CommType::TCP, "141.51.122.62:5555");
-  // pub.bind("tcp://*:5563")
-
+    pub.bind(capnzero::CommType::UDP, "224.0.0.2:5554");
     while (!interrupted) {
-        //std::this_thread::sleep_for(std::chrono::milliseconds(500));
-        std::this_thread::sleep_for(std::chrono::seconds(2));
+        std::this_thread::sleep_for(std::chrono::seconds(3));
 
-        int numBytesSent = pub.send(s1);
+        int numBytesSent = pub.send(msgBuilder);
         {
-            std::cout << "I am going to publish the following message : "<< numBytesSent << " Bytes sent!" << std::endl;
-           // std::cout<<"Data inside my strin lu: "<<s0 /*.getRoot<capnzero::String>().toString().flatten().cStr()*/<<std::endl;
-           lu.setString(s3);
-           lu.setNumber(j);
-
-            //std::cout << "pub: Message to send:lu " <<lu.toString().flatten().cStr() << std::endl;
-            s0.clear();
-            s3.clear();
-            lu.hasString();
-            //lu.disownString();
-
-            std::this_thread::sleep_for(std::chrono::milliseconds(2));
+            std::cout << "I am going to publish the following message: "<< numBytesSent << " Bytes sent!" << std::endl;
+            dataHolder.setString(rcvmsgstring);
+            dataHolder.setNumber(rcvmsgnumber);
+            rcvmsgstring.clear();
+            dataHolder.hasString();
+            std::this_thread::sleep_for(std::chrono::seconds(1));
         }
-
-#ifdef DEBUG_PUB
-            std::cout << "I am going to publish the following message : "<< numBytesSent << " Bytes sent!" << std::endl;
-#endif
-
-        //std::this_thread::sleep_for(std::chrono::seconds(3));
-    }// wait until everything is send
-    //std::this_thread::sleep_for(std::chrono::seconds(1));
-    //{
-    //  std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
-
-
-    //std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
-
-delete sub;
-
+    }
+    delete sub;
     zmq_ctx_term(ctx);
-
-
 }
 
-void callback(::capnp::FlatArrayMessageReader& k) {
+void callback(::capnp::FlatArrayMessageReader& reader) {
 
-    std::cout << "subscriber called for port 5500 and rcvd message ...." << std::endl;
-    k.getRoot<capnproto::Capnprotoperformancetest>().toString().flatten().cStr();
-
-    s3=k.getRoot<capnproto::Capnprotoperformancetest>().getString();
-
-    //std::cout << k.getRoot<capnzero::Capnprotoperformancetest>().getNumber()<<std::endl;//
-    // .toString().flatten().cStr() << std::endl;
-    j=int16_t (k.getRoot<capnproto::Capnprotoperformancetest>().getNumber());
-    s0 = k.getRoot<capnproto::Capnprotoperformancetest>().toString().flatten().cStr();
-    //=s0[2];
-    // auto [s0.size()]=s0.data();
-
-    std::cout << "Called callback..."<<s3 << std::endl;
+    std::cout << "Subscriber called for port 5500 and rcvd message: " << std::endl;
+    reader.getRoot<capnproto::Capnprotoperformancetest>().toString().flatten().cStr();
+    rcvmsgstring=reader.getRoot<capnproto::Capnprotoperformancetest>().getString();
+    rcvmsgnumber=int16_t (reader.getRoot<capnproto::Capnprotoperformancetest>().getNumber());
+    std::cout << "Received string message: "<<rcvmsgstring << std::endl;
+    std::cout << "Received int message: "<<rcvmsgnumber << std::endl;
 
 
 }
