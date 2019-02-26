@@ -56,10 +56,6 @@ int main(int argc, char** argv)
 
     // set content
     beaconMsgBuilder.setString(argv[2]);
-
-
-
-
 #ifdef DEBUG_PUB
     std::cout << "pub: Message to send: " << beaconMsgBuilder.toString().flatten().cStr() << std::endl;
 #endif
@@ -86,7 +82,6 @@ int main(int argc, char** argv)
             std::cout << "I am going to publish the following message : "<< numBytesSent << " Bytes sent!" << std::endl;
 #endif
             std::this_thread::sleep_for(std::chrono::seconds(2));
-
         }// wait until everything is send
         std::this_thread::sleep_for(std::chrono::seconds(2));
         counter++;
@@ -109,7 +104,6 @@ int main(int argc, char** argv)
     zmq_ctx_term(ctx);
     return 0;
 }
-
 
 void callback(::capnp::FlatArrayMessageReader& reader)
 

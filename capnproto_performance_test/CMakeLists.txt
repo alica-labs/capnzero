@@ -78,11 +78,11 @@ endif (NOT catkin_FOUND)
 
 ############# SENDER-CONSOLE-APP
 
-add_executable(publisher
-        src/pub.cpp src/Statistics.cpp
+add_executable(CapnprotoPerformanceTest
+        src/CapnprotoPerformanceTest.cpp src/Statistics.cpp
         )
 
-target_link_libraries(publisher
+target_link_libraries(CapnprotoPerformanceTest
         ${PROJECT_NAME}
         ${ZeroMQ_LIBRARIES}
         ${CAPNP_LIBRARIES}
@@ -95,11 +95,11 @@ endif (NOT catkin_FOUND)
 
 ############# RECEIVER-CONSOLE-APP
 
-add_executable(subscriber
-        src/echo.cpp
+add_executable(Parrot
+        src/Parrot_subscriber.cpp
         )
 
-target_link_libraries(subscriber
+target_link_libraries(Parrot
         ${PROJECT_NAME}
         ${ZeroMQ_LIBRARIES}
         ${CAPNP_LIBRARIES}
