@@ -48,7 +48,7 @@ int main(int argc, char** argv)
     }
 
     // Cap'n Proto: create proto message
-    Statistics<double> *st =new Statistics<double > ;
+    Statistics<double> *measurement_unit =new Statistics<double > ;
     // init builder
     ::capnp::MallocMessageBuilder msgBuilder;
     capnproto::Capnprotoperformancetest::Builder beaconMsgBuilder = msgBuilder.initRoot<capnproto::Capnprotoperformancetest>();
@@ -91,12 +91,12 @@ int main(int argc, char** argv)
     {
         std::cout << "ID: " << entry.first << " StartTime: " << std::chrono::duration_cast<std::chrono::milliseconds>(entry.second.time_since_epoch()).count() << std::endl;
     }
-    st->referencemean(Mymap);
-    st->referencestd_dev(Mymap);
-    st->rmax(Mymap);
-    st->rmin(Mymap);
+    measurement_unit->referencemean(Mymap);
+    measurement_unit->referencestd_dev(Mymap);
+    measurement_unit->rmax(Mymap);
+    measurement_unit->rmin(Mymap);
     std::cout << "Cleaning up now. "  << std::endl;
-    delete  st;
+    delete  measurement_unit;
     Mymap.clear();
     measuringMap.clear();
     delete sub;
@@ -117,7 +117,7 @@ void callback(::capnp::FlatArrayMessageReader& reader)
     auto mapEntry = measuringMap.find(rcvmsgnumber);
     if (mapEntry != measuringMap.end()) {
         std::cout<<"Received ID: " << rcvmsgnumber << " Time elapsed is: "
-                 << std::chrono::duration_cast<std::chrono::milliseconds> (std::chrono::high_resolution_clock::now() - mapEntry->second).count()<< std::endl;
+                 << std::chrono::duration_cast<std::chrono::milliseconds> (std::chrono::high_resolution_clock::now() - mapEntry->second).count()<<" ms"<< std::endl;
         double time_passed=double(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - mapEntry->second).count() );
         // here is my Mymap is the Map containner
         Mymap.emplace(rcvmsgnumber,time_passed);
