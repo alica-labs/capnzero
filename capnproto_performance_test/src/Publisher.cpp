@@ -12,7 +12,6 @@ Publisher::Publisher(void* context, std::string groupName)
 {
 }
 
-
 Publisher::Publisher() {}
 Publisher::~Publisher()
 {
@@ -50,17 +49,14 @@ int Publisher::send(::capnp::MallocMessageBuilder& msgBuilder)
 {
     // setup zmq msg
     zmq_msg_t msg;
-
     kj::Array<capnp::word> wordArray = capnp::messageToFlatArray(msgBuilder);
     kj::Array<capnp::word>* wordArrayPtr = new kj::Array<capnp::word>(kj::mv(wordArray)); // will be delete by zero-mq
     check(zmq_msg_init_data(&msg, wordArrayPtr->begin(), wordArrayPtr->size() * sizeof(capnp::word), &cleanUpMsgData, wordArrayPtr), "zmq_msg_init_data");
-
     // set group
     if (this->commType == capnzero::CommType::UDP) {
         std::cout << "Group: " << this->groupName << std::endl;
         check(zmq_msg_set_group(&msg, this->groupName.c_str()), "zmq_msg_set_group");
     }
-
     // send
     int numBytesSend = zmq_msg_send(&msg, this->socket, 0);
     if (numBytesSend == -1) {

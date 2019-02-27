@@ -58,7 +58,6 @@ add_library(capnproto-base-msgs
 
 add_library(${PROJECT_NAME}
         src/Publisher.cpp
-        src/Subscriber.cpp
         include/capnzero/CapnZero.h
         )
 

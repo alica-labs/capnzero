@@ -12,21 +12,15 @@
 #include <string>
 #include <bitset>
 #include <nl_types.h>
-
 std::string  rcvmsgstring;
 int16_t rcvmsgnumber;
-
 #define DEBUG_SENDER
-
-void callback(::capnp::FlatArrayMessageReader& reader) ;
-
-
+void callback(::capnp::FlatArrayMessageReader& reader);
 static bool interrupted = false;
 static void s_signal_handler(int signal_value)
 {
     interrupted = true;
 }
-
 static void s_catch_signals(void)
 {
     struct sigaction action;
