@@ -44,15 +44,15 @@ int main(int argc, char** argv)
         std::cout << "Param " << i << ": '" << argv[i] << "'" << std::endl;
     }
     void* ctx = zmq_ctx_new();
-    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, argv[1]);
-    capnzero::Publisher pub = capnzero::Publisher(ctx, argv[1]);
-    sub->connect(capnzero::CommType::UDP, "224.0.0.2:5500");
+    capnproto::Subscriber* sub = new capnproto::Subscriber(ctx, argv[1]);
+    capnproto::Publisher pub = capnproto::Publisher(ctx, argv[1]);
+    sub->connect(capnproto::CommType::UDP, "224.0.0.2:5500");
     sub->subscribe(&callback);
     // init builder
     ::capnp::MallocMessageBuilder msgBuilder;
     capnproto::Capnprotoperformancetest::Builder dataHolder= msgBuilder.initRoot<capnproto::Capnprotoperformancetest>();
     //Publisher  part
-    pub.bind(capnzero::CommType::UDP, "224.0.0.2:5554");
+    pub.bind(capnproto::CommType::UDP, "224.0.0.2:5554");
     while (!interrupted) {
         std::this_thread::sleep_for(std::chrono::seconds(3));
         int numBytesSent = pub.send(msgBuilder);

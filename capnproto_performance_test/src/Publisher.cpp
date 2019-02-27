@@ -1,7 +1,7 @@
 #include "capnzero/Publisher.h"
 #include <assert.h>
 
-namespace capnzero
+namespace capnproto
 {
 
 Publisher::Publisher(void* context, std::string groupName)
@@ -53,7 +53,7 @@ int Publisher::send(::capnp::MallocMessageBuilder& msgBuilder)
     kj::Array<capnp::word>* wordArrayPtr = new kj::Array<capnp::word>(kj::mv(wordArray)); // will be delete by zero-mq
     check(zmq_msg_init_data(&msg, wordArrayPtr->begin(), wordArrayPtr->size() * sizeof(capnp::word), &cleanUpMsgData, wordArrayPtr), "zmq_msg_init_data");
     // set group
-    if (this->commType == capnzero::CommType::UDP) {
+    if (this->commType == capnproto::CommType::UDP) {
         std::cout << "Group: " << this->groupName << std::endl;
         check(zmq_msg_set_group(&msg, this->groupName.c_str()), "zmq_msg_set_group");
     }

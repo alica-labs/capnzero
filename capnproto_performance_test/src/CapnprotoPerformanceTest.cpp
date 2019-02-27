@@ -61,12 +61,12 @@ int main(int argc, char** argv)
     void* ctx = zmq_ctx_new();
 
 //Publisher  part
-    capnzero::Publisher pub = capnzero::Publisher(ctx, argv[1]);
-    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, argv[1]);
-    pub.bind(capnzero::CommType::UDP, "224.0.0.2:5500");
+    capnproto::Publisher pub = capnproto::Publisher(ctx, argv[1]);
+    capnproto::Subscriber* sub = new capnproto::Subscriber(ctx, argv[1]);
+    pub.bind(capnproto::CommType::UDP, "224.0.0.2:5500");
 
 //Subscriber part
-    sub->connect(capnzero::CommType::UDP, "224.0.0.2:5554");
+    sub->connect(capnproto::CommType::UDP, "224.0.0.2:5554");
     sub->subscribe(&callback);
 
     while (!interrupted)

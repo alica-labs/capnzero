@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-namespace capnzero
+namespace capnproto
 {
 
 class Publisher
@@ -32,4 +32,4 @@ protected:
 };
 
 static void cleanUpMsgData(void* data, void* hint);
-} // namespace capnzero
+} // namespace capnproto

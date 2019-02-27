@@ -15,7 +15,7 @@
 
 //#define DEBUG_SUBSCRIBER
 
-namespace capnzero
+namespace capnproto
 {
 
 class Subscriber
@@ -165,4 +165,4 @@ void Subscriber::receive()
         check(zmq_msg_close(&msg), "zmq_msg_close");
     }
 }
-} // namespace capnzero
+} // namespace capnproto

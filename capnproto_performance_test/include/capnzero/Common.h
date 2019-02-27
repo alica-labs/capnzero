@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 
-namespace capnzero
+namespace capnproto
 {
     enum CommType {
         UDP,
@@ -23,4 +23,4 @@ inline void check(int returnCode, std::string methodName)
         std::cerr << methodName << " returned: " << errno << " - " << zmq_strerror(errno) << std::endl;
     }
 }
-} // namespace capnzero
+} // namespace capnproto
