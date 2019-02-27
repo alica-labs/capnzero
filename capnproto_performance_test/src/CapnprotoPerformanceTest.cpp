@@ -33,7 +33,6 @@ static void s_catch_signals(void)
     sigaction(SIGINT, &action, NULL);
     sigaction(SIGTERM, &action, NULL);
 }
-
 int main(int argc, char** argv)
 {
     int16_t counter=0;
@@ -115,8 +114,6 @@ void callback(::capnp::FlatArrayMessageReader& reader)
     std::cout << "Size of the received str is: " << rcvdmsg.length() << " \n";
     std::cout << "String data inside received msg: " << rcvmsgstring << " \n";
     std::cout << "Integer data inside received msg: "<< rcvmsgnumber << " \n";
-
-    //std::cout <<"The data inside redaer"<<<<std::endl;
     auto mapEntry = measuringMap.find(rcvmsgnumber);
     if (mapEntry != measuringMap.end()) {
         std::cout<<"Received ID: " << rcvmsgnumber << " Time elapsed is: "
@@ -124,7 +121,6 @@ void callback(::capnp::FlatArrayMessageReader& reader)
         double time_passed=double(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - mapEntry->second).count() );
         // here is my Mymap is the Map containner
         Mymap.emplace(rcvmsgnumber,time_passed);
-
         measuringMap.erase(rcvmsgnumber);
     }
     else
