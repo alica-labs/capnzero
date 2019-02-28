@@ -12,8 +12,8 @@
 #include <string>
 #include <bitset>
 #include <nl_types.h>
-std::string  rcvmsgstring;
-int16_t rcvmsgnumber;
+std::string  rcvmsgstring; //Global variable
+int16_t rcvmsgnumber; //Global variable
 #define DEBUG_SENDER
 void callback(::capnp::FlatArrayMessageReader& reader);
 static bool interrupted = false;
@@ -31,7 +31,7 @@ static void s_catch_signals(void)
     sigaction(SIGTERM, &action, NULL);
 }
 
-int main(int argc, char** argv)
+int main(int argc, char** argv) // Stack frame started
 {
     s_catch_signals();
 
@@ -44,7 +44,7 @@ int main(int argc, char** argv)
         std::cout << "Param " << i << ": '" << argv[i] << "'" << std::endl;
     }
     void* ctx = zmq_ctx_new();
-    capnproto::Subscriber* sub = new capnproto::Subscriber(ctx, argv[1]);
+    capnproto::Subscriber* sub = new capnproto::Subscriber(ctx, argv[1]); // creating a pointer in the heap
     capnproto::Publisher pub = capnproto::Publisher(ctx, argv[1]);
     sub->connect(capnproto::CommType::UDP, "224.0.0.2:5500");
     sub->subscribe(&callback);
@@ -71,6 +71,7 @@ int main(int argc, char** argv)
         }
         else{"subscriber didn't,t get called";}
     }
+    std::cout << "Cleaning up now. "  << std::endl;
     delete sub;
     zmq_ctx_term(ctx);
 }

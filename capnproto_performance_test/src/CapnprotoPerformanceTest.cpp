@@ -13,7 +13,7 @@
 #include <iostream>
 #include <map>
 #include "Statistics.h"
-//#define DEBUG_PUB
+#define DEBUG_PUB //Macros ,Basic C
 
 std::map<int16_t , std::chrono::time_point<std::chrono::high_resolution_clock >> measuringMap;
 std::map<long, double >Mymap;
@@ -22,7 +22,7 @@ static void s_signal_handler(int signal_value)
 {
     interrupted = true;
 }
-void callback(::capnp::FlatArrayMessageReader& reader);
+void callback(::capnp::FlatArrayMessageReader& reader); //function prototype
 
 static void s_catch_signals(void)
 {
@@ -33,7 +33,7 @@ static void s_catch_signals(void)
     sigaction(SIGINT, &action, NULL);
     sigaction(SIGTERM, &action, NULL);
 }
-int main(int argc, char** argv)
+int main(int argc, char** argv)// Stack frame started
 {
     int16_t counter=0;
     s_catch_signals();
@@ -62,7 +62,7 @@ int main(int argc, char** argv)
 
 //Publisher  part
     capnproto::Publisher pub = capnproto::Publisher(ctx, argv[1]);
-    capnproto::Subscriber* sub = new capnproto::Subscriber(ctx, argv[1]);
+    capnproto::Subscriber* sub = new capnproto::Subscriber(ctx, argv[1]); // creating a pointer in the heap
     pub.bind(capnproto::CommType::UDP, "224.0.0.2:5500");
 
 //Subscriber part
@@ -91,10 +91,10 @@ int main(int argc, char** argv)
     {
         std::cout << "ID: " << entry.first << " StartTime: " << std::chrono::duration_cast<std::chrono::milliseconds>(entry.second.time_since_epoch()).count() << std::endl;
     }
-    measurement_unit->referencemean(Mymap);
-    measurement_unit->referencestd_dev(Mymap);
-    measurement_unit->rmax(Mymap);
-    measurement_unit->rmin(Mymap);
+    measurement_unit->referencemean(Mymap); // access member function isng pointer
+    measurement_unit->referencestd_dev(Mymap);// access member function isng pointer
+    measurement_unit->rmax(Mymap);// access member function isng pointer
+    measurement_unit->rmin(Mymap);// access member function isng pointer
     std::cout << "Cleaning up now. "  << std::endl;
     delete  measurement_unit;
     Mymap.clear();
@@ -104,13 +104,13 @@ int main(int argc, char** argv)
     return 0;
 }
 
-void callback(::capnp::FlatArrayMessageReader& reader)
-
+void callback(::capnp::FlatArrayMessageReader& reader) //Stack frame after main call this function using subscriber
+                                                       //Function declaration or Body
 {
     std::cout << "I have received the following from the subscriber: " << std::endl;
-    std::string rcvdmsg = reader.getRoot<capnproto::Capnprotoperformancetest>().toString().flatten().cStr() ;
-    int16_t rcvmsgnumber=reader.getRoot<capnproto::Capnprotoperformancetest>().getNumber();
-    std::string rcvmsgstring=reader.getRoot<capnproto::Capnprotoperformancetest>().getMessage();
+    std::string rcvdmsg = reader.getRoot<capnproto::Capnprotoperformancetest>().toString().flatten().cStr() ;//local variable
+    int16_t rcvmsgnumber=reader.getRoot<capnproto::Capnprotoperformancetest>().getNumber(); //local variable
+    std::string rcvmsgstring=reader.getRoot<capnproto::Capnprotoperformancetest>().getMessage(); //local variable
     std::cout << "Size of the received str is: " << rcvdmsg.length() << " \n";
     std::cout << "String data inside received msg: " << rcvmsgstring << " \n";
     std::cout << "Integer data inside received msg: "<< rcvmsgnumber << " \n";
