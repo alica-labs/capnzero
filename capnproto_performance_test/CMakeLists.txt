@@ -58,7 +58,7 @@ add_library(capnproto-base-msgs
 
 add_library(${PROJECT_NAME}
         src/Publisher.cpp
-        include/capnzero/CapnZero.h
+        include/capnproto/CapnZero.h
         )
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC ZMQ_BUILD_DRAFT_API=1)

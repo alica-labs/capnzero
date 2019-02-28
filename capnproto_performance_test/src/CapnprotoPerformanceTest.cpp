@@ -1,6 +1,6 @@
 #include "capnproto-base-msgs/string.capnp.h"
-#include <capnzero/Publisher.h>
-#include <capnzero/Common.h>
+#include <capnproto/Publisher.h>
+#include <capnproto/Common.h>
 #include <capnp/common.h>
 #include <capnp/message.h>
 #include <capnp/serialize-packed.h>
@@ -8,7 +8,7 @@
 #include <chrono>
 #include <thread>
 #include <signal.h>
-#include <capnzero/Subscriber.h>
+#include <capnproto/Subscriber.h>
 #include <string>
 #include <iostream>
 #include <map>
@@ -39,7 +39,7 @@ int main(int argc, char** argv)// Stack frame started
     s_catch_signals();
 
     if (argc <= 1) {
-        std::cerr << "Synopsis: rosrun capnzero pub \"String that should be published!\"" << std::endl;
+        std::cerr << "Synopsis: rosrun capnproto pub \"String that should be published!\"" << std::endl;
         return -1;
     }
 
@@ -61,10 +61,10 @@ int main(int argc, char** argv)// Stack frame started
     void* ctx = zmq_ctx_new();
 
 //Publisher  part
-    capnproto::Publisher pub = capnproto::Publisher(ctx, argv[1]);
+    capnproto::Publisher * pub = new capnproto::Publisher(ctx, argv[1]);
     capnproto::Subscriber* sub = new capnproto::Subscriber(ctx, argv[1]); // creating a pointer in the heap /free pool of memory
                                                                           //Dynamic memory allocation
-    pub.bind(capnproto::CommType::UDP, "224.0.0.2:5500");
+    pub->bind(capnproto::CommType::UDP, "224.0.0.2:5500");
 
 //Subscriber part
     sub->connect(capnproto::CommType::UDP, "224.0.0.2:5554");
@@ -73,7 +73,7 @@ int main(int argc, char** argv)// Stack frame started
     while (!interrupted)
     {
         {     beaconMsgBuilder.setNumber(counter);
-            int numBytesSent = pub.send(msgBuilder);
+            int numBytesSent = pub->send(msgBuilder);
             measuringMap.emplace(counter, std::chrono::high_resolution_clock::now());
             {
                 std::cout << "Publisher is going to publish: "<< numBytesSent << " Bytes sent!" << std::endl;
@@ -100,7 +100,8 @@ int main(int argc, char** argv)// Stack frame started
     delete  measurement_unit;
     Mymap.clear();
     measuringMap.clear();
-    delete sub; // dynamic memory deallocated
+    delete sub;
+    delete pub;// dynamic memory deallocated
     zmq_ctx_term(ctx);
     return 0;
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "capnzero/Common.h"
+#include "capnproto/Common.h"
 
 #include <capnp/serialize-packed.h>
 

@@ -1,4 +1,4 @@
-#include "capnzero/Publisher.h"
+#include "capnproto/Publisher.h"
 #include <assert.h>
 
 namespace capnproto
@@ -66,4 +66,4 @@ int Publisher::send(::capnp::MallocMessageBuilder& msgBuilder)
 
     return numBytesSend;
 }
-} // namespace capnzero
+} // namespace capnproto
