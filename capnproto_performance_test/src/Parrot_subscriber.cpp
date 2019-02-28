@@ -54,22 +54,29 @@ int main(int argc, char** argv)
     //Publisher  part
     pub.bind(capnproto::CommType::UDP, "224.0.0.2:5554");
     while (!interrupted) {
-        std::this_thread::sleep_for(std::chrono::seconds(3));
-        int numBytesSent = pub.send(msgBuilder);
+        if(&callback != nullptr)
         {
-            std::cout << "I am going to publish the following message: "<< numBytesSent << " Bytes sent!" << std::endl;
-            dataHolder.setMessage(rcvmsgstring);
-            dataHolder.setNumber(rcvmsgnumber);
-            rcvmsgstring.clear();
-            dataHolder.hasMessage();
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            std::this_thread::sleep_for(std::chrono::seconds(3));
+            int numBytesSent = pub.send(msgBuilder);
+            {
+                std::cout << "I am going to publish the following message: " << numBytesSent << " Bytes sent!"
+                          << std::endl;
+                dataHolder.setMessage(rcvmsgstring);
+                dataHolder.setNumber(rcvmsgnumber);
+                rcvmsgstring.clear();
+                dataHolder.hasMessage();
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
+
         }
+        else{"subscriber didn't,t get called";}
     }
     delete sub;
     zmq_ctx_term(ctx);
 }
 
-void callback(::capnp::FlatArrayMessageReader& reader) {
+void callback(::capnp::FlatArrayMessageReader& reader)
+{
     std::cout << "Subscriber called for port 5500 and rcvd message: " << std::endl;
     reader.getRoot<capnproto::Capnprotoperformancetest>().toString().flatten().cStr();
     rcvmsgstring=reader.getRoot<capnproto::Capnprotoperformancetest>().getMessage();
