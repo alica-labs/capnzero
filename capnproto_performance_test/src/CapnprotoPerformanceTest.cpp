@@ -62,7 +62,8 @@ int main(int argc, char** argv)// Stack frame started
 
 //Publisher  part
     capnproto::Publisher pub = capnproto::Publisher(ctx, argv[1]);
-    capnproto::Subscriber* sub = new capnproto::Subscriber(ctx, argv[1]); // creating a pointer in the heap
+    capnproto::Subscriber* sub = new capnproto::Subscriber(ctx, argv[1]); // creating a pointer in the heap /free pool of memory
+                                                                          //Dynamic memory allocation
     pub.bind(capnproto::CommType::UDP, "224.0.0.2:5500");
 
 //Subscriber part
@@ -99,7 +100,7 @@ int main(int argc, char** argv)// Stack frame started
     delete  measurement_unit;
     Mymap.clear();
     measuringMap.clear();
-    delete sub;
+    delete sub; // dynamic memory deallocated
     zmq_ctx_term(ctx);
     return 0;
 }
