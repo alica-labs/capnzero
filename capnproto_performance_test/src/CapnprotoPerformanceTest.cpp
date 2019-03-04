@@ -61,13 +61,13 @@ int main(int argc, char** argv)// Stack frame started
     void* ctx = zmq_ctx_new();
 
 //Publisher  part
-    capnproto::Publisher * pub = new capnproto::Publisher(ctx, argv[1]);
-    capnproto::Subscriber* sub = new capnproto::Subscriber(ctx, argv[1]); // creating a pointer in the heap /free pool of memory
+    capnzero::Publisher * pub = new capnzero::Publisher(ctx, argv[1]);
+    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, argv[1]); // creating a pointer in the heap /free pool of memory
                                                                           //Dynamic memory allocation
-    pub->bind(capnproto::CommType::UDP, "224.0.0.2:5500");
+    pub->bind(capnzero::CommType::UDP, "224.0.0.2:5500");
 
 //Subscriber part
-    sub->connect(capnproto::CommType::UDP, "224.0.0.2:5554");
+    sub->connect(capnzero::CommType::UDP, "224.0.0.2:5554");
     sub->subscribe(&callback);
 
     while (!interrupted)
@@ -92,16 +92,16 @@ int main(int argc, char** argv)// Stack frame started
     {
         std::cout << "ID: " << entry.first << " StartTime: " << std::chrono::duration_cast<std::chrono::milliseconds>(entry.second.time_since_epoch()).count() << std::endl;
     }
-    measurement_unit->referencemean(Mymap); // access member function isng pointer
-    measurement_unit->referencestd_dev(Mymap);// access member function isng pointer
-    measurement_unit->rmax(Mymap);// access member function isng pointer
-    measurement_unit->rmin(Mymap);// access member function isng pointer
+    measurement_unit->referencemean(Mymap); // access member function using pointer
+    measurement_unit->referencestd_dev(Mymap);// access member function using pointer
+    measurement_unit->rmax(Mymap);// access member function using pointer
+    measurement_unit->rmin(Mymap);// access member function using pointer
     std::cout << "Cleaning up now. "  << std::endl;
     delete  measurement_unit;
     Mymap.clear();
     measuringMap.clear();
     delete sub;
-    delete pub;// dynamic memory deallocated
+    delete pub;// dynamic memory deallocation
     zmq_ctx_term(ctx);
     return 0;
 }

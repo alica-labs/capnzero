@@ -44,15 +44,15 @@ int main(int argc, char** argv) // Stack frame started
         std::cout << "Param " << i << ": '" << argv[i] << "'" << std::endl;
     }
     void* ctx = zmq_ctx_new();
-    capnproto::Subscriber* sub = new capnproto::Subscriber(ctx, argv[1]); // creating a pointer in the heap
-    capnproto::Publisher *pub = new capnproto::Publisher(ctx, argv[1]);
-    sub->connect(capnproto::CommType::UDP, "224.0.0.2:5500");
+    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, argv[1]); // creating a pointer in the heap
+    capnzero::Publisher *pub = new capnzero::Publisher(ctx, argv[1]);
+    sub->connect(capnzero::CommType::UDP, "224.0.0.2:5500");
     sub->subscribe(&callback);
     // init builder
     ::capnp::MallocMessageBuilder msgBuilder;
     capnproto::Capnprotoperformancetest::Builder dataHolder= msgBuilder.initRoot<capnproto::Capnprotoperformancetest>();
     //Publisher  part
-    pub->bind(capnproto::CommType::UDP, "224.0.0.2:5554");
+    pub->bind(capnzero::CommType::UDP, "224.0.0.2:5554");
     while (!interrupted) {
         if(&callback != nullptr)
         {
