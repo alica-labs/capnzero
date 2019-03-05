@@ -1,7 +1,7 @@
 #include "capnproto-base-msgs/string.capnp.h"
-#include <capnproto/Common.h>
-#include <capnproto/Subscriber.h>
-#include <capnproto/Publisher.h>
+#include <capnzero/Common.h>
+#include <capnzero/Subscriber.h>
+#include <capnzero/Publisher.h>
 #include <capnp/common.h>
 #include <capnp/message.h>
 #include <capnp/serialize-packed.h>
@@ -12,6 +12,7 @@
 #include <string>
 #include <bitset>
 #include <nl_types.h>
+
 std::string  rcvmsgstring; //Global variable
 static int16_t rcvmsgnumber; //Global variable
 #define DEBUG_SENDER

@@ -12,6 +12,10 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <depend>roscpp</depend>
+  <depend>capnzero</depend>
+  <depend>ZeroMQ</depend>
+    <depend>CapnProto</depend>
+  <depend>capnproto_messages</depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->

@@ -1,6 +1,7 @@
 #include "capnproto-base-msgs/string.capnp.h"
-#include <capnproto/Publisher.h>
-#include <capnproto/Common.h>
+#include <capnzero/Publisher.h>
+#include <capnzero/Common.h>
+#include <capnzero/Subscriber.h>
 #include <capnp/common.h>
 #include <capnp/message.h>
 #include <capnp/serialize-packed.h>
@@ -8,11 +9,12 @@
 #include <chrono>
 #include <thread>
 #include <signal.h>
-#include <capnproto/Subscriber.h>
+
 #include <string>
 #include <iostream>
 #include <map>
 #include "Statistics.h"
+//#include ""
 #define DEBUG_PUB //Macros ,Basic C
 
 std::map<int16_t , std::chrono::time_point<std::chrono::high_resolution_clock >> measuringMap;
@@ -42,7 +44,6 @@ int main(int argc, char** argv)// Stack frame started
         std::cerr << "Synopsis: rosrun capnproto pub \"String that should be published!\"" << std::endl;
         return -1;
     }
-
     for (size_t i = 0; i < argc; i++) {
         std::cout << "Param " << i << ": '" << argv[i] << "'" << std::endl;
     }

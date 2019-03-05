@@ -13,10 +13,13 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake CACHE INTERNAL "" FORCE)
 # this enables the draft part of the api
 #add_definitions(-DZMQ_BUILD_DRAFT_API=1)
 
+#ZMQ
 find_package(ZeroMQ)
 
-# Introduce CapnProto
+# CapnProto
 find_package(CapnProto REQUIRED)
+
+find_package(catkin REQUIRED COMPONENTS capnzero)
 
 message("CapnProto Incl: ${CAPNP_INCLUDE_DIRS}")
 message("CapnProto Lib: ${CAPNP_LIBRARIES}")
@@ -27,17 +30,21 @@ if(catkin_FOUND)
             INCLUDE_DIRS include
             LIBRARIES capnproto_performance_test capnproto-base-msgs
             DEPENDS ZeroMQ CapnProto
+            CATKIN_DEPENDS capnzero
     )
+    else (catkin_FOUND)
+    set(catkin_LIBRARIES capnzero)
 endif(catkin_FOUND)
 
 include_directories(
         include
+        ${catkin_INCLUDE_DIRS}
         ${ZeroMQ_INCLUDE_DIRS}
         ${CAPNP_INCLUDE_DIRS}
+        ${capnzero_INCLUDE_DIRS}
 )
 
 ############# BASIC MESSAGES
-
 ## Autogenerate the c++ capnproto files
 set(capnproto_message_folder "${CMAKE_CURRENT_SOURCE_DIR}/msg")
 file(GLOB_RECURSE capnproto_messages ${capnp_message_folder} *.capnp)
@@ -56,21 +63,6 @@ add_library(capnproto-base-msgs
 
 ############ PUBLISH-SUBSCRIBE-LIBRARY
 
-add_library(${PROJECT_NAME}
-        src/Publisher.cpp
-        include/capnproto/CapnZero.h
-        )
-
-target_compile_definitions(${PROJECT_NAME} PUBLIC ZMQ_BUILD_DRAFT_API=1)
-
-target_link_libraries(${PROJECT_NAME}
-        PUBLIC
-        ${ZeroMQ_LIBRARIES}
-        ${CAPNP_LIBRARIES}
-        )
-
-
-
 if (NOT catkin_FOUND)
     target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 endif (NOT catkin_FOUND)
@@ -82,15 +74,13 @@ add_executable(CapnprotoPerformanceTest
         )
 
 target_link_libraries(CapnprotoPerformanceTest
-        ${PROJECT_NAME}
+        capnproto-base-msgs
         ${ZeroMQ_LIBRARIES}
         ${CAPNP_LIBRARIES}
-        capnproto-base-msgs
+        ${catkin_LIBRARIES}
         )
 
-if (NOT catkin_FOUND)
-    target_include_directories(pub PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
-endif (NOT catkin_FOUND)
+target_compile_definitions(CapnprotoPerformanceTest PUBLIC ZMQ_BUILD_DRAFT_API=1)
 
 ############# RECEIVER-CONSOLE-APP
 
@@ -99,14 +89,12 @@ add_executable(Parrot
         )
 
 target_link_libraries(Parrot
-        ${PROJECT_NAME}
         ${ZeroMQ_LIBRARIES}
         ${CAPNP_LIBRARIES}
+        ${catkin_LIBRARIES}
         capnproto-base-msgs
         pthread
         )
 
-if (NOT catkin_FOUND)
-    target_include_directories(echo PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
-endif (NOT catkin_FOUND)
+target_compile_definitions(Parrot PUBLIC ZMQ_BUILD_DRAFT_API=1)
 
