@@ -112,8 +112,8 @@ void callback(::capnp::FlatArrayMessageReader& reader) //Stack frame after main 
 {
     std::cout << "I have received the following from the subscriber: " << std::endl;
     std::string rcvdmsg = reader.getRoot<capnzero::Testmessage>().toString().flatten().cStr() ;//local variable
-    int16_t rcvmsgnumber=reader.getRoot<capnzero::Testmessage>().getId(); //local variable
-    std::string rcvmsgstring=reader.getRoot<capnzero::Testmessage>().getPayload(); //local variable
+    register int16_t rcvmsgnumber=reader.getRoot<capnzero::Testmessage>().getId(); //local variable in register
+    register std::string rcvmsgstring=reader.getRoot<capnzero::Testmessage>().getPayload(); //local variable in register
     std::cout << "Size of the received str is: " << rcvdmsg.length() << " \n";
     std::cout << "String data inside received msg: " << rcvmsgstring << " \n";
     std::cout << "Integer data inside received msg: "<< rcvmsgnumber << " \n";
