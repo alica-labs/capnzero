@@ -51,7 +51,7 @@ int main(int argc, char** argv) // Stack frame started
     sub->subscribe(&callback);
     // init builder
     ::capnp::MallocMessageBuilder msgBuilder;
-    capnproto::Capnprotoperformancetest::Builder dataHolder= msgBuilder.initRoot<capnproto::Capnprotoperformancetest>();
+    capnzero::Testmessage::Builder dataHolder= msgBuilder.initRoot<capnzero::Testmessage>();
     //Publisher  part
     pub->bind(capnzero::CommType::UDP, "224.0.0.2:5554");
     while (!interrupted) {
@@ -62,10 +62,10 @@ int main(int argc, char** argv) // Stack frame started
             {
                 std::cout << "I am going to publish the following message: " << numBytesSent << " Bytes sent!"
                           << std::endl;
-                dataHolder.setName(rcvmsgstring);
-                dataHolder.setAge(rcvmsgnumber);
+                dataHolder.setPayload(rcvmsgstring);
+                dataHolder.setId(rcvmsgnumber);
                 rcvmsgstring.clear();
-                dataHolder.hasName();
+                dataHolder.hasPayload();
                 std::this_thread::sleep_for(std::chrono::seconds(1));
             }
 
@@ -81,9 +81,9 @@ int main(int argc, char** argv) // Stack frame started
 void callback(::capnp::FlatArrayMessageReader& reader)
 {
     std::cout << "Subscriber called for port 5500 and rcvd message: " << std::endl;
-    reader.getRoot<capnproto::Capnprotoperformancetest>().toString().flatten().cStr();
-    rcvmsgstring=reader.getRoot<capnproto::Capnprotoperformancetest>().getName();
-    rcvmsgnumber=int16_t (reader.getRoot<capnproto::Capnprotoperformancetest>().getAge()); //Type casting
+    reader.getRoot<capnzero::Testmessage>().toString().flatten().cStr();
+    rcvmsgstring=reader.getRoot<capnzero::Testmessage>().getPayload();
+    rcvmsgnumber=int16_t (reader.getRoot<capnzero::Testmessage>().getId()); //Type casting
     std::cout << "Received string message: "<<rcvmsgstring << std::endl;
     std::cout << "Received int message: "<<rcvmsgnumber << std::endl;
 }

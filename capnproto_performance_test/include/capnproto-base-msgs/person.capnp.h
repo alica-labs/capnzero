@@ -14,22 +14,22 @@
 namespace capnp {
 namespace schemas {
 
-CAPNP_DECLARE_SCHEMA(ff46b507b3665c0b);
+CAPNP_DECLARE_SCHEMA(a69e4164f909b46a);
 
 }  // namespace schemas
 }  // namespace capnp
 
-namespace capnproto {
+namespace capnzero {
 
-struct Capnprotoperformancetest {
-  Capnprotoperformancetest() = delete;
+struct Testmessage {
+  Testmessage() = delete;
 
   class Reader;
   class Builder;
   class Pipeline;
 
   struct _capnpPrivate {
-    CAPNP_DECLARE_STRUCT_HEADER(ff46b507b3665c0b, 1, 1)
+    CAPNP_DECLARE_STRUCT_HEADER(a69e4164f909b46a, 1, 1)
     #if !CAPNP_LITE
     static constexpr ::capnp::_::RawBrandedSchema const* brand() { return &schema->defaultBrand; }
     #endif  // !CAPNP_LITE
@@ -38,9 +38,9 @@ struct Capnprotoperformancetest {
 
 // =======================================================================================
 
-class Capnprotoperformancetest::Reader {
+class Testmessage::Reader {
 public:
-  typedef Capnprotoperformancetest Reads;
+  typedef Testmessage Reads;
 
   Reader() = default;
   inline explicit Reader(::capnp::_::StructReader base): _reader(base) {}
@@ -55,10 +55,10 @@ public:
   }
 #endif  // !CAPNP_LITE
 
-  inline bool hasName() const;
-  inline  ::capnp::Text::Reader getName() const;
+  inline bool hasPayload() const;
+  inline  ::capnp::Text::Reader getPayload() const;
 
-  inline  ::int16_t getAge() const;
+  inline  ::int16_t getId() const;
 
 private:
   ::capnp::_::StructReader _reader;
@@ -72,9 +72,9 @@ private:
   friend class ::capnp::Orphanage;
 };
 
-class Capnprotoperformancetest::Builder {
+class Testmessage::Builder {
 public:
-  typedef Capnprotoperformancetest Builds;
+  typedef Testmessage Builds;
 
   Builder() = delete;  // Deleted to discourage incorrect usage.
                        // You can explicitly initialize to nullptr instead.
@@ -88,15 +88,15 @@ public:
   inline ::kj::StringTree toString() const { return asReader().toString(); }
 #endif  // !CAPNP_LITE
 
-  inline bool hasName();
-  inline  ::capnp::Text::Builder getName();
-  inline void setName( ::capnp::Text::Reader value);
-  inline  ::capnp::Text::Builder initName(unsigned int size);
-  inline void adoptName(::capnp::Orphan< ::capnp::Text>&& value);
-  inline ::capnp::Orphan< ::capnp::Text> disownName();
+  inline bool hasPayload();
+  inline  ::capnp::Text::Builder getPayload();
+  inline void setPayload( ::capnp::Text::Reader value);
+  inline  ::capnp::Text::Builder initPayload(unsigned int size);
+  inline void adoptPayload(::capnp::Orphan< ::capnp::Text>&& value);
+  inline ::capnp::Orphan< ::capnp::Text> disownPayload();
 
-  inline  ::int16_t getAge();
-  inline void setAge( ::int16_t value);
+  inline  ::int16_t getId();
+  inline void setId( ::int16_t value);
 
 private:
   ::capnp::_::StructBuilder _builder;
@@ -108,9 +108,9 @@ private:
 };
 
 #if !CAPNP_LITE
-class Capnprotoperformancetest::Pipeline {
+class Testmessage::Pipeline {
 public:
-  typedef Capnprotoperformancetest Pipelines;
+  typedef Testmessage Pipelines;
 
   inline Pipeline(decltype(nullptr)): _typeless(nullptr) {}
   inline explicit Pipeline(::capnp::AnyPointer::Pipeline&& typeless)
@@ -126,50 +126,50 @@ private:
 
 // =======================================================================================
 
-inline bool Capnprotoperformancetest::Reader::hasName() const {
+inline bool Testmessage::Reader::hasPayload() const {
   return !_reader.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS).isNull();
 }
-inline bool Capnprotoperformancetest::Builder::hasName() {
+inline bool Testmessage::Builder::hasPayload() {
   return !_builder.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS).isNull();
 }
-inline  ::capnp::Text::Reader Capnprotoperformancetest::Reader::getName() const {
+inline  ::capnp::Text::Reader Testmessage::Reader::getPayload() const {
   return ::capnp::_::PointerHelpers< ::capnp::Text>::get(_reader.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS));
 }
-inline  ::capnp::Text::Builder Capnprotoperformancetest::Builder::getName() {
+inline  ::capnp::Text::Builder Testmessage::Builder::getPayload() {
   return ::capnp::_::PointerHelpers< ::capnp::Text>::get(_builder.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS));
 }
-inline void Capnprotoperformancetest::Builder::setName( ::capnp::Text::Reader value) {
+inline void Testmessage::Builder::setPayload( ::capnp::Text::Reader value) {
   ::capnp::_::PointerHelpers< ::capnp::Text>::set(_builder.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS), value);
 }
-inline  ::capnp::Text::Builder Capnprotoperformancetest::Builder::initName(unsigned int size) {
+inline  ::capnp::Text::Builder Testmessage::Builder::initPayload(unsigned int size) {
   return ::capnp::_::PointerHelpers< ::capnp::Text>::init(_builder.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS), size);
 }
-inline void Capnprotoperformancetest::Builder::adoptName(
+inline void Testmessage::Builder::adoptPayload(
     ::capnp::Orphan< ::capnp::Text>&& value) {
   ::capnp::_::PointerHelpers< ::capnp::Text>::adopt(_builder.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS), kj::mv(value));
 }
-inline ::capnp::Orphan< ::capnp::Text> Capnprotoperformancetest::Builder::disownName() {
+inline ::capnp::Orphan< ::capnp::Text> Testmessage::Builder::disownPayload() {
   return ::capnp::_::PointerHelpers< ::capnp::Text>::disown(_builder.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS));
 }
 
-inline  ::int16_t Capnprotoperformancetest::Reader::getAge() const {
+inline  ::int16_t Testmessage::Reader::getId() const {
   return _reader.getDataField< ::int16_t>(
       ::capnp::bounded<0>() * ::capnp::ELEMENTS);
 }
 
-inline  ::int16_t Capnprotoperformancetest::Builder::getAge() {
+inline  ::int16_t Testmessage::Builder::getId() {
   return _builder.getDataField< ::int16_t>(
       ::capnp::bounded<0>() * ::capnp::ELEMENTS);
 }
-inline void Capnprotoperformancetest::Builder::setAge( ::int16_t value) {
+inline void Testmessage::Builder::setId( ::int16_t value) {
   _builder.setDataField< ::int16_t>(
       ::capnp::bounded<0>() * ::capnp::ELEMENTS, value);
 }
