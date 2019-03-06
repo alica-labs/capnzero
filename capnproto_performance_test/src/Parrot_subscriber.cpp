@@ -1,4 +1,4 @@
-#include "capnproto-base-msgs/string.capnp.h"
+#include "capnproto-base-msgs/person.capnp.h"
 #include <capnzero/Common.h>
 #include <capnzero/Subscriber.h>
 #include <capnzero/Publisher.h>
@@ -51,7 +51,7 @@ int main(int argc, char** argv) // Stack frame started
     sub->subscribe(&callback);
     // init builder
     ::capnp::MallocMessageBuilder msgBuilder;
-    capnproto::CapnprotoPerformancetest::Builder dataHolder= msgBuilder.initRoot<capnproto::CapnprotoPerformancetest>();
+    capnproto::Capnprotoperformancetest::Builder dataHolder= msgBuilder.initRoot<capnproto::Capnprotoperformancetest>();
     //Publisher  part
     pub->bind(capnzero::CommType::UDP, "224.0.0.2:5554");
     while (!interrupted) {
@@ -81,9 +81,9 @@ int main(int argc, char** argv) // Stack frame started
 void callback(::capnp::FlatArrayMessageReader& reader)
 {
     std::cout << "Subscriber called for port 5500 and rcvd message: " << std::endl;
-    reader.getRoot<capnproto::CapnprotoPerformancetest>().toString().flatten().cStr();
-    rcvmsgstring=reader.getRoot<capnproto::CapnprotoPerformancetest>().getName();
-    rcvmsgnumber=int16_t (reader.getRoot<capnproto::CapnprotoPerformancetest>().getAge()); //Type casting
+    reader.getRoot<capnproto::Capnprotoperformancetest>().toString().flatten().cStr();
+    rcvmsgstring=reader.getRoot<capnproto::Capnprotoperformancetest>().getName();
+    rcvmsgnumber=int16_t (reader.getRoot<capnproto::Capnprotoperformancetest>().getAge()); //Type casting
     std::cout << "Received string message: "<<rcvmsgstring << std::endl;
     std::cout << "Received int message: "<<rcvmsgnumber << std::endl;
 }

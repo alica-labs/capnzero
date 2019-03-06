@@ -1,4 +1,4 @@
-#include "capnproto-base-msgs/string.capnp.h"
+#include "capnproto-base-msgs/person.capnp.h"
 #include <capnzero/Publisher.h>
 #include <capnzero/Common.h>
 #include <capnzero/Subscriber.h>
@@ -52,7 +52,7 @@ int main(int argc, char** argv)// Stack frame started
     Statistics<double> *measurement_unit =new Statistics<double > ;
     // init builder
     ::capnp::MallocMessageBuilder msgBuilder;
-    capnproto::CapnprotoPerformancetest::Builder beaconMsgBuilder = msgBuilder.initRoot<capnproto::CapnprotoPerformancetest>();
+    capnproto::Capnprotoperformancetest::Builder beaconMsgBuilder = msgBuilder.initRoot<capnproto::Capnprotoperformancetest>();
 
     // set content
     beaconMsgBuilder.setName(argv[2]);
@@ -111,9 +111,9 @@ void callback(::capnp::FlatArrayMessageReader& reader) //Stack frame after main 
                                                        //Function declaration or Body
 {
     std::cout << "I have received the following from the subscriber: " << std::endl;
-    std::string rcvdmsg = reader.getRoot<capnproto::CapnprotoPerformancetest>().toString().flatten().cStr() ;//local variable
-    int16_t rcvmsgnumber=reader.getRoot<capnproto::CapnprotoPerformancetest>().getAge(); //local variable
-    std::string rcvmsgstring=reader.getRoot<capnproto::CapnprotoPerformancetest>().getName(); //local variable
+    std::string rcvdmsg = reader.getRoot<capnproto::Capnprotoperformancetest>().toString().flatten().cStr() ;//local variable
+    int16_t rcvmsgnumber=reader.getRoot<capnproto::Capnprotoperformancetest>().getAge(); //local variable
+    std::string rcvmsgstring=reader.getRoot<capnproto::Capnprotoperformancetest>().getName(); //local variable
     std::cout << "Size of the received str is: " << rcvdmsg.length() << " \n";
     std::cout << "String data inside received msg: " << rcvmsgstring << " \n";
     std::cout << "Integer data inside received msg: "<< rcvmsgnumber << " \n";
