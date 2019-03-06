@@ -13,8 +13,8 @@
 #include <bitset>
 #include <nl_types.h>
 
- std::string  rcvmsgstring; //Global variable
-long rcvmsgnumber=NULL; //Global variable
+static std::string  rcvmsgstring; //Global variable
+static long rcvmsgnumber=NULL; //Global variable
 #define DEBUG_SENDER
 void callback(::capnp::FlatArrayMessageReader& reader);
 
