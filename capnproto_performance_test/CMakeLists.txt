@@ -69,18 +69,18 @@ endif (NOT catkin_FOUND)
 
 ############# SENDER-CONSOLE-APP
 
-add_executable(capnzeroPerformanceTest
+add_executable(capnzeroperformanceTest
         src/capnzeroPerformancetest.cpp src/Statistics.cpp
         )
 
-target_link_libraries(capnzeroPerformanceTest
+target_link_libraries(capnzeroperformanceTest
         capnproto-base-msgs
         ${ZeroMQ_LIBRARIES}
         ${CAPNP_LIBRARIES}
         ${catkin_LIBRARIES}
         )
 
-target_compile_definitions(capnzeroPerformanceTest PUBLIC ZMQ_BUILD_DRAFT_API=1)
+target_compile_definitions(capnzeroperformanceTest PUBLIC ZMQ_BUILD_DRAFT_API=1)
 
 ############# RECEIVER-CONSOLE-APP
 

@@ -1,4 +1,4 @@
-#include "capnproto-base-msgs/person.capnp.h"
+#include "capnproto-base-msgs/Testmessage.capnp.h"
 #include <capnzero/Publisher.h>
 #include <capnzero/Common.h>
 #include <capnzero/Subscriber.h>
@@ -82,9 +82,9 @@ int main(int argc, char** argv)// Stack frame started
 #ifdef DEBUG_PUB
             std::cout << "I am going to publish the following message : "<< numBytesSent << " Bytes sent!" << std::endl;
 #endif
-            std::this_thread::sleep_for(std::chrono::seconds(2));
+            //std::this_thread::sleep_for(std::chrono::seconds(2));
         }// wait until everything is send
-        std::this_thread::sleep_for(std::chrono::seconds(2));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         counter++;
     }
     std::cout << "We must have missed: " << measuringMap.size() << " Number of Msgs!" <<std::endl;

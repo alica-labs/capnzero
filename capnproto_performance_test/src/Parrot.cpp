@@ -1,4 +1,4 @@
-#include "capnproto-base-msgs/person.capnp.h"
+#include "capnproto-base-msgs/Testmessage.capnp.h"
 #include <capnzero/Common.h>
 #include <capnzero/Subscriber.h>
 #include <capnzero/Publisher.h>
@@ -13,10 +13,12 @@
 #include <bitset>
 #include <nl_types.h>
 
-std::string  rcvmsgstring; //Global variable
-static int16_t rcvmsgnumber; //Global variable
+ std::string  rcvmsgstring; //Global variable
+long rcvmsgnumber=NULL; //Global variable
 #define DEBUG_SENDER
 void callback(::capnp::FlatArrayMessageReader& reader);
+
+void sender (capnzero::Publisher *pub);
 static bool interrupted = false;
 static void s_signal_handler(int signal_value)
 {
@@ -50,27 +52,16 @@ int main(int argc, char** argv) // Stack frame started
     sub->connect(capnzero::CommType::UDP, "224.0.0.2:5500");
     sub->subscribe(&callback);
     // init builder
-    ::capnp::MallocMessageBuilder msgBuilder;
-    capnzero::Testmessage::Builder dataHolder= msgBuilder.initRoot<capnzero::Testmessage>();
+
     //Publisher  part
-    pub->bind(capnzero::CommType::UDP, "224.0.0.2:5554");
+
     while (!interrupted) {
-        if(&callback != nullptr)
+        if(rcvmsgnumber != NULL)
         {
-            std::this_thread::sleep_for(std::chrono::seconds(3));
-            int numBytesSent = pub->send(msgBuilder);
-            {
-                std::cout << "I am going to publish the following message: " << numBytesSent << " Bytes sent!"
-                          << std::endl;
-                dataHolder.setPayload(rcvmsgstring);
-                dataHolder.setId(rcvmsgnumber);
-                rcvmsgstring.clear();
-                dataHolder.hasPayload();
-                std::this_thread::sleep_for(std::chrono::seconds(1));
-            }
+           sender(pub);
 
         }
-        else{"subscriber didn't,t get called";}
+        else{"subscriber didn't  get called";}
     }
     std::cout << "Cleaning up now. "  << std::endl;
     delete sub;
@@ -82,8 +73,25 @@ void callback(::capnp::FlatArrayMessageReader& reader)
 {
     std::cout << "Subscriber called for port 5500 and rcvd message: " << std::endl;
     reader.getRoot<capnzero::Testmessage>().toString().flatten().cStr();
-    rcvmsgstring=reader.getRoot<capnzero::Testmessage>().getPayload();
-    rcvmsgnumber=int16_t (reader.getRoot<capnzero::Testmessage>().getId()); //Type casting
+    rcvmsgstring= reader.getRoot<capnzero::Testmessage>().getPayload();
+    rcvmsgnumber= int16_t (reader.getRoot<capnzero::Testmessage>().getId()); //Type casting
     std::cout << "Received string message: "<<rcvmsgstring << std::endl;
     std::cout << "Received int message: "<<rcvmsgnumber << std::endl;
 }
+void sender (capnzero::Publisher *pub){
+    pub->bind(capnzero::CommType::UDP, "224.0.0.2:5554");
+    ::capnp::MallocMessageBuilder msgBuilder;
+    capnzero::Testmessage::Builder dataHolder= msgBuilder.initRoot<capnzero::Testmessage>();
+    dataHolder.setPayload(rcvmsgstring);
+    dataHolder.setId(rcvmsgnumber);
+    int numBytesSent = pub->send(msgBuilder);
+    {
+        std::cout << "I am going to publish the following message: " << numBytesSent << " Bytes sent!"
+                  << std::endl;
+
+        dataHolder.hasPayload();
+        rcvmsgnumber=NULL;
+        rcvmsgstring.clear();
+
+    }
+};
