@@ -52,10 +52,10 @@ int main(int argc, char** argv)// Stack frame started
     Statistics<double> *measurement_unit =new Statistics<double > ;
     // init builder
     ::capnp::MallocMessageBuilder msgBuilder;
-    capnproto::Capnprotoperformancetest::Builder beaconMsgBuilder = msgBuilder.initRoot<capnproto::Capnprotoperformancetest>();
+    capnproto::CapnprotoPerformancetest::Builder beaconMsgBuilder = msgBuilder.initRoot<capnproto::CapnprotoPerformancetest>();
 
     // set content
-    beaconMsgBuilder.setMessage(argv[2]);
+    beaconMsgBuilder.setName(argv[2]);
 #ifdef DEBUG_PUB
     std::cout << "pub: Message to send: " << beaconMsgBuilder.toString().flatten().cStr() << std::endl;
 #endif
@@ -73,7 +73,7 @@ int main(int argc, char** argv)// Stack frame started
 
     while (!interrupted)
     {
-        {     beaconMsgBuilder.setNumber(counter);
+        {     beaconMsgBuilder.setAge(counter);
             int numBytesSent = pub->send(msgBuilder);
             measuringMap.emplace(counter, std::chrono::high_resolution_clock::now());
             {
@@ -111,9 +111,9 @@ void callback(::capnp::FlatArrayMessageReader& reader) //Stack frame after main 
                                                        //Function declaration or Body
 {
     std::cout << "I have received the following from the subscriber: " << std::endl;
-    std::string rcvdmsg = reader.getRoot<capnproto::Capnprotoperformancetest>().toString().flatten().cStr() ;//local variable
-    int16_t rcvmsgnumber=reader.getRoot<capnproto::Capnprotoperformancetest>().getNumber(); //local variable
-    std::string rcvmsgstring=reader.getRoot<capnproto::Capnprotoperformancetest>().getMessage(); //local variable
+    std::string rcvdmsg = reader.getRoot<capnproto::CapnprotoPerformancetest>().toString().flatten().cStr() ;//local variable
+    int16_t rcvmsgnumber=reader.getRoot<capnproto::CapnprotoPerformancetest>().getAge(); //local variable
+    std::string rcvmsgstring=reader.getRoot<capnproto::CapnprotoPerformancetest>().getName(); //local variable
     std::cout << "Size of the received str is: " << rcvdmsg.length() << " \n";
     std::cout << "String data inside received msg: " << rcvmsgstring << " \n";
     std::cout << "Integer data inside received msg: "<< rcvmsgnumber << " \n";
