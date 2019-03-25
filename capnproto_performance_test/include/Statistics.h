@@ -7,8 +7,9 @@ class Statistics {
 public:
     Statistics();
     ~Statistics();
-    void referencemean(std::map<long,double >& mYmap);
-    void referencestd_dev(std::map<long,double >& mYmap);
-    void rmax(std::map<long,double >& mYmap);
-    void rmin(std::map<long,double >& mYmap);
+
+    double referencemean(std::map<long,double >& mYmap);
+    double  referencestd_dev(std::map<long,double >& mYmap);
+    double  rmax(std::map<long,double >& mYmap);
+    double  rmin(std::map<long,double >& mYmap);
 };

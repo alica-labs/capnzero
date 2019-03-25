@@ -17,18 +17,19 @@ Statistics<x>::~Statistics() {
 
 }
 template <typename x>
-void Statistics<x>::referencemean(std::map<long, double> &mYmap) {
+double Statistics<x>::referencemean(std::map<long, double> &mYmap) {
     x mean = 0;
     int n=0;
     for (auto it = mYmap.begin();
          it != mYmap.end(); ++it){
         n += 1;
         mean = mean + (((it->second) - mean) /n); // As I am using my dividend in double format and divisor in int ,the quotient will be double .
-    }                                             // source-https://stackoverflow.com/questions/7571326/why-does-dividing-two-int-not-yield-the-right-value-when-assigned-to-double
+    }// source-https://stackoverflow.com/questions/7571326/why-does-dividing-two-int-not-yield-the-right-value-when-assigned-to-double
 std::cout<< "Mean from our STL map library: "<<mean<<" ms"<<std::endl;
+    return mean;
 }
 template <typename x>
-void Statistics<x>::referencestd_dev(std::map<long, double> &mYmap) {
+double  Statistics<x>::referencestd_dev(std::map<long, double> &mYmap) {
     x mean = 0;
     auto st_dev=0.0;
     x temp_dev=0;
@@ -43,10 +44,11 @@ void Statistics<x>::referencestd_dev(std::map<long, double> &mYmap) {
     st_dev /=(n);
     st_dev = std::sqrt(st_dev);
     std::cout<< "Std_dev from our STL map library: "<<st_dev<<" ms"<<std::endl;
+    return st_dev;
 }
 
 template <typename x>
-void Statistics<x>::rmax(std::map<long, double> &mYmap) {
+double  Statistics<x>::rmax(std::map<long, double> &mYmap) {
     std::vector<x> v;
 
     for (auto it = mYmap.begin(); it != mYmap.end(); ++it) {
@@ -55,9 +57,10 @@ void Statistics<x>::rmax(std::map<long, double> &mYmap) {
     }
     auto maxV=*max_element(v.begin(),v.end());
     std::cout << "The maximum value from our STL map  library: " << maxV <<" ms"<<std::endl;
+    return maxV;
 }
 template <typename x>
-void Statistics<x>::rmin(std::map<long, double> &mYmap) {
+double  Statistics<x>::rmin(std::map<long, double> &mYmap) {
     std::vector<x> v;
     for (auto it = mYmap.begin(); it != mYmap.end(); ++it)
     {
@@ -65,6 +68,7 @@ void Statistics<x>::rmin(std::map<long, double> &mYmap) {
     }
     auto minV=*min_element(v.begin(),v.end());
     std::cout << "The Minimum value from our STL map  library: " << minV <<" ms"<<std::endl;
+    return minV;
 }
 
 template class Statistics<double>;

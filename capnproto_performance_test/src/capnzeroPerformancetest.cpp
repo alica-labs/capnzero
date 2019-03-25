@@ -14,6 +14,7 @@
 #include <iostream>
 #include <map>
 #include "Statistics.h"
+#include <fstream>
 //#include ""
 #define DEBUG_PUB //Macros ,Basic C
 
@@ -39,6 +40,11 @@ int main(int argc, char** argv)// Stack frame started
 {
     int16_t counter=0;
     s_catch_signals();
+    std::ofstream data_saver;
+    data_saver.open("result_storage/result.csv");
+    data_saver << "Capnzero Measurement summary.\n ";
+
+
 
     if (argc <= 1) {
         std::cerr << "Synopsis: rosrun capnproto pub \"String that should be published!\"" << std::endl;
@@ -88,15 +94,22 @@ int main(int argc, char** argv)// Stack frame started
         counter++;
     }
     std::cout << "We must have missed: " << measuringMap.size() << " Number of Msgs!" <<std::endl;
-    std::cout << "number of rcvd msg: "<<Mymap.size()<<std::endl ;
+
+    std::cout << "number of rcvd msg: "<<Mymap.size()<<std::endl;
+    data_saver<<"We must have missed: " << measuringMap.size() << " Number of Msgs!" <<std::endl;
+    data_saver<<"Number of rcvd msg: "<<Mymap.size()<<std::endl ;
+    data_saver <<"Missed Messages Id,Start time (ms),Mean time (ms),Standard deviation (ms),Maximum time (ms),Minimum time (ms) \n   ";
     for (auto& entry : measuringMap)
     {
         std::cout << "ID: " << entry.first << " StartTime: " << std::chrono::duration_cast<std::chrono::milliseconds>(entry.second.time_since_epoch()).count() << std::endl;
+        data_saver << entry.first <<";" << std::chrono::duration_cast<std::chrono::milliseconds>(entry.second.time_since_epoch()).count() << std::endl;
     }
-    measurement_unit->referencemean(Mymap); // access member function using pointer
-    measurement_unit->referencestd_dev(Mymap);// access member function using pointer
-    measurement_unit->rmax(Mymap);// access member function using pointer
-    measurement_unit->rmin(Mymap);// access member function using pointer
+    auto mEan =measurement_unit->referencemean(Mymap); // access member function using pointer
+    auto standard_deviation= measurement_unit->referencestd_dev(Mymap);// access member function using pointer
+    auto  mAx = measurement_unit->rmax(Mymap);// access member function using pointer
+    auto mIn=measurement_unit->rmin(Mymap);// access member function using pointer
+    data_saver <<";"<<";"<< mEan<<";"<<standard_deviation<<";"<<mAx<<";"<< mIn <<std::endl;
+    data_saver.close();
     std::cout << "Cleaning up now. "  << std::endl;
     delete  measurement_unit;
     Mymap.clear();
