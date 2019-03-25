@@ -98,11 +98,11 @@ int main(int argc, char** argv)// Stack frame started
     std::cout << "number of rcvd msg: "<<Mymap.size()<<std::endl;
     data_saver<<"We must have missed: " << measuringMap.size() << " Number of Msgs!" <<std::endl;
     data_saver<<"Number of rcvd msg: "<<Mymap.size()<<std::endl ;
-    data_saver <<"Missed Messages Id,Start time (ms),Mean time (ms),Standard deviation (ms),Maximum time (ms),Minimum time (ms) \n   ";
+    data_saver <<"Missed Messages Id,Start time (ns),Mean time (ns),Standard deviation (ns),Maximum time (ns),Minimum time (ns) \n   ";
     for (auto& entry : measuringMap)
     {
-        std::cout << "ID: " << entry.first << " StartTime: " << std::chrono::duration_cast<std::chrono::milliseconds>(entry.second.time_since_epoch()).count() << std::endl;
-        data_saver << entry.first <<";" << std::chrono::duration_cast<std::chrono::milliseconds>(entry.second.time_since_epoch()).count() << std::endl;
+        std::cout << "ID: " << entry.first << " StartTime: " << std::chrono::duration_cast<std::chrono::nanoseconds>(entry.second.time_since_epoch()).count() << std::endl;
+        data_saver << entry.first <<";" << std::chrono::duration_cast<std::chrono::nanoseconds>(entry.second.time_since_epoch()).count() << std::endl;
     }
     auto mEan =measurement_unit->referencemean(Mymap); // access member function using pointer
     auto standard_deviation= measurement_unit->referencestd_dev(Mymap);// access member function using pointer
@@ -133,8 +133,8 @@ void callback(::capnp::FlatArrayMessageReader& reader) //Stack frame after main 
     auto mapEntry = measuringMap.find(rcvmsgnumber);
     if (mapEntry != measuringMap.end()) {
         std::cout<<"Received ID: " << rcvmsgnumber << " Time elapsed is: "
-                 << std::chrono::duration_cast<std::chrono::milliseconds> (std::chrono::high_resolution_clock::now() - mapEntry->second).count()<<" ms"<< std::endl;
-        double time_passed=double(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - mapEntry->second).count() );
+                 << std::chrono::duration_cast<std::chrono::nanoseconds> (std::chrono::high_resolution_clock::now() - mapEntry->second).count()<<" ns"<< std::endl;
+        double time_passed=double(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - mapEntry->second).count() );
         // here is my Mymap is the Map containner
         Mymap.emplace(rcvmsgnumber,time_passed);
         measuringMap.erase(rcvmsgnumber);
