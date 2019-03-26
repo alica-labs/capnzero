@@ -1,0 +1,14 @@
+ROSperformance Measurement summary.
+ We must have missed: 9 Number of Msgs!
+Number of rcvd msg: 6
+Missed Messages Id,Start time (ms),Mean time (s),Standard deviation (s),Maximum time (s),Minimum time (s) 
+ 0;1553607230847 ms
+1;1553607231848 ms
+2;1553607232850 ms
+3;1553607233851 ms
+4;1553607234852 ms
+5;1553607235853 ms
+6;1553607236855 ms
+7;1553607237856 ms
+8;1553607238857 ms
+;;1.5;1.11803;4;1
