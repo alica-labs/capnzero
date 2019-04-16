@@ -1,4 +1,5 @@
-#include "capnproto-base-msgs/Testmessage.capnp.h"
+#include "capnzero-eval-msgs/EvalMessage.capnp.h"
+
 #include <capnzero/Common.h>
 #include <capnzero/Subscriber.h>
 #include <capnzero/Publisher.h>
@@ -7,6 +8,7 @@
 #include <capnp/serialize-packed.h>
 #include <kj/array.h>
 #include <signal.h>
+
 #include <thread>
 #include <vector>
 #include <string>
@@ -72,16 +74,16 @@ int main(int argc, char** argv) // Stack frame started
 void callback(::capnp::FlatArrayMessageReader& reader)
 {
     std::cout << "Subscriber called for port 5500 and rcvd message: " << std::endl;
-    reader.getRoot<capnzero::Testmessage>().toString().flatten().cStr();
-    rcvmsgstring= reader.getRoot<capnzero::Testmessage>().getPayload();
-    rcvmsgnumber= int16_t (reader.getRoot<capnzero::Testmessage>().getId()); //Type casting
+    reader.getRoot<capnzero_eval::EvalMessage>().toString().flatten().cStr();
+    rcvmsgstring= reader.getRoot<capnzero_eval::EvalMessage>().getPayload();
+    rcvmsgnumber= int16_t (reader.getRoot<capnzero_eval::EvalMessage>().getId()); //Type casting
     std::cout << "Received string message: "<<rcvmsgstring << std::endl;
     std::cout << "Received int message: "<<rcvmsgnumber << std::endl;
 }
 void sender (capnzero::Publisher *pub){
     pub->bind(capnzero::CommType::UDP, "224.0.0.2:5554");
     ::capnp::MallocMessageBuilder msgBuilder;
-    capnzero::Testmessage::Builder dataHolder= msgBuilder.initRoot<capnzero::Testmessage>();
+    capnzero_eval::EvalMessage::Builder dataHolder= msgBuilder.initRoot<capnzero_eval::EvalMessage>();
     dataHolder.setPayload(rcvmsgstring);
     dataHolder.setId(rcvmsgnumber);
     int numBytesSent = pub->send(msgBuilder);

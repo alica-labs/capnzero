@@ -1,4 +1,6 @@
-#include "capnproto-base-msgs/Testmessage.capnp.h"
+#include "capnzero-eval-msgs/EvalMessage.capnp.h"
+#include "Statistics.h"
+
 #include <capnzero/Publisher.h>
 #include <capnzero/Common.h>
 #include <capnzero/Subscriber.h>
@@ -13,10 +15,7 @@
 #include <string>
 #include <iostream>
 #include <map>
-#include "Statistics.h"
 #include <fstream>
-//#include ""
-#define DEBUG_PUB //Macros ,Basic C
 
 std::map<int16_t , std::chrono::time_point<std::chrono::high_resolution_clock >> measuringMap;
 std::map<long, double >Mymap;
@@ -44,8 +43,6 @@ int main(int argc, char** argv)// Stack frame started
     data_saver.open("result_storage/result.csv");
     data_saver << "Capnzero Measurement summary.\n ";
 
-
-
     if (argc <= 1) {
         std::cerr << "Synopsis: rosrun capnproto pub \"String that should be published!\"" << std::endl;
         return -1;
@@ -58,7 +55,7 @@ int main(int argc, char** argv)// Stack frame started
     Statistics<double> *measurement_unit =new Statistics<double > ;
     // init builder
     ::capnp::MallocMessageBuilder msgBuilder;
-    capnzero::Testmessage::Builder beaconMsgBuilder = msgBuilder.initRoot<capnzero::Testmessage>();
+    capnzero_eval::EvalMessage::Builder beaconMsgBuilder = msgBuilder.initRoot<capnzero_eval::EvalMessage>();
 
     // set content
     beaconMsgBuilder.setPayload(argv[2]);
@@ -124,9 +121,9 @@ void callback(::capnp::FlatArrayMessageReader& reader) //Stack frame after main 
                                                        //Function declaration or Body
 {
     std::cout << "I have received the following from the subscriber: " << std::endl;
-    std::string rcvdmsg = reader.getRoot<capnzero::Testmessage>().toString().flatten().cStr() ;//local variable
-    register int16_t rcvmsgnumber=reader.getRoot<capnzero::Testmessage>().getId(); //local variable in register
-    register std::string rcvmsgstring=reader.getRoot<capnzero::Testmessage>().getPayload(); //local variable in register
+    std::string rcvdmsg = reader.getRoot<capnzero_eval::EvalMessage>().toString().flatten().cStr() ;//local variable
+    register int16_t rcvmsgnumber=reader.getRoot<capnzero_eval::EvalMessage>().getId(); //local variable in register
+    register std::string rcvmsgstring=reader.getRoot<capnzero_eval::EvalMessage>().getPayload(); //local variable in register
     std::cout << "Size of the received str is: " << rcvdmsg.length() << " \n";
     std::cout << "String data inside received msg: " << rcvmsgstring << " \n";
     std::cout << "Integer data inside received msg: "<< rcvmsgnumber << " \n";
