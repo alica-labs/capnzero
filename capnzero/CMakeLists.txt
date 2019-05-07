@@ -4,29 +4,24 @@ project(capnzero)
 ## Use c++ 11x std
 add_definitions(-std=c++11)
 
-# Define where to find modules for ZeroMQ and UUID
+# Define where to find modules for ZeroMQ
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake CACHE INTERNAL "" FORCE)
 
-
-# this enables the draft part of the api
-#add_definitions(-DZMQ_BUILD_DRAFT_API=1)
-
-find_package(ZeroMQ)
-
-# Introduce CapnProto
+find_package(Threads)
+find_package(ZeroMQ REQUIRED)
 find_package(CapnProto REQUIRED)
 
-message("CapnProto Incl: ${CAPNP_INCLUDE_DIRS}")
-message("CapnProto Lib: ${CAPNP_LIBRARIES}")
+# copying the variables makes it compatible for catkin to transitive forward the CapnProto libraries and include dirs
+set(CapnProto_LIBRARIES ${CAPNP_LIBRARIES})
+set(CapnProto_INCLUDE_DIRS ${CAPNP_INCLUDE_DIRS})
 
-find_package(catkin QUIET)
-if(catkin_FOUND)
-  catkin_package(
-    INCLUDE_DIRS include
-    LIBRARIES capnzero capnzero-base-msgs
-    DEPENDS ZeroMQ CapnProto
-  )
-endif(catkin_FOUND)
+find_package(catkin REQUIRED)
+catkin_package(
+  INCLUDE_DIRS include
+  LIBRARIES capnzero capnzero-base-msgs
+  DEPENDS ZeroMQ CapnProto
+  CFG_EXTRAS CapnZero-extras.cmake
+)
 
 include_directories(
   include
@@ -34,25 +29,7 @@ include_directories(
   ${CAPNP_INCLUDE_DIRS}
 )
 
-############# BASIC MESSAGES
-
-## Autogenerate the c++ capnproto files
-set(capnp_message_folder "${CMAKE_CURRENT_SOURCE_DIR}/msg")
-file(GLOB_RECURSE capnp_messages ${capnp_message_folder} *.capnp)
-
-set(CAPNPC_SRC_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/msg)
-set(CAPNPC_OUTPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/capnzero-base-msgs")
-capnp_generate_cpp(CAPNP_SRCS CAPNP_HDRS ${capnp_messages})
-
-message("CAPNP_SRCS: ${CAPNP_SRCS}")
-message("CAPNP_HDRS: ${CAPNP_HDRS}")
-
-## Declare the C++ capnproto message library
-add_library(capnzero-base-msgs
-  ${CAPNP_SRCS}
-)
-
-############ PUBLISH-SUBSCRIBE-LIBRARY
+############ CapnZero Communication Library
 
 add_library(${PROJECT_NAME}
   src/Publisher.cpp
@@ -68,44 +45,41 @@ target_link_libraries(${PROJECT_NAME}
   ${CAPNP_LIBRARIES}
 )
 
-
-
-if (NOT catkin_FOUND)
- target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
-endif (NOT catkin_FOUND)
-
 ############# SENDER-CONSOLE-APP
 
 add_executable(pub
-        src/pub.cpp
+  src/pub.cpp
 )
 
 target_link_libraries(pub
   ${PROJECT_NAME}
-  ${ZeroMQ_LIBRARIES}
-  ${CAPNP_LIBRARIES}
   capnzero-base-msgs
+  ${CMAKE_THREAD_LIBS_INIT}
 )
-
-if (NOT catkin_FOUND)
-  target_include_directories(pub PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
-endif (NOT catkin_FOUND)
 
 ############# RECEIVER-CONSOLE-APP
 
 add_executable(echo
-        src/echo.cpp
+  src/echo.cpp
 )
 
 target_link_libraries(echo
   ${PROJECT_NAME}
-  ${ZeroMQ_LIBRARIES}
-  ${CAPNP_LIBRARIES}
   capnzero-base-msgs
-  pthread
+  ${CMAKE_THREAD_LIBS_INIT}
 )
 
-if (NOT catkin_FOUND)
-  target_include_directories(echo PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
-endif (NOT catkin_FOUND)
+############# BASIC MESSAGES
 
+## Autogenerate the c++ capnproto files
+set(capnp_message_folder "${CMAKE_CURRENT_SOURCE_DIR}/msg")
+file(GLOB_RECURSE capnp_messages ${capnp_message_folder} *.capnp)
+
+set(CAPNPC_SRC_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/msg)
+file(MAKE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/capnzero-base-msgs")
+set(CAPNPC_OUTPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/capnzero-base-msgs")
+capnp_generate_cpp(CAPNP_SRCS CAPNP_HDRS ${capnp_messages})
+
+add_library(capnzero-base-msgs
+  ${CAPNP_SRCS}
+)

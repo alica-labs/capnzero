@@ -1,14 +1,16 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>capnzero</name>
+  <name>capnzero_eval</name>
   <version>0.0.0</version>
-  <description>The capnzero package</description>
+  <description>The capnzero_eval package</description>
 
   <maintainer email="opfer@vs.uni-kassel.de">Stephan Opfer</maintainer>
 
   <license>MIT</license>
 
   <buildtool_depend>catkin</buildtool_depend>
+  <depend>roscpp</depend>
+  <depend>capnzero</depend>
 
   <export>
   </export>
