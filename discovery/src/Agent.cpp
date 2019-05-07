@@ -39,7 +39,8 @@ Agent::Agent(std::string name, bool sender)
     uuid_generate(this->uuid);
 
     if (this->sender) {
-        this->pub = new capnzero::Publisher(this->ctx, "MCGroup");
+        this->pub = new capnzero::Publisher(this->ctx);
+        this->pub->setDefaultGroup("MCGroup");
         this->pub->bind(capnzero::CommType::UDP, "udp://224.0.0.1:5555");
     } else {
         this->sub = new capnzero::Subscriber(this->ctx, "MCGroup");

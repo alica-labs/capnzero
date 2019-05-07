@@ -16,12 +16,16 @@ namespace capnzero
 class Publisher
 {
 public:
-    Publisher(void* context, std::string groupName);
+    Publisher(void* context);
     virtual ~Publisher();
+
+    void setDefaultGroup(std::string group);
+    std::string getDefaultGroup();
 
     void bind(CommType commType, std::string address);
 
     int send(capnp::MallocMessageBuilder& msgBuilder);
+    int send(capnp::MallocMessageBuilder& msgBuilder, std::string topic);
 
 protected:
     void* context;
@@ -30,5 +34,5 @@ protected:
     CommType commType;
 };
 
-static void cleanUpMsgData(void* data, void* hint);
+//static void cleanUpMsgData(void* data, void* hint);
 } // namespace capnzero

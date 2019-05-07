@@ -54,7 +54,8 @@ int main(int argc, char** argv)
 #endif
 
     void* ctx = zmq_ctx_new();
-    capnzero::Publisher pub = capnzero::Publisher(ctx, argv[1]);
+    capnzero::Publisher pub = capnzero::Publisher(ctx);
+    pub.setDefaultGroup(argv[1]);
 //    pub.bind(capnzero::CommType::IPC, "@capnzero.ipc");
     pub.bind(capnzero::CommType::UDP, "224.0.0.2:5555");
 //    pub.bind(capnzero::CommType::TCP, "141.51.122.62:5555");

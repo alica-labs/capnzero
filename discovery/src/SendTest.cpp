@@ -84,7 +84,8 @@ int main(int argc, char** argv)
     ctx = zmq_ctx_new();
     assert(ctx);
 
-    pub = new capnzero::Publisher(ctx, "MCGroup");
+    pub = new capnzero::Publisher(ctx);
+    pub->setDefaultGroup("MCGroup");
     pub->bind(capnzero::CommType::UDP, "udp://224.0.0.1:5555");
     sub = new capnzero::Subscriber(ctx, "MCGroup");
     sub->connect(capnzero::CommType::UDP, "udp://224.0.0.1:5555");

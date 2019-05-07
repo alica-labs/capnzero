@@ -68,7 +68,8 @@ int main(int argc, char** argv)// Stack frame started
     void* ctx = zmq_ctx_new();
 
 //Publisher  part
-    capnzero::Publisher * pub = new capnzero::Publisher(ctx, argv[1]);
+    capnzero::Publisher * pub = new capnzero::Publisher(ctx);
+    pub->setDefaultGroup(argv[1]);
     capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, argv[1]); // creating a pointer in the heap /free pool of memory
                                                                           //Dynamic memory allocation
     pub->bind(capnzero::CommType::UDP, "224.0.0.2:5500");

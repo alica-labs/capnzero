@@ -48,7 +48,8 @@ int main(int argc, char** argv) // Stack frame started
     }
     void* ctx = zmq_ctx_new();
     capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, argv[1]); // creating a pointer in the heap
-    capnzero::Publisher *pub = new capnzero::Publisher(ctx, argv[1]);
+    capnzero::Publisher *pub = new capnzero::Publisher(ctx);
+    pub->setDefaultGroup(argv[1]);
     sub->connect(capnzero::CommType::UDP, "224.0.0.2:5500");
     sub->subscribe(&callback);
     // init builder

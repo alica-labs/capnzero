@@ -54,6 +54,7 @@ protected:
     std::string groupName;
     std::thread* runThread;
     bool running;
+    capnzero::CommType type;
 
     void receive();
 };
@@ -94,6 +95,7 @@ void Subscriber::connect(CommType commType, std::string address)
         // Unknown communication type!
         assert(false);
     }
+    this->type = commType;
 }
 
 template <class CallbackObjType>
@@ -115,6 +117,12 @@ void Subscriber::receive()
     while (this->running) {
         zmq_msg_t msg;
         check(zmq_msg_init(&msg), "zmq_msg_init");
+        if (this->type != capnzero::CommType::UDP)
+        {
+            zmq_msg_t topic;
+            check(zmq_msg_init(&topic), "zmq_msg_init");
+            zmq_msg_recv(&topic, this->socket, 0);
+        }
 #ifdef DEBUG_SUBSCRIBER
         std::cout << "Subscriber::received() waiting ..." << std::endl;
 #endif
