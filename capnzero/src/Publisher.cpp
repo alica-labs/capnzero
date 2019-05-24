@@ -66,7 +66,7 @@ int Publisher::send(::capnp::MallocMessageBuilder& msgBuilder, std::string topic
 
     // set group
     if (this->commType == capnzero::CommType::UDP) {
-        std::cout << "Sending on Group: " << topic << std::endl;
+//        std::cout << "Publisher: Sending on Group '" << topic << "'" << std::endl;
         check(zmq_msg_set_group(&msg, topic.c_str()), "zmq_msg_set_group");
     }
 
