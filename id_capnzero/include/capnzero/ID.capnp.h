@@ -15,6 +15,13 @@ namespace capnp {
 namespace schemas {
 
 CAPNP_DECLARE_SCHEMA(db5d1b772dc860ab);
+CAPNP_DECLARE_SCHEMA(8d3146de45ae6c28);
+enum class IDType_8d3146de45ae6c28: uint16_t {
+  INTEGER,
+  WILDCARD,
+  UUID,
+};
+CAPNP_DECLARE_ENUM(IDType, 8d3146de45ae6c28);
 
 }  // namespace schemas
 }  // namespace capnp
@@ -29,12 +36,14 @@ struct ID {
   class Pipeline;
 
   struct _capnpPrivate {
-    CAPNP_DECLARE_STRUCT_HEADER(db5d1b772dc860ab, 0, 1)
+    CAPNP_DECLARE_STRUCT_HEADER(db5d1b772dc860ab, 1, 1)
     #if !CAPNP_LITE
     static constexpr ::capnp::_::RawBrandedSchema const* brand() { return &schema->defaultBrand; }
     #endif  // !CAPNP_LITE
   };
 };
+
+typedef ::capnp::schemas::IDType_8d3146de45ae6c28 IDType;
 
 // =======================================================================================
 
@@ -57,6 +66,8 @@ public:
 
   inline bool hasValue() const;
   inline  ::capnp::Data::Reader getValue() const;
+
+  inline  ::capnzero::IDType getType() const;
 
 private:
   ::capnp::_::StructReader _reader;
@@ -92,6 +103,9 @@ public:
   inline  ::capnp::Data::Builder initValue(unsigned int size);
   inline void adoptValue(::capnp::Orphan< ::capnp::Data>&& value);
   inline ::capnp::Orphan< ::capnp::Data> disownValue();
+
+  inline  ::capnzero::IDType getType();
+  inline void setType( ::capnzero::IDType value);
 
 private:
   ::capnp::_::StructBuilder _builder;
@@ -153,6 +167,20 @@ inline void ID::Builder::adoptValue(
 inline ::capnp::Orphan< ::capnp::Data> ID::Builder::disownValue() {
   return ::capnp::_::PointerHelpers< ::capnp::Data>::disown(_builder.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS));
+}
+
+inline  ::capnzero::IDType ID::Reader::getType() const {
+  return _reader.getDataField< ::capnzero::IDType>(
+      ::capnp::bounded<0>() * ::capnp::ELEMENTS);
+}
+
+inline  ::capnzero::IDType ID::Builder::getType() {
+  return _builder.getDataField< ::capnzero::IDType>(
+      ::capnp::bounded<0>() * ::capnp::ELEMENTS);
+}
+inline void ID::Builder::setType( ::capnzero::IDType value) {
+  _builder.setDataField< ::capnzero::IDType>(
+      ::capnp::bounded<0>() * ::capnp::ELEMENTS, value);
 }
 
 }  // namespace

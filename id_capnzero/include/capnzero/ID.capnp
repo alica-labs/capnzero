@@ -4,4 +4,11 @@ $Cxx.namespace("capnzero");
 
 struct ID {
     value @0 :Data;
+    type @1 :IDType;
+}
+
+enum IDType {
+  integer @0;
+  wildcard @1;
+  uuid @2;
 }

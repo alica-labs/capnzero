@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(id)
+project(id_capnzero)
 
 add_compile_options(-std=c++11)
 
@@ -7,7 +7,7 @@ find_package(catkin REQUIRED)
 
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES id
+  LIBRARIES ${PROJECT_NAME}
 #  CATKIN_DEPENDS other_catkin_pkg
 #  DEPENDS system_lib
 )
