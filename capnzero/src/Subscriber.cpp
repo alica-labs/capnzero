@@ -77,15 +77,17 @@ void Subscriber::receive()
                 //                std::cout << "Subscriber::receive(): continue because of EAGAIN!" << std::endl;
                 std::this_thread::sleep_for(std::chrono::milliseconds(1));
             }
-#endif
-
             std::cout << ".";
             std::cout.flush();
+#endif
             check(zmq_msg_close(&msg), "zmq_msg_close");
             continue;
-        } else {
+        }
+#ifdef DEBUG_SUBSCRIBER
+        else {
             std::cout << std::endl;
         }
+#endif
 
         // Received message must contain an integral number of words.
         if (zmq_msg_size(&msg) % Subscriber::wordSize != 0) {
