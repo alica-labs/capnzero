@@ -4,11 +4,9 @@ $Cxx.namespace("capnzero");
 
 using IDMsg = import "/capnzero/ID.capnp";
 
-struct ProcessCommand {
-	command @0 :Cmd;
-	receiverID @1 :IDMsg.ID;
-	robotIDs @2 :List(IDMsg.ID);
-
+struct RobotCommand {
+	receiverID @0 :IDMsg.ID;
+	command @1 :Cmd;
 
 enum Cmd {
 	start @0;

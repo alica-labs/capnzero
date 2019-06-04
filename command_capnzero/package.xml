@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>commad_capnzero</name>
+  <name>command_capnzero</name>
   <version>0.0.0</version>
   <description>The commad_capnzero package</description>
 
