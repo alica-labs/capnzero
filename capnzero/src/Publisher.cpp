@@ -44,6 +44,15 @@ void Publisher::bind(CommType commType, std::string address)
         this->socket = zmq_socket(this->context, ZMQ_PUB);
         check(zmq_bind(this->socket, ("ipc://" + address).c_str()), "zmq_bind");
         break;
+    case CommType::INT: // This is used to simplify use of SystemConfig.
+        if (address.find ("udp://") != std::string::npos){
+            this->socket = zmq_socket(this->context, ZMQ_RADIO);
+            check(zmq_connect(this->socket, address.c_str()), "zmq_connect");
+        }else{
+            this->socket = zmq_socket(this->context, ZMQ_PUB);
+            check(zmq_bind(this->socket, address.c_str()), "zmq_bind");
+        }
+        break;
     default:
         // Unknown communication type!
         assert(false);

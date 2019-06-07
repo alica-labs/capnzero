@@ -10,7 +10,8 @@ namespace capnzero
     enum CommType {
         UDP,
         TCP,
-        IPC
+        IPC,
+        INT // Protocoll integrated into the adress string. Used to simplify the code.
     };
 
 /**

@@ -34,6 +34,20 @@ void Subscriber::connect(CommType commType, std::string address)
         check(zmq_setsockopt(this->socket, ZMQ_SUBSCRIBE, "", 0), "zmq_setsockopt");
         check(zmq_connect(this->socket, ("ipc://" + address).c_str()), "zmq_connect");
         break;
+    case CommType::INT:
+        if (address.find("udp://") != std::string::npos){
+            this->socket = zmq_socket(this->context, ZMQ_DISH);
+            check(zmq_setsockopt(this->socket, ZMQ_RCVTIMEO, &rcvTimeout, sizeof(rcvTimeout)), "zmq_setsockopt");
+            std::cout << "Group: " << this->groupName << std::endl;
+            check(zmq_join(this->socket, this->groupName.c_str()), "zmq_join");
+            check(zmq_bind(this->socket, address.c_str()), "zmq_bind");
+        }else{
+            this->socket = zmq_socket(this->context, ZMQ_SUB);
+            check(zmq_setsockopt(this->socket, ZMQ_RCVTIMEO, &rcvTimeout, sizeof(rcvTimeout)), "zmq_setsockopt");
+            check(zmq_setsockopt(this->socket, ZMQ_SUBSCRIBE, "", 0), "zmq_setsockopt");
+            check(zmq_connect(this->socket, address.c_str()), "zmq_connect");
+        }
+        break;
     default:
         // Unknown communication type!
         assert(false);
