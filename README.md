@@ -4,9 +4,9 @@ A communication middleware based on [Cap'n Proto](capnproto.org) and [ZeroMQ](ze
 
 ## Install Cap'n Proto
 
-    sudo apt install libcapnp-dev
+    sudo apt install capnproto libcapnp-dev
     
-## Install Cap'n Proto
+## Install ZeroMQ
 
     sudo su
     echo "deb http://download.opensuse.org/repositories/network:/messaging:/zeromq:/git-draft/xUbuntu_18.04/ ./" >> /etc/apt/sources.list
