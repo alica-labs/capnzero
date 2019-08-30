@@ -12,38 +12,60 @@ Subscriber::~Subscriber()
     check(zmq_close(this->socket), "zmq_close");
 }
 
-void Subscriber::connect(CommType commType, std::string address)
+void Subscriber::addAddress(CommType type, std::string address){
+    switch(type){
+        case CommType::UDP:
+            this->addresses.push_back(Address("udp://" + address, type));
+            this->hasUdp = true;
+            break;
+        case CommType::TCP:
+            this->addresses.push_back(Address("tcp://" + address, type));
+            break;
+        case CommType::IPC:
+            this->addresses.push_back(Address("ipc://" + address, type));
+            break;
+        case CommType::INT:
+            CommType typ;
+            if(address.find("udp://") != std::string::npos)
+                this->addresses.push_back(Address(address, CommType::UDP));
+            else if(address.find("tcp://") != std::string::npos)
+                this->addresses.push_back(Address(address, CommType::TCP));
+            else if(address.find("ipc://") != std::string::npos)
+                this->addresses.push_back(Address(address, CommType::IPC));
+            break;
+    }
+}
+
+void Subscriber::connect(CommType commType)
 {
+    bool isUdp = false;
+    std::string address = this->addresses[0];
     switch (commType) {
     case CommType::UDP:
+        isUdp = true;
         this->socket = zmq_socket(this->context, ZMQ_DISH);
-        check(zmq_setsockopt(this->socket, ZMQ_RCVTIMEO, &rcvTimeout, sizeof(rcvTimeout)), "zmq_setsockopt");
-        std::cout << "Group: " << this->groupName << std::endl;
         check(zmq_join(this->socket, this->groupName.c_str()), "zmq_join");
         check(zmq_bind(this->socket, ("udp://" + address).c_str()), "zmq_bind");
         break;
     case CommType::TCP:
         this->socket = zmq_socket(this->context, ZMQ_SUB);
-        check(zmq_setsockopt(this->socket, ZMQ_RCVTIMEO, &rcvTimeout, sizeof(rcvTimeout)), "zmq_setsockopt");
         check(zmq_setsockopt(this->socket, ZMQ_SUBSCRIBE, "", 0), "zmq_setsockopt");
         check(zmq_connect(this->socket, ("tcp://" + address).c_str()), "zmq_connect");
         break;
     case CommType::IPC:
         this->socket = zmq_socket(this->context, ZMQ_SUB);
-        check(zmq_setsockopt(this->socket, ZMQ_RCVTIMEO, &rcvTimeout, sizeof(rcvTimeout)), "zmq_setsockopt");
         check(zmq_setsockopt(this->socket, ZMQ_SUBSCRIBE, "", 0), "zmq_setsockopt");
         check(zmq_connect(this->socket, ("ipc://" + address).c_str()), "zmq_connect");
         break;
     case CommType::INT:
         if (address.find("udp://") != std::string::npos){
+            isUdp = true;
             this->socket = zmq_socket(this->context, ZMQ_DISH);
-            check(zmq_setsockopt(this->socket, ZMQ_RCVTIMEO, &rcvTimeout, sizeof(rcvTimeout)), "zmq_setsockopt");
             std::cout << "Group: " << this->groupName << std::endl;
             check(zmq_join(this->socket, this->groupName.c_str()), "zmq_join");
             check(zmq_bind(this->socket, address.c_str()), "zmq_bind");
         }else{
             this->socket = zmq_socket(this->context, ZMQ_SUB);
-            check(zmq_setsockopt(this->socket, ZMQ_RCVTIMEO, &rcvTimeout, sizeof(rcvTimeout)), "zmq_setsockopt");
             check(zmq_setsockopt(this->socket, ZMQ_SUBSCRIBE, "", 0), "zmq_setsockopt");
             check(zmq_connect(this->socket, address.c_str()), "zmq_connect");
         }
@@ -52,13 +74,11 @@ void Subscriber::connect(CommType commType, std::string address)
         // Unknown communication type!
         assert(false);
     }
-    this->type = commType;
-}
+    check(zmq_setsockopt(this->socket, ZMQ_RCVTIMEO, &rcvTimeout, sizeof(rcvTimeout)), "zmq_setsockopt");
+    if(isUdp){
 
-void Subscriber::subscribe(void (*callbackFunction)(::capnp::FlatArrayMessageReader&))
-{
-    this->callbackFunction_ = callbackFunction;
-    this->runThread = new std::thread(&Subscriber::receive, this);
+    }
+    this->type = commType;
 }
 
 void Subscriber::receive()

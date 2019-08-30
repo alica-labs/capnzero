@@ -12,36 +12,54 @@
 #include <functional>
 #include <thread>
 #include <unistd.h>
+#include <vector>
 
 //#define DEBUG_SUBSCRIBER
 
 namespace capnzero
 {
 
+struct Address{
+    std::string address;
+    CommType type;
+};
+
 class Subscriber
 {
 public:
     typedef std::function<void(::capnp::FlatArrayMessageReader&)> callbackFunction;
 
-    Subscriber(void* context, std::string groupName)
+    Subscriber(void *context, std::string groupName, std::string defaultAddress, void (*callbackFunction)(::capnp::FlatArrayMessageReader&))
             : socket(nullptr)
             , groupName(groupName)
-            , callbackFunction_(nullptr)
+            , callbackFunction_(callbackFunction)
             , running(true)
             , runThread(nullptr)
             , rcvTimeout(500)
             , context(context)
     {
+        std::cout << "Group: " << this->groupName << std::endl;
+    }
+
+    template <class CallbackObjType>
+    Subscriber(void* context, std::string groupName, void (CallbackObjType::*callbackFunction)(::capnp::FlatArrayMessageReader&), CallbackObjType* callbackObject)
+            : socket(nullptr)
+            , groupName(groupName)
+            , running(true)
+            , runThread(nullptr)
+            , rcvTimeout(500)
+            , context(context)
+    {
+        using std::placeholders::_1;
+        this->callbackFunction_ = std::bind(callbackFunction, callbackObject, _1);
+        std::cout << "Group: " << this->groupName << std::endl;
     }
 
     virtual ~Subscriber();
 
-    void connect(CommType commType, std::string address);
+    void add_address(CommType commType, std::string address);
 
-    template <class CallbackObjType>
-    void subscribe(void (CallbackObjType::*callbackFunction)(::capnp::FlatArrayMessageReader&), CallbackObjType* callbackObject);
-
-    void subscribe(void (*callbackFunction)(::capnp::FlatArrayMessageReader&));
+    void connect(CommType commType);
 
     static const int wordSize;
 
@@ -54,16 +72,10 @@ protected:
     std::string groupName;
     std::thread* runThread;
     bool running;
-    capnzero::CommType type;
+    bool hasUDP;
+    std::vector<address> addresses;
 
     void receive();
 };
 
-template <class CallbackObjType>
-void Subscriber::subscribe(void (CallbackObjType::*callbackFunction)(::capnp::FlatArrayMessageReader&), CallbackObjType* callbackObject)
-{
-    using std::placeholders::_1;
-    this->callbackFunction_ = std::bind(callbackFunction, callbackObject, _1);
-    this->runThread = new std::thread(&Subscriber::receive, this);
-}
 } // namespace capnzero

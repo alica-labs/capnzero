@@ -26,6 +26,10 @@
 *.a
 *.lib
 
+# Compiled Capnp files
+*.capnp.h
+*.capnp.c++
+
 # Executables
 *.exe
 *.out
