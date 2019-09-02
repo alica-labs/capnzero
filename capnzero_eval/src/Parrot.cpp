@@ -16,7 +16,7 @@
 #include <nl_types.h>
 
 static std::string  rcvmsgstring; //Global variable
-static long rcvmsgnumber=NULL; //Global variable
+static long rcvmsgnumber = 0; //Global variable
 #define DEBUG_SENDER
 void callback(::capnp::FlatArrayMessageReader& reader);
 
@@ -49,11 +49,11 @@ int main(int argc, char** argv) // Stack frame started
         std::cout << "Param " << i << ": '" << argv[i] << "'" << std::endl;
     }
     void* ctx = zmq_ctx_new();
-    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, argv[1]); // creating a pointer in the heap
+    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, argv[1], &callback); // creating a pointer in the heap
     capnzero::Publisher *pub = new capnzero::Publisher(ctx);
     pub->setDefaultGroup(argv[1]);
-    sub->connect(capnzero::CommType::UDP, "224.0.0.2:5500");
-    sub->subscribe(&callback);
+    sub->addAddress(capnzero::CommType::UDP, "224.0.0.2:5500");
+    sub->connect();
     // init builder
 
     //Publisher  part

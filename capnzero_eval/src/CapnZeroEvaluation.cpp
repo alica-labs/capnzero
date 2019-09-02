@@ -67,13 +67,13 @@ int main(int argc, char** argv)// Stack frame started
 //Publisher  part
     capnzero::Publisher * pub = new capnzero::Publisher(ctx);
     pub->setDefaultGroup(argv[1]);
-    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, argv[1]); // creating a pointer in the heap /free pool of memory
+    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, argv[1], &callback); // creating a pointer in the heap /free pool of memory
                                                                           //Dynamic memory allocation
     pub->bind(capnzero::CommType::UDP, "224.0.0.2:5500");
 
 //Subscriber part
-    sub->connect(capnzero::CommType::UDP, "224.0.0.2:5554");
-    sub->subscribe(&callback);
+    sub->addAddress(capnzero::CommType::UDP, "224.0.0.2:5554");
+    sub->connect();
 
     while (!interrupted)
     {
