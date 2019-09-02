@@ -27,8 +27,8 @@
 *.lib
 
 # Compiled Capnp files
-*.capnp.h
-*.capnp.c++
+# *.capnp.h
+# *.capnp.c++
 
 # Executables
 *.exe
