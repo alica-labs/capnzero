@@ -65,7 +65,7 @@ int Publisher::send(::capnp::MallocMessageBuilder& msgBuilder, std::string topic
 
     kj::Array<capnp::word> wordArray = capnp::messageToFlatArray(msgBuilder);
     kj::Array<capnp::word>* wordArrayPtr = new kj::Array<capnp::word>(kj::mv(wordArray)); // will be delete by zero-mq
-    check(zmq_msg_init_data(&msg, wordArrayPtr->begin(), wordArrayPtr->size() * sizeof(capnp::word), &cleanUpMsgData, NULL), "zmq_msg_init_data");
+    check(zmq_msg_init_data(&msg, wordArrayPtr->begin(), wordArrayPtr->size() * sizeof(capnp::word), &cleanUpMsgData, wordArrayPtr), "zmq_msg_init_data");
 
     // Topic handling
     if (this->protocol == Protocol::UDP) {
@@ -93,6 +93,6 @@ int Publisher::send(::capnp::MallocMessageBuilder& msgBuilder)
 
 static void cleanUpMsgData(void* data, void* hint)
 {
-    delete reinterpret_cast<kj::Array<capnp::word>*>(data);
+    delete reinterpret_cast<kj::Array<capnp::word>*>(hint);
 }
 } // namespace capnzero

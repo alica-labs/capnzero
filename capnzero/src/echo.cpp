@@ -53,7 +53,7 @@ int main(int argc, char** argv)
 
 //    sub->addAddress("@capnzero.ipc");
     sub->addAddress("224.0.0.2:5555");
-//    sub->addAddress("141.51.122.62:5555");
+//    sub->addAddress("127.0.0.1:5555");
 
     sub->subscribe(callback);
     while (!interrupted) {
