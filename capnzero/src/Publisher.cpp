@@ -59,11 +59,6 @@ void Publisher::bind(CommType commType, std::string address)
     }
 }
 
-static void cleanUpMsgData(void* data, void* hint)
-{
-    delete reinterpret_cast<kj::Array<capnp::word>*>(hint);
-}
-
 int Publisher::send(::capnp::MallocMessageBuilder& msgBuilder, std::string topic)
 {
     // setup zmq msg
@@ -97,5 +92,10 @@ int Publisher::send(::capnp::MallocMessageBuilder& msgBuilder, std::string topic
 int Publisher::send(::capnp::MallocMessageBuilder& msgBuilder)
 {
     return this->send(msgBuilder, this->getDefaultGroup());
+}
+
+static void cleanUpMsgData(void* data, void* hint)
+{
+    delete reinterpret_cast<kj::Array<capnp::word>*>(hint);
 }
 } // namespace capnzero

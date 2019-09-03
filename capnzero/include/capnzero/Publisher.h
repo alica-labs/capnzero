@@ -34,5 +34,5 @@ protected:
     CommType commType;
 };
 
-//static void cleanUpMsgData(void* data, void* hint);
+static void cleanUpMsgData(void* data, void* hint);
 } // namespace capnzero
