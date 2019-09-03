@@ -9,11 +9,8 @@
 #include <kj/array.h>
 #include <signal.h>
 
-#include <thread>
 #include <vector>
 #include <string>
-#include <bitset>
-#include <nl_types.h>
 
 static std::string  rcvmsgstring; //Global variable
 static long rcvmsgnumber = 0; //Global variable
@@ -49,11 +46,12 @@ int main(int argc, char** argv) // Stack frame started
         std::cout << "Param " << i << ": '" << argv[i] << "'" << std::endl;
     }
     void* ctx = zmq_ctx_new();
-    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, argv[1], &callback); // creating a pointer in the heap
-    capnzero::Publisher *pub = new capnzero::Publisher(ctx);
-    pub->setDefaultGroup(argv[1]);
-    sub->addAddress(capnzero::CommType::UDP, "224.0.0.2:5500");
-    sub->connect();
+    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::UDP);
+    sub->setTopic(argv[1]);
+    sub->subscribe(&callback);
+    capnzero::Publisher *pub = new capnzero::Publisher(ctx, capnzero::Protocol::UDP);
+    pub->setDefaultTopic(argv[1]);
+    sub->addAddress("224.0.0.2:5500");
     // init builder
 
     //Publisher  part
@@ -82,7 +80,7 @@ void callback(::capnp::FlatArrayMessageReader& reader)
     std::cout << "Received int message: "<<rcvmsgnumber << std::endl;
 }
 void sender (capnzero::Publisher *pub){
-    pub->bind(capnzero::CommType::UDP, "224.0.0.2:5554");
+    pub->addAddress("224.0.0.2:5554");
     ::capnp::MallocMessageBuilder msgBuilder;
     capnzero_eval::EvalMessage::Builder dataHolder= msgBuilder.initRoot<capnzero_eval::EvalMessage>();
     dataHolder.setPayload(rcvmsgstring);

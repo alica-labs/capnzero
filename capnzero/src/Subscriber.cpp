@@ -41,7 +41,7 @@ Subscriber::~Subscriber()
 
 void Subscriber::setTopic(std::string topic)
 {
-    assert(topic.length() < MAX_TOPIC_LENGTH && "Publisher::setTopic: The given topic is too long!");
+    assert(topic.length() < MAX_TOPIC_LENGTH && "Subscriber::setTopic: The given topic is too long!");
 
     switch (this->protocol) {
         case Protocol::UDP:
