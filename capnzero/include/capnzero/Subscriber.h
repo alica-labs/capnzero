@@ -16,62 +16,73 @@
 
 //#define DEBUG_SUBSCRIBER
 
-namespace capnzero {
+namespace capnzero
+{
 
-    struct Address {
-        std::string address;
-        Protocol type;
+struct Address
+{
+    std::string address;
+    Protocol protocol;
 
-        Address(std::string addr, Protocol t) : address(addr), type(t) {}
-    };
+    Address(std::string address, Protocol protocol)
+            : address(address)
+            , protocol(protocol)
+    {
+    }
+};
 
-    class Subscriber {
-    public:
-        typedef std::function<void(::capnp::FlatArrayMessageReader & )> callbackFunction;
+class Subscriber
+{
+public:
+    typedef std::function<void(::capnp::FlatArrayMessageReader&)> callbackFunction;
 
-        Subscriber(void *context, std::string groupName, void (*callbackFunction)(::capnp::FlatArrayMessageReader &))
-                : socket(nullptr), udpSocket(nullptr), topic(groupName), callbackFunction_(callbackFunction),
-                  running(true), runThread(nullptr), rcvTimeout(500), context(context) {
-            std::cout << "Group: " << this->topic << std::endl;
-            this->isConnected = false;
-        }
+    Subscriber(void* context, std::string defaultTopic, void (*callbackFunction)(::capnp::FlatArrayMessageReader&))
+            : socket(nullptr)
+            , defaultTopic(defaultTopic)
+            , callbackFunction_(callbackFunction)
+            , running(true)
+            , runThread(nullptr)
+            , rcvTimeout(500)
+            , context(context)
+    {
+        std::cout << "Topic: " << this->defaultTopic << std::endl;
+    }
 
-        template<class CallbackObjType>
-        Subscriber(void *context, std::string groupName,
-                   void (CallbackObjType::*callbackFunction)(::capnp::FlatArrayMessageReader &),
-                   CallbackObjType *callbackObject)
-                : socket(nullptr), udpSocket(nullptr), topic(groupName), running(true), runThread(nullptr),
-                  rcvTimeout(500), context(context) {
-            using std::placeholders::_1;
-            this->callbackFunction_ = std::bind(callbackFunction, callbackObject, _1);
-            std::cout << "Group: " << this->topic << std::endl;
-            this->isConnected = false;
-        }
+    template <class CallbackObjType>
+    Subscriber(void* context, std::string defaultTopic, void (CallbackObjType::*callbackFunction)(::capnp::FlatArrayMessageReader&),
+            CallbackObjType* callbackObject)
+            : socket(nullptr)
+            , defaultTopic(defaultTopic)
+            , running(true)
+            , runThread(nullptr)
+            , rcvTimeout(500)
+            , context(context)
+    {
+        using std::placeholders::_1;
+        this->callbackFunction_ = std::bind(callbackFunction, callbackObject, _1);
+        std::cout << "Topic: " << this->defaultTopic << std::endl;
+    }
 
-        virtual ~Subscriber();
+    virtual ~Subscriber();
 
-        void addAddress(Protocol protocol, std::string addr);
+    void addAddress(std::string address);
+    void connect();
+    static const int wordSize;
+    callbackFunction callbackFunction_;
 
-        void connect();
+protected:
+    void* context;
+    void* socket;
+    std::string defaultTopic;
+    Protocol protocol;
+    int rcvTimeout; /** < only initialized if needed */
 
-        static const int wordSize;
+    std::vector<Address> addresses;
 
-        callbackFunction callbackFunction_;
+    std::thread* runThread;
+    bool running;
 
-    protected:
-        void *context;
-        void *socket;
-        void *udpSocket;        // This was made in the assumption a socket cannot be of type SUB and DISH at the same time.
-        // only initialized if needed
-        int rcvTimeout;
-        std::string topic;
-        std::thread *runThread;
-        bool running;
-        bool hasUDP;
-        bool isConnected;
-        std::vector <Address> addresses;
-
-        void receive();
-    };
+    void receive();
+};
 
 } // namespace capnzero
