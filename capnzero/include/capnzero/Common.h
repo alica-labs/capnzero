@@ -63,7 +63,7 @@ inline int checkReceive(int numBytesReceived, zmq_msg_t& msg, std::string receiv
         }
 #ifdef DEBUG_SUBSCRIBER
         else { // no message available
-            std::cout << "Subscriber::receive(): continue because of EAGAIN!" << std::endl;
+            std::cout << receiver << " continue because of EAGAIN!" << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
         std::cout << ".";
