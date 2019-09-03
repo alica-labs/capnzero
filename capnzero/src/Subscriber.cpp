@@ -2,7 +2,34 @@
 
 namespace capnzero
 {
-const int Subscriber::wordSize = sizeof(capnp::word);
+const int Subscriber::WORD_SIZE = sizeof(capnp::word);
+
+Subscriber::Subscriber(void* context, Protocol protocol)
+        : socket(nullptr)
+        , rcvTimeout(500)
+        , topic("")
+        , context(context)
+        , protocol(protocol)
+        , running(false)
+        , runThread(nullptr)
+        , callbackFunction_(nullptr)
+{
+    // set socket type with respect to given protocol
+    switch (this->protocol) {
+        case Protocol::UDP:
+            this->socket = zmq_socket(this->context, ZMQ_DISH);
+            break;
+        case Protocol::TCP:
+        case Protocol::IPC:
+            this->socket = zmq_socket(this->context, ZMQ_SUB);
+            break;
+        default:
+            // Unknown protocol!
+            assert(false && "Subscriber::Subscriber: The given protocol is unknown!");
+    }
+
+    check(zmq_setsockopt(this->socket, ZMQ_RCVTIMEO, &rcvTimeout, sizeof(rcvTimeout)), "zmq_setsockopt");
+}
 
 Subscriber::~Subscriber()
 {
@@ -12,17 +39,36 @@ Subscriber::~Subscriber()
     check(zmq_close(this->socket), "zmq_close");
 }
 
+void Subscriber::setTopic(std::string topic)
+{
+    assert(topic.length() < MAX_TOPIC_LENGTH && "Publisher::setTopic: The given topic is too long!");
+
+    switch (this->protocol) {
+        case Protocol::UDP:
+            check(zmq_join(this->socket, this->topic.c_str()), "zmq_join");
+            break;
+        case Protocol::TCP:
+        case Protocol::IPC:
+            check(zmq_setsockopt(this->socket, ZMQ_SUBSCRIBE, this->topic.c_str(), 0), "zmq_setsockopt");
+            break;
+        default:
+            // Unknown protocol!
+            assert(false && "Subscriber::setTopic: The given protocol is unknown!");
+    }
+    this->topic = topic;
+}
+
 void Subscriber::addAddress(std::string address)
 {
     switch (protocol) {
     case Protocol::UDP:
-        this->addresses.push_back(Address("udp://" + address, protocol));
+        check(zmq_bind(this->socket, ("udp://" + address).c_str()), "zmq_bind");
         break;
     case Protocol::TCP:
-        this->addresses.push_back(Address("tcp://" + address, protocol));
+        check(zmq_connect(this->socket, ("tcp://" + address).c_str()), "zmq_connect");
         break;
     case Protocol::IPC:
-        this->addresses.push_back(Address("ipc://" + address, protocol));
+        check(zmq_connect(this->socket, ("ipc://" + address).c_str()), "zmq_connect");
         break;
     default:
         // Unknown protocol!
@@ -30,95 +76,61 @@ void Subscriber::addAddress(std::string address)
     }
 }
 
-void Subscriber::connect()
-{
-    // Right now this code expects that there is at least one non-UDP address.
-    check(zmq_setsockopt(this->socket, ZMQ_RCVTIMEO, &rcvTimeout, sizeof(rcvTimeout)), "zmq_setsockopt");
-    check(zmq_setsockopt(this->socket, ZMQ_SUBSCRIBE, this->defaultTopic.c_str(), 0), "zmq_setsockopt");
-    for (int i = 0; i < this->addresses.size(); ++i) {
-        Address addr = this->addresses[i];
-        switch (addr.protocol) {
-        case Protocol::UDP:
-            check(zmq_bind(this->socket, ("udp://" + addr.address).c_str()), "zmq_bind");
-            break;
-        case Protocol::TCP:
-            check(zmq_connect(this->socket, ("tcp://" + addr.address).c_str()), "zmq_connect");
-            break;
-        case Protocol::IPC:
-            check(zmq_connect(this->socket, ("ipc://" + addr.address).c_str()), "zmq_connect");
-            break;
-        default:
-            // Unknown protocol!
-            assert(false && "Subscriber::addAddress: Given protocol is unknown!");
-        }
+void Subscriber::subscribe(void (*callbackFunction)(::capnp::FlatArrayMessageReader&)) {
+    this->callbackFunction_ = callbackFunction;
+    if (!running) {
+        this->running = true;
+        this->runThread = new std::thread(&Subscriber::receive, this);
     }
 }
 
 void Subscriber::receive()
 {
     while (this->running) {
-        zmq_msg_t msg;
-        check(zmq_msg_init(&msg), "zmq_msg_init");
-        zmq_msg_t topic;
-        check(zmq_msg_init(&topic), "zmq_msg_init");
-        zmq_msg_recv(&topic, this->socket, 0);
+
 #ifdef DEBUG_SUBSCRIBER
         std::cout << "Subscriber::received() waiting ..." << std::endl;
 #endif
 
-        int nbytes = zmq_msg_recv(&msg, this->socket, 0);
-
-//      std::cout << "Subscriber::receive(): nBytes: " << nbytes << " errno: " << errno << "(EAGAIN: " << EAGAIN << ")" << std::endl;
-
-        // handling for unsuccessful call to zmq_msg_recv
-        if (nbytes == -1) {
-            if (errno != EAGAIN) // receiving a message was unsuccessful
-            {
-                std::cerr << "Subscriber::receive(): zmq_msg_recv received no bytes! " << errno << " - zmq_strerror(errno)" << std::endl;
-            } else // no message available
-            {
-
-            if (errno != EAGAIN) {
-                std::cerr << "Subscriber::receive(): zmq_msg_recv received no bytes! " << errno << " - zmq_strerror(errno)" << std::endl;
+        if (this->protocol != Protocol::UDP) {
+            // Topic handling for non-udp protocols via multipart message
+            zmq_msg_t topicMsg;
+            check(zmq_msg_init(&topicMsg), "zmq_msg_init");
+            if (0 == checkReceive(zmq_msg_recv(&topicMsg, this->socket, ZMQ_SNDMORE), topicMsg, "Subscriber::receive-Topic")) {
+                // error or timeout on recv
+                continue;
             }
-#ifdef DEBUG_SUBSCRIBER
-            else {
-                std::cout << "Subscriber::receive(): continue because of EAGAIN!" << std::endl;
-                std::this_thread::sleep_for(std::chrono::milliseconds(1));
-            }
-#endif
+        }
 
-#ifdef DEBUG_SUBSCRIBER
-            std::cout << ".";
-            std::cout.flush();
-#endif
-            check(zmq_msg_close(&msg), "zmq_msg_close");
+        zmq_msg_t msg;
+        check(zmq_msg_init(&msg), "zmq_msg_init");
+        if (0 == checkReceive(zmq_msg_recv(&msg, this->socket, 0), msg, "Subscriber::receive")) {
+            // error or timeout on recv
             continue;
         }
+
 #ifdef DEBUG_SUBSCRIBER
-        else {
-            std::cout << std::endl;
-        }
+        std::cout << std::endl;
 #endif
 
         // Received message must contain an integral number of words.
-        if (zmq_msg_size(&msg) % Subscriber::wordSize != 0) {
-            std::cout << "Non-Integral number of words!" << std::endl;
+        if (zmq_msg_size(&msg) % Subscriber::WORD_SIZE != 0) {
+            std::cerr << "Subscriber::receive(): Message received with a size of non-integral number of words!" << std::endl;
             check(zmq_msg_close(&msg), "zmq_msg_close");
             continue;
         }
 
         // Check whether message is memory aligned
-        assert(reinterpret_cast<uintptr_t>(zmq_msg_data(&msg)) % Subscriber::wordSize == 0);
+        assert(reinterpret_cast<uintptr_t>(zmq_msg_data(&msg)) % Subscriber::WORD_SIZE == 0);
 
-        int numWordsInMsg = zmq_msg_size(&msg);
-        auto wordArray = kj::ArrayPtr<capnp::word const>(reinterpret_cast<capnp::word const*>(zmq_msg_data(&msg)), numWordsInMsg);
-
+        // Call the callback with Cap'n Proto message
+        int msgSize = zmq_msg_size(&msg);
+        auto wordArray = kj::ArrayPtr<capnp::word const>(reinterpret_cast<capnp::word const*>(zmq_msg_data(&msg)), msgSize);
         ::capnp::FlatArrayMessageReader msgReader = ::capnp::FlatArrayMessageReader(wordArray);
-
         (this->callbackFunction_)(msgReader);
 
         check(zmq_msg_close(&msg), "zmq_msg_close");
     }
 }
+
 } // namespace capnzero

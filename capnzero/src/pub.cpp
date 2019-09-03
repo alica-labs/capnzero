@@ -54,11 +54,11 @@ int main(int argc, char** argv)
 #endif
 
     void* ctx = zmq_ctx_new();
-    capnzero::Publisher pub = capnzero::Publisher(ctx);
+    capnzero::Publisher pub = capnzero::Publisher(ctx, capnzero::Protocol::UDP);
     pub.setDefaultTopic(argv[1]);
-//    pub.bind(capnzero::CommType::IPC, "@capnzero.ipc");
-    pub.addAddress(capnzero::Protocol::UDP, "224.0.0.2:5555");
-//    pub.bind(capnzero::CommType::TCP, "141.51.122.62:5555");
+//    pub.addAddress("@capnzero.ipc");
+    pub.addAddress("224.0.0.2:5555");
+//    pub.addAddress("141.51.122.62:5555");
     while (!interrupted) {
         int numBytesSent = pub.send(msgBuilder);
 #ifdef DEBUG_PUB

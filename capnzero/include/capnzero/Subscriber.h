@@ -18,66 +18,52 @@
 
 namespace capnzero
 {
-
-struct Address
-{
-    std::string address;
-    Protocol protocol;
-
-    Address(std::string address, Protocol protocol)
-            : address(address)
-            , protocol(protocol)
-    {
-    }
-};
-
 class Subscriber
 {
 public:
     typedef std::function<void(::capnp::FlatArrayMessageReader&)> callbackFunction;
+    static const int WORD_SIZE;
 
-    Subscriber(void* context, std::string defaultTopic, void (*callbackFunction)(::capnp::FlatArrayMessageReader&))
-            : socket(nullptr)
-            , defaultTopic(defaultTopic)
-            , callbackFunction_(callbackFunction)
-            , running(true)
-            , runThread(nullptr)
-            , rcvTimeout(500)
-            , context(context)
-    {
-        std::cout << "Topic: " << this->defaultTopic << std::endl;
-    }
-
-    template <class CallbackObjType>
-    Subscriber(void* context, std::string defaultTopic, void (CallbackObjType::*callbackFunction)(::capnp::FlatArrayMessageReader&),
-            CallbackObjType* callbackObject)
-            : socket(nullptr)
-            , defaultTopic(defaultTopic)
-            , running(true)
-            , runThread(nullptr)
-            , rcvTimeout(500)
-            , context(context)
-    {
-        using std::placeholders::_1;
-        this->callbackFunction_ = std::bind(callbackFunction, callbackObject, _1);
-        std::cout << "Topic: " << this->defaultTopic << std::endl;
-    }
-
+    Subscriber(void* context, Protocol protocol);
     virtual ~Subscriber();
 
+    /**
+     * Starts the receiving thread, if called for the first time. Changes the callback to the given function and object.
+     * @tparam CallbackObjType
+     * @param callbackFunction
+     * @param callbackObject
+     */
+    template <class CallbackObjType>
+    void subscribe(void (CallbackObjType::*callbackFunction)(::capnp::FlatArrayMessageReader&), CallbackObjType* callbackObject) {
+        using std::placeholders::_1;
+        this->callbackFunction_ = std::bind(callbackFunction, callbackObject, _1);
+        if (!running) {
+            this->running = true;
+            this->runThread = new std::thread(&Subscriber::receive, this);
+        }
+    }
+
+    /**
+     * Starts the receiving thread, if called for the first time. Changes the callback to the given function.
+     * @param callbackFunction
+     */
+    void subscribe(void (*callbackFunction)(::capnp::FlatArrayMessageReader&));
+
+    /**
+     * Sets the topic to receive from.
+     * @param defaultTopic
+     */
+    void setTopic(std::string topic);
     void addAddress(std::string address);
-    void connect();
-    static const int wordSize;
-    callbackFunction callbackFunction_;
 
 protected:
     void* context;
     void* socket;
-    std::string defaultTopic;
+    std::string topic;
     Protocol protocol;
     int rcvTimeout; /** < only initialized if needed */
 
-    std::vector<Address> addresses;
+    callbackFunction callbackFunction_;
 
     std::thread* runThread;
     bool running;
