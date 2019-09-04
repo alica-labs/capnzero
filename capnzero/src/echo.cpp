@@ -10,7 +10,7 @@
 #include <signal.h>
 #include <thread>
 
-#define DEBUG_SENDER
+//#define DEBUG_SENDER
 
 void callback(::capnp::FlatArrayMessageReader& reader)
 {

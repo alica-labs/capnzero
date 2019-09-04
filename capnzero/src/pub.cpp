@@ -7,7 +7,7 @@
 #include <thread>
 #include <signal.h>
 
-#define DEBUG_PUB
+//#define DEBUG_PUB
 
 static bool interrupted = false;
 static void s_signal_handler(int signal_value)

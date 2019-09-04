@@ -1,5 +1,5 @@
 #include "capnzero/Subscriber.h"
-#define DEBUG_SUBSCRIBER
+//#define DEBUG_SUBSCRIBER
 
 namespace capnzero
 {
