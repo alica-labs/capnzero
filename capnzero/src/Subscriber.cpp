@@ -107,6 +107,7 @@ void Subscriber::receive()
         check(zmq_msg_init(&msg), "zmq_msg_init");
         if (0 == checkReceive(zmq_msg_recv(&msg, this->socket, 0), msg, "Subscriber::receive")) {
             // error or timeout on recv
+            std::cout << "Subscriber: No Message here!" << std::endl;
             continue;
         }
 
