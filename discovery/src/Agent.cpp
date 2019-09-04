@@ -43,9 +43,9 @@ Agent::Agent(std::string name, bool sender)
         this->pub->setDefaultGroup("MCGroup");
         this->pub->bind(capnzero::CommType::UDP, "udp://224.0.0.1:5555");
     } else {
-        this->sub = new capnzero::Subscriber(this->ctx, "MCGroup");
-        this->sub->connect(capnzero::CommType::UDP, "udp://224.0.0.1:5555");
-        this->sub->subscribe<discovery::Agent>(&Agent::callback, (discovery::Agent*) this);
+        this->sub = new capnzero::Subscriber(this->ctx, "MCGroup", &Agent::callback, (discovery::Agent*) this);
+        this->sub->addAddress(capnzero::CommType::UDP, "udp://224.0.0.1:5555");
+        this->sub->connect();
     }
 }
 

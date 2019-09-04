@@ -21,9 +21,9 @@ def main():
     message_type = None
     skip = False
     parser = argparse.ArgumentParser(description="Echo CapnZero communication.")
-    parser.add_argument("interface", metavar="iface", type=str, help="The interface you want to use. (e.g.: udp://224.0.0.2:5555)", nargs="*")
-    parser.add_argument("schema", metavar="schema", type=str, help="The schema that the data is formatted in.", nargs="*")
-    parser.add_argument("topic", metavar="topic", type=str, help="The topic that schould be listened to.", default="", nargs="*")
+    parser.add_argument("interface", metavar="iface", type=str, help="The interface you want to use. (e.g.: udp://224.0.0.2:5555)")
+    parser.add_argument("schema", metavar="schema", type=str, help="The schema that the data is formatted in.")
+    parser.add_argument("topic", metavar="topic", type=str, help="The topic that schould be listened to.", default="")
     parser.add_argument("-l", action="store_true", help="List the known topics.")
     parser.add_argument("-u", action="store_true", help="Update the schema list.")
     args = parser.parse_args()
