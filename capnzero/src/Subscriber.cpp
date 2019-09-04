@@ -8,7 +8,7 @@ const int Subscriber::WORD_SIZE = sizeof(capnp::word);
 Subscriber::Subscriber(void* context, Protocol protocol)
         : socket(nullptr)
         , rcvTimeout(500)
-        , topic("")
+        , topic("???") // this filter will hopefully never be used
         , context(context)
         , protocol(protocol)
         , running(false)
@@ -44,19 +44,27 @@ void Subscriber::setTopic(std::string topic)
 {
     assert(topic.length() < MAX_TOPIC_LENGTH && "Subscriber::setTopic: The given topic is too long!");
 
+    if (this->topic.compare(topic) == 0) {
+        return;
+    }
+
     switch (this->protocol) {
         case Protocol::UDP:
+            this->topic = topic;
             check(zmq_join(this->socket, this->topic.c_str()), "zmq_join");
             break;
         case Protocol::TCP:
         case Protocol::IPC:
+            if (this->topic.compare("???") != 0) {
+                check(zmq_setsockopt(this->socket, ZMQ_UNSUBSCRIBE, this->topic.c_str(), 0), "zmq_setsockopt");
+            }
+            this->topic = topic;
             check(zmq_setsockopt(this->socket, ZMQ_SUBSCRIBE, this->topic.c_str(), 0), "zmq_setsockopt");
             break;
         default:
             // Unknown protocol!
             assert(false && "Subscriber::setTopic: The given protocol is unknown!");
     }
-    this->topic = topic;
 }
 
 void Subscriber::addAddress(std::string address)
