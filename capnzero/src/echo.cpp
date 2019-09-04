@@ -48,12 +48,12 @@ int main(int argc, char** argv)
     }
 
     void* ctx = zmq_ctx_new();
-    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::UDP);
+    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::TCP);
     sub->setTopic(argv[1]);
 
 //    sub->addAddress("@capnzero.ipc");
-    sub->addAddress("224.0.0.2:5555");
-//    sub->addAddress("127.0.0.1:5555");
+//    sub->addAddress("224.0.0.2:5555");
+    sub->addAddress("127.0.0.1:5555");
 
     sub->subscribe(&callback);
     while (!interrupted) {
