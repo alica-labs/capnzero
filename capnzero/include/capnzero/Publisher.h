@@ -55,10 +55,5 @@ protected:
     Protocol protocol;
 };
 
-/**
- * Static method that cleans up sent messages. The method is called by ZeroMQ!
- * @param data Pointer to the data that was sent.
- * @param hint
- */
-static void cleanUpMsgData(void* data, void* hint);
+
 } // namespace capnzero

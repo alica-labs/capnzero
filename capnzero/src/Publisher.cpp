@@ -5,6 +5,13 @@
 namespace capnzero
 {
 
+/**
+ * Static method that cleans up sent messages. The method is called by ZeroMQ!
+ * @param data Pointer to the data that was sent.
+ * @param hint
+ */
+static void cleanUpMsgData(void* data, void* hint);
+
 Publisher::Publisher(void* context, Protocol protocol)
         : socket(nullptr)
         , protocol(protocol)
@@ -75,7 +82,7 @@ int Publisher::send(::capnp::MallocMessageBuilder& msgBuilder, std::string topic
         // for NON-UDP via multi part messages
         zmq_msg_t topicMsg;
         check(zmq_msg_init_data(&topicMsg, &topic, topic.size() * sizeof(topic), NULL, NULL), "zmq_msg_init_data for topic");
-        sumBytesSend  = checkSend(zmq_msg_send(&topicMsg, this->socket, ZMQ_SNDMORE), topicMsg, "Publisher-topic");
+        sumBytesSend = checkSend(zmq_msg_send(&topicMsg, this->socket, ZMQ_SNDMORE), topicMsg, "Publisher-topic");
         if (sumBytesSend == 0) {
             // sending topic did not work, so stop here
             return sumBytesSend;
