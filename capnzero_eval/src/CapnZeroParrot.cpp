@@ -42,17 +42,25 @@ int main(int argc, char** argv)
     }
 
     void* ctx = zmq_ctx_new();
-    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::UDP);
+//    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::UDP);
+//    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::IPC);
+    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::TCP);
+//    sub->addAddress("224.0.0.2:5500");
+//    sub->addAddress("@capnzeroSend.ipc");
+    sub->addAddress("127.0.0.1:5500");
     sub->setTopic(argv[1]);
-    sub->addAddress("224.0.0.2:5500");
     sub->subscribe(&callback);
 
-    pub = new capnzero::Publisher(ctx, capnzero::Protocol::UDP);
+//    pub = new capnzero::Publisher(ctx, capnzero::Protocol::UDP);
+//    pub = new capnzero::Publisher(ctx, capnzero::Protocol::IPC);
+    pub = new capnzero::Publisher(ctx, capnzero::Protocol::TCP);
+//    pub->addAddress("@capnzeroReceive.ipc");
+//    pub->addAddress("224.0.0.2:5554");
+    pub->addAddress("127.0.0.1:5554");
     pub->setDefaultTopic(argv[1]);
-    pub->addAddress("224.0.0.2:5554");
 
     while (!interrupted) {
-
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     std::cout << "Cleaning up now. " << std::endl;

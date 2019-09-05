@@ -7,15 +7,12 @@
 #include <capnzero/Common.h>
 #include <capnzero/Publisher.h>
 #include <capnzero/Subscriber.h>
-#include <chrono>
 #include <kj/array.h>
+
+#include <chrono>
 #include <signal.h>
-#include <thread>
-
-
-#include <map>
 #include <string>
-
+#include <thread>
 
 static bool interrupted = false;
 static void s_signal_handler(int signal_value)
@@ -49,13 +46,21 @@ int main(int argc, char** argv)
 
     // Publisher  part
     void* ctx = zmq_ctx_new();
-    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::UDP);
+    //    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::UDP);
+    //    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::IPC);
+    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::TCP);
+    //    pub->addAddress("224.0.0.2:5500");
+    //    pub->addAddress("@capnzeroSend.ipc");
+    pub->addAddress("127.0.0.1:5500");
     pub->setDefaultTopic(argv[1]);
-    pub->addAddress("224.0.0.2:5500");
 
-    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::UDP);
+    //    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::UDP);
+    //    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::IPC);
+    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::TCP);
+    //    sub->addAddress("224.0.0.2:5554");
+    //    sub->addAddress("@capnzeroReceive.ipc");
+    sub->addAddress("127.0.0.1:5554");
     sub->setTopic(argv[1]);
-    sub->addAddress("224.0.0.2:5554");
     sub->subscribe(&callback);
 
     // Cap'n Zero: create proto message
@@ -63,7 +68,7 @@ int main(int argc, char** argv)
     capnzero_eval::EvalMessage::Builder beaconMsgBuilder = msgBuilder.initRoot<capnzero_eval::EvalMessage>();
     beaconMsgBuilder.setPayload(argv[2]);
 
-    experimentLog = new ExperimentLog("results", "CapnZeroEval.csv");
+    experimentLog = new ExperimentLog("results", "CapnZeroEval-TCP");
     int16_t counter = 0;
     while (!interrupted && counter != 1000) {
         beaconMsgBuilder.setId(++counter);

@@ -17,11 +17,11 @@ include_directories(
 )
 
 ############# Evaluation Software / Msg Sender
-add_executable(${PROJECT_NAME}
+add_executable(Evaluate
   src/CapnZeroEvaluation.cpp
   src/ExperimentLog.cpp
 )
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(Evaluate
   capnzero-eval-msgs
   ${catkin_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}
@@ -29,9 +29,8 @@ target_link_libraries(${PROJECT_NAME}
 
 ############# Evaluation Software / Msg Echo
 add_executable(Parrot
-  src/Parrot.cpp
+  src/CapnZeroParrot.cpp
 )
-
 target_link_libraries(Parrot
   capnzero-eval-msgs
   ${catkin_LIBRARIES}

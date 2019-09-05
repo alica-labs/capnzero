@@ -70,8 +70,8 @@ void ExperimentLog::resetStatistics()
 void ExperimentLog::serialise()
 {
     std::ofstream fileWriter;
-    fileWriter.open(std::string(folder + "/" + experimentName, std::ios_base::app));
-    fileWriter << this->count << "\t" << this->min << "\t" << this->max << "\t" << this->mean << "\t" << this->stdDev << std::endl;
+    fileWriter.open(std::string(experimentName+".csv"), std::ios_base::app);
+    fileWriter << experimentName << "\t" << this->count << "\t" << this->min << "\t" << this->max << "\t" << this->mean << "\t" << this->stdDev << std::endl;
     fileWriter.flush();
     fileWriter.close();
 }

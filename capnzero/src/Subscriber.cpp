@@ -107,6 +107,7 @@ void Subscriber::receive()
             check(zmq_msg_init(&topicMsg), "zmq_msg_init");
             if (0 == checkReceive(zmq_msg_recv(&topicMsg, this->socket, ZMQ_SNDMORE), topicMsg, "Subscriber::receive-Topic")) {
                 // error or timeout on recv
+                std::cout << "Subscriber: No Message here!" << std::endl;
                 continue;
             }
         }
@@ -131,7 +132,7 @@ void Subscriber::receive()
         }
 
         // Check whether message is memory aligned
-        assert(reinterpret_cast<uintptr_t>(zmq_msg_data(&msg)) % Subscriber::WORD_SIZE == 0);
+//        assert(reinterpret_cast<uintptr_t>(zmq_msg_data(&msg)) % Subscriber::WORD_SIZE == 0);
 
         // Call the callback with Cap'n Proto message
         int msgSize = zmq_msg_size(&msg);
