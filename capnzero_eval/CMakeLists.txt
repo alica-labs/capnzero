@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.10.2)
 project(capnzero_eval)
 
-## Use c++ 11x std
 add_definitions(-std=c++11)
 
 find_package(Threads)
@@ -18,12 +17,10 @@ include_directories(
 )
 
 ############# Evaluation Software / Msg Sender
-
 add_executable(${PROJECT_NAME}
-  src/CapnZeroEvaluation.cpp 
-  src/Statistics.cpp
+  src/CapnZeroEvaluation.cpp
+  src/ExperimentLog.cpp
 )
-
 target_link_libraries(${PROJECT_NAME}
   capnzero-eval-msgs
   ${catkin_LIBRARIES}
@@ -31,7 +28,6 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 ############# Evaluation Software / Msg Echo
-
 add_executable(Parrot
   src/Parrot.cpp
 )

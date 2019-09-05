@@ -1,23 +1,18 @@
 #include "capnzero-eval-msgs/EvalMessage.capnp.h"
 
-#include <capnzero/Common.h>
-#include <capnzero/Subscriber.h>
-#include <capnzero/Publisher.h>
-#include <capnp/common.h>
 #include <capnp/message.h>
 #include <capnp/serialize-packed.h>
+#include <capnzero/Common.h>
+#include <capnzero/Publisher.h>
+#include <capnzero/Subscriber.h>
 #include <kj/array.h>
 #include <signal.h>
 
 #include <vector>
-#include <string>
 
-static std::string  rcvmsgstring; //Global variable
-static long rcvmsgnumber = 0; //Global variable
-#define DEBUG_SENDER
 void callback(::capnp::FlatArrayMessageReader& reader);
+capnzero::Publisher* pub;
 
-void sender (capnzero::Publisher *pub);
 static bool interrupted = false;
 static void s_signal_handler(int signal_value)
 {
@@ -33,7 +28,7 @@ static void s_catch_signals(void)
     sigaction(SIGTERM, &action, NULL);
 }
 
-int main(int argc, char** argv) // Stack frame started
+int main(int argc, char** argv)
 {
     s_catch_signals();
 
@@ -45,54 +40,32 @@ int main(int argc, char** argv) // Stack frame started
     for (size_t i = 0; i < argc; i++) {
         std::cout << "Param " << i << ": '" << argv[i] << "'" << std::endl;
     }
+
     void* ctx = zmq_ctx_new();
     capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::UDP);
     sub->setTopic(argv[1]);
-    sub->subscribe(&callback);
-    capnzero::Publisher *pub = new capnzero::Publisher(ctx, capnzero::Protocol::UDP);
-    pub->setDefaultTopic(argv[1]);
     sub->addAddress("224.0.0.2:5500");
-    // init builder
+    sub->subscribe(&callback);
 
-    //Publisher  part
+    pub = new capnzero::Publisher(ctx, capnzero::Protocol::UDP);
+    pub->setDefaultTopic(argv[1]);
+    pub->addAddress("224.0.0.2:5554");
 
     while (!interrupted) {
-        if(rcvmsgnumber != NULL)
-        {
-           sender(pub);
 
-        }
-        else{"subscriber didn't  get called";}
     }
-    std::cout << "Cleaning up now. "  << std::endl;
+
+    std::cout << "Cleaning up now. " << std::endl;
     delete sub;
-    delete pub;// dynamic memory deallocated
+    delete pub;
     zmq_ctx_term(ctx);
 }
 
 void callback(::capnp::FlatArrayMessageReader& reader)
 {
-    std::cout << "Subscriber called for port 5500 and rcvd message: " << std::endl;
-    reader.getRoot<capnzero_eval::EvalMessage>().toString().flatten().cStr();
-    rcvmsgstring= reader.getRoot<capnzero_eval::EvalMessage>().getPayload();
-    rcvmsgnumber= int16_t (reader.getRoot<capnzero_eval::EvalMessage>().getId()); //Type casting
-    std::cout << "Received string message: "<<rcvmsgstring << std::endl;
-    std::cout << "Received int message: "<<rcvmsgnumber << std::endl;
-}
-void sender (capnzero::Publisher *pub){
-    pub->addAddress("224.0.0.2:5554");
     ::capnp::MallocMessageBuilder msgBuilder;
-    capnzero_eval::EvalMessage::Builder dataHolder= msgBuilder.initRoot<capnzero_eval::EvalMessage>();
-    dataHolder.setPayload(rcvmsgstring);
-    dataHolder.setId(rcvmsgnumber);
-    int numBytesSent = pub->send(msgBuilder);
-    {
-        std::cout << "I am going to publish the following message: " << numBytesSent << " Bytes sent!"
-                  << std::endl;
-
-        dataHolder.hasPayload();
-        rcvmsgnumber=NULL;
-        rcvmsgstring.clear();
-
-    }
-};
+    capnzero_eval::EvalMessage::Builder msg = msgBuilder.initRoot<capnzero_eval::EvalMessage>();
+    msg.setPayload(reader.getRoot<capnzero_eval::EvalMessage>().getPayload());
+    msg.setId(reader.getRoot<capnzero_eval::EvalMessage>().getId());
+    pub->send(msgBuilder);
+}

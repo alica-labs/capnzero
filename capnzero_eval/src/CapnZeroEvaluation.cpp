@@ -1,31 +1,27 @@
+#include "ExperimentLog.h"
 #include "capnzero-eval-msgs/EvalMessage.capnp.h"
-#include "Statistics.h"
 
-#include <capnzero/Publisher.h>
-#include <capnzero/Common.h>
-#include <capnzero/Subscriber.h>
 #include <capnp/common.h>
 #include <capnp/message.h>
 #include <capnp/serialize-packed.h>
-#include <kj/array.h>
+#include <capnzero/Common.h>
+#include <capnzero/Publisher.h>
+#include <capnzero/Subscriber.h>
 #include <chrono>
-#include <thread>
+#include <kj/array.h>
 #include <signal.h>
+#include <thread>
 
-#include <string>
-#include <iostream>
+
 #include <map>
-#include <fstream>
+#include <string>
 
-std::map<int16_t , std::chrono::time_point<std::chrono::high_resolution_clock >> measuringMap;
-std::map<long, double >Mymap;
+
 static bool interrupted = false;
 static void s_signal_handler(int signal_value)
 {
     interrupted = true;
 }
-void callback(::capnp::FlatArrayMessageReader& reader); //function prototype
-
 static void s_catch_signals(void)
 {
     struct sigaction action;
@@ -35,13 +31,13 @@ static void s_catch_signals(void)
     sigaction(SIGINT, &action, NULL);
     sigaction(SIGTERM, &action, NULL);
 }
-int main(int argc, char** argv)// Stack frame started
+
+void callback(::capnp::FlatArrayMessageReader& reader);
+ExperimentLog* experimentLog;
+
+int main(int argc, char** argv)
 {
-    int16_t counter=0;
     s_catch_signals();
-    std::ofstream data_saver;
-    data_saver.open("result_storage/result.csv");
-    data_saver << "Capnzero Measurement summary.\n ";
 
     if (argc <= 1) {
         std::cerr << "Synopsis: rosrun capnproto pub \"String that should be published!\"" << std::endl;
@@ -51,94 +47,46 @@ int main(int argc, char** argv)// Stack frame started
         std::cout << "Param " << i << ": '" << argv[i] << "'" << std::endl;
     }
 
-    // Cap'n Proto: create proto message
-    Statistics<double> *measurement_unit =new Statistics<double > ;
-    // init builder
-    ::capnp::MallocMessageBuilder msgBuilder;
-    capnzero_eval::EvalMessage::Builder beaconMsgBuilder = msgBuilder.initRoot<capnzero_eval::EvalMessage>();
-
-    // set content
-    beaconMsgBuilder.setPayload(argv[2]);
-#ifdef DEBUG_PUB
-    std::cout << "pub: Message to send: " << beaconMsgBuilder.toString().flatten().cStr() << std::endl;
-#endif
+    // Publisher  part
     void* ctx = zmq_ctx_new();
-
-//Publisher  part
-    capnzero::Publisher * pub = new capnzero::Publisher(ctx, capnzero::Protocol::UDP);
+    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::UDP);
     pub->setDefaultTopic(argv[1]);
     pub->addAddress("224.0.0.2:5500");
 
     capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::UDP);
     sub->setTopic(argv[1]);
-    sub->subscribe(&callback);
     sub->addAddress("224.0.0.2:5554");
+    sub->subscribe(&callback);
 
-    while (!interrupted)
-    {
-        {     beaconMsgBuilder.setId(counter);
-            int numBytesSent = pub->send(msgBuilder);
-            measuringMap.emplace(counter, std::chrono::high_resolution_clock::now());
-            {
-                std::cout << "Publisher is going to publish: "<< numBytesSent << " Bytes sent!" << std::endl;
-                std::cout << "Publisher is going to publish: "<< counter <<" Message" << std::endl;}
-#ifdef DEBUG_PUB
-            std::cout << "I am going to publish the following message : "<< numBytesSent << " Bytes sent!" << std::endl;
-#endif
-            //std::this_thread::sleep_for(std::chrono::seconds(2));
-        }// wait until everything is send
+    // Cap'n Zero: create proto message
+    ::capnp::MallocMessageBuilder msgBuilder;
+    capnzero_eval::EvalMessage::Builder beaconMsgBuilder = msgBuilder.initRoot<capnzero_eval::EvalMessage>();
+    beaconMsgBuilder.setPayload(argv[2]);
+
+    experimentLog = new ExperimentLog("results", "CapnZeroEval.csv");
+    int16_t counter = 0;
+    while (!interrupted && counter != 1000) {
+        beaconMsgBuilder.setId(++counter);
+        experimentLog->addStartedMeasurement(counter, std::chrono::high_resolution_clock::now());
+        pub->send(msgBuilder);
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        counter++;
     }
-    std::cout << "We must have missed: " << measuringMap.size() << " Number of Msgs!" <<std::endl;
 
-    std::cout << "number of rcvd msg: "<<Mymap.size()<<std::endl;
-    data_saver<<"We must have missed: " << measuringMap.size() << " Number of Msgs!" <<std::endl;
-    data_saver<<"Number of rcvd msg: "<<Mymap.size()<<std::endl ;
-    data_saver <<"Missed Messages Id,Start time (ns),Mean time (ns),Standard deviation (ns),Maximum time (ns),Minimum time (ns) \n   ";
-    for (auto& entry : measuringMap)
-    {
-        std::cout << "ID: " << entry.first << " StartTime: " << std::chrono::duration_cast<std::chrono::nanoseconds>(entry.second.time_since_epoch()).count() << std::endl;
-        data_saver << entry.first <<";" << std::chrono::duration_cast<std::chrono::nanoseconds>(entry.second.time_since_epoch()).count() << std::endl;
-    }
-    auto mEan =measurement_unit->referencemean(Mymap); // access member function using pointer
-    auto standard_deviation= measurement_unit->referencestd_dev(Mymap);// access member function using pointer
-    auto  mAx = measurement_unit->rmax(Mymap);// access member function using pointer
-    auto mIn=measurement_unit->rmin(Mymap);// access member function using pointer
-    data_saver <<";"<<";"<< mEan<<";"<<standard_deviation<<";"<<mAx<<";"<< mIn <<std::endl;
-    data_saver.close();
-    std::cout << "Cleaning up now. "  << std::endl;
-    delete  measurement_unit;
-    Mymap.clear();
-    measuringMap.clear();
+    // wait for messages to arrive, then write results to file
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    experimentLog->calcStatistics();
+    experimentLog->serialise();
+
+    std::cout << "Cleaning up now. " << std::endl;
+    delete experimentLog;
     delete sub;
-    delete pub;// dynamic memory deallocation
+    delete pub;
     zmq_ctx_term(ctx);
+
     return 0;
 }
 
-void callback(::capnp::FlatArrayMessageReader& reader) //Stack frame after main call this function using subscriber
-                                                       //Function declaration or Body
+void callback(::capnp::FlatArrayMessageReader& reader)
 {
-    std::cout << "I have received the following from the subscriber: " << std::endl;
-    std::string rcvdmsg = reader.getRoot<capnzero_eval::EvalMessage>().toString().flatten().cStr() ;//local variable
-    register int16_t rcvmsgnumber=reader.getRoot<capnzero_eval::EvalMessage>().getId(); //local variable in register
-    register std::string rcvmsgstring=reader.getRoot<capnzero_eval::EvalMessage>().getPayload(); //local variable in register
-    std::cout << "Size of the received str is: " << rcvdmsg.length() << " \n";
-    std::cout << "String data inside received msg: " << rcvmsgstring << " \n";
-    std::cout << "Integer data inside received msg: "<< rcvmsgnumber << " \n";
-    auto mapEntry = measuringMap.find(rcvmsgnumber);
-    if (mapEntry != measuringMap.end()) {
-        std::cout<<"Received ID: " << rcvmsgnumber << " Time elapsed is: "
-                 << std::chrono::duration_cast<std::chrono::nanoseconds> (std::chrono::high_resolution_clock::now() - mapEntry->second).count()<<" ns"<< std::endl;
-        double time_passed=double(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - mapEntry->second).count() );
-        // here is my Mymap is the Map containner
-        Mymap.emplace(rcvmsgnumber,time_passed);
-        measuringMap.erase(rcvmsgnumber);
-    }
-    else
-    {
-        std::cerr << "That is Strange!" << std::endl;
-    }
-
+    experimentLog->finishMeasurement(reader.getRoot<capnzero_eval::EvalMessage>().getId(), std::chrono::high_resolution_clock::now());
 }
