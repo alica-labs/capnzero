@@ -10,7 +10,7 @@
 #include <signal.h>
 #include <thread>
 
-#define DEBUG_SENDER
+//#define DEBUG_SENDER
 
 void callback(::capnp::FlatArrayMessageReader& reader)
 {
@@ -48,12 +48,14 @@ int main(int argc, char** argv)
     }
 
     void* ctx = zmq_ctx_new();
-    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, argv[1]);
-//    sub->connect(capnzero::CommType::IPC, "@capnzero.ipc");
-    sub->connect(capnzero::CommType::UDP, "224.0.0.2:5555");
-//    sub->connect(capnzero::CommType::TCP, "141.51.122.62:5555");
-    sub->subscribe(&callback);
+    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::UDP);
+    sub->setTopic(argv[1]);
 
+//    sub->addAddress("@capnzero.ipc");
+    sub->addAddress("224.0.0.2:5555");
+//    sub->addAddress("127.0.0.1:5555");
+
+    sub->subscribe(&callback);
     while (!interrupted) {
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }

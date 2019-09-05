@@ -65,15 +65,14 @@ int main(int argc, char** argv)// Stack frame started
     void* ctx = zmq_ctx_new();
 
 //Publisher  part
-    capnzero::Publisher * pub = new capnzero::Publisher(ctx);
-    pub->setDefaultGroup(argv[1]);
-    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, argv[1]); // creating a pointer in the heap /free pool of memory
-                                                                          //Dynamic memory allocation
-    pub->bind(capnzero::CommType::UDP, "224.0.0.2:5500");
+    capnzero::Publisher * pub = new capnzero::Publisher(ctx, capnzero::Protocol::UDP);
+    pub->setDefaultTopic(argv[1]);
+    pub->addAddress("224.0.0.2:5500");
 
-//Subscriber part
-    sub->connect(capnzero::CommType::UDP, "224.0.0.2:5554");
+    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::UDP);
+    sub->setTopic(argv[1]);
     sub->subscribe(&callback);
+    sub->addAddress("224.0.0.2:5554");
 
     while (!interrupted)
     {
