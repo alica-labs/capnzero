@@ -4,11 +4,16 @@ project(capnzero_eval)
 add_definitions(-std=c++11)
 
 find_package(Threads)
-find_package(catkin REQUIRED COMPONENTS capnzero)
+find_package(catkin REQUIRED COMPONENTS capnzero fsystem roscpp message_generation)
+
+############# Evaluation Message ROS
+add_message_files(FILES EvalMessageRos.msg)
+generate_messages(DEPENDENCIES std_msgs)
+
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES capnzero-eval-msgs
-  CATKIN_DEPENDS capnzero
+  CATKIN_DEPENDS capnzero fsystem roscpp std_msgs message_runtime
 )
 
 include_directories(
@@ -26,6 +31,7 @@ target_link_libraries(Evaluate
   ${catkin_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}
 )
+add_dependencies(Evaluate capnzero_eval_generate_messages_cpp)
 
 ############# Evaluation Software / Msg Echo
 add_executable(Parrot
@@ -36,8 +42,9 @@ target_link_libraries(Parrot
   ${catkin_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}
 )
+add_dependencies(Parrot capnzero_eval_generate_messages_cpp)
 
-############# Evaluation Message
+############# Evaluation Message CapnZero
 find_package(CapnProto REQUIRED)
 set(capnzero_eval_message_folder "${CMAKE_CURRENT_SOURCE_DIR}/msg")
 file(GLOB_RECURSE capnzero_eval_msgs ${capnzero_eval_message_folder} *.capnp)

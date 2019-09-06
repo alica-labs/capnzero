@@ -1,5 +1,6 @@
 #include "ExperimentLog.h"
-#include "capnzero-eval-msgs/EvalMessage.capnp.h"
+#include "capnzero-eval-msgs/EvalMessageCapnZero.capnp.h"
+#include "capnzero_eval/EvalMessageRos.h"
 
 #include <capnp/common.h>
 #include <capnp/message.h>
@@ -8,6 +9,8 @@
 #include <capnzero/Publisher.h>
 #include <capnzero/Subscriber.h>
 #include <kj/array.h>
+
+#include <ros/ros.h>
 
 #include <chrono>
 #include <signal.h>
@@ -29,7 +32,12 @@ static void s_catch_signals(void)
     sigaction(SIGTERM, &action, NULL);
 }
 
-void callback(::capnp::FlatArrayMessageReader& reader);
+void evalCapnZero(std::string topic, std::string payload);
+void callbackCapnZero(::capnp::FlatArrayMessageReader& reader);
+
+void evalRos(int argc, char** argv, std::string topic, std::string payload);
+void callbackRos(const capnzero_eval::EvalMessageRos::ConstPtr& msg);
+
 ExperimentLog* experimentLog;
 
 int main(int argc, char** argv)
@@ -44,55 +52,96 @@ int main(int argc, char** argv)
         std::cout << "Param " << i << ": '" << argv[i] << "'" << std::endl;
     }
 
-    void* ctx = zmq_ctx_new();
-    //    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::UDP);
-    //    pub->addAddress("224.0.0.2:5500");
-        capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::IPC);
-        pub->addAddress("@capnzeroSend.ipc");
-//    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::TCP);
-//    pub->addAddress("127.0.0.1:5500");
-
-    pub->setDefaultTopic(argv[1]);
-
-    //    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::UDP);
-    //    sub->addAddress("224.0.0.2:5554");
-        capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::IPC);
-        sub->addAddress("@capnzeroReceive.ipc");
-//    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::TCP);
-//    sub->addAddress("127.0.0.1:5554");
-
-    sub->setTopic(argv[1]);
-    sub->subscribe(&callback);
-
-    // Cap'n Zero: create proto message
-    ::capnp::MallocMessageBuilder msgBuilder;
-    capnzero_eval::EvalMessage::Builder beaconMsgBuilder = msgBuilder.initRoot<capnzero_eval::EvalMessage>();
-    beaconMsgBuilder.setPayload(argv[2]);
-
-    experimentLog = new ExperimentLog("results", "IPC");
-    int16_t counter = 0;
-    while (!interrupted && counter != 1000) {
-        beaconMsgBuilder.setId(++counter);
-        experimentLog->addStartedMeasurement(counter, std::chrono::high_resolution_clock::now());
-        pub->send(msgBuilder);
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    if (std::string("ros").compare(argv[1]) == 0) {
+        evalRos(argc, argv, argv[2], argv[3]);
+    } else {
+        evalCapnZero(argv[2], argv[3]);
     }
 
-    // wait for messages to arrive, then write results to file
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    // calculate and write results to file
     experimentLog->calcStatistics();
     experimentLog->serialise();
 
     std::cout << "Cleaning up now. " << std::endl;
     delete experimentLog;
-    delete sub;
-    delete pub;
-    zmq_ctx_term(ctx);
 
     return 0;
 }
 
-void callback(::capnp::FlatArrayMessageReader& reader)
+void evalRos(int argc, char** argv, std::string topic, std::string payload)
+{
+    ros::init(argc, argv, "evalRos");
+    ros::NodeHandle n;
+    ros::Publisher pub = n.advertise<capnzero_eval::EvalMessageRos>(topic, 10);
+    ros::Subscriber sub = n.subscribe(topic + "back", 10, callbackRos);
+    ros::Rate loop_rate(100.0);
+    ros::AsyncSpinner spinner(4);
+    spinner.start();
+
+    capnzero_eval::EvalMessageRos msg;
+    msg.payload = payload;
+
+    experimentLog = new ExperimentLog("results", "ROS");
+    int16_t counter = 0;
+
+    while (ros::ok() && counter != 1000) {
+        msg.id = ++counter;
+        experimentLog->addStartedMeasurement(counter, std::chrono::high_resolution_clock::now());
+        pub.publish(msg);
+        loop_rate.sleep();
+    }
+
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+}
+
+void callbackRos(const capnzero_eval::EvalMessageRos::ConstPtr& msg)
+{
+    experimentLog->finishMeasurement(msg->id, std::chrono::high_resolution_clock::now());
+}
+
+void evalCapnZero(std::string topic, std::string payload)
+{
+    void* ctx = zmq_ctx_new();
+    //        capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::UDP);
+    //        pub->addAddress("224.0.0.2:5500");
+    //        capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::IPC);
+    //        pub->addAddress("@capnzeroSend.ipc");
+    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::TCP);
+    pub->addAddress("127.0.0.1:5500");
+
+    pub->setDefaultTopic(topic);
+
+    //        capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::UDP);
+    //        sub->addAddress("224.0.0.2:5554");
+    //        capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::IPC);
+    //        sub->addAddress("@capnzeroReceive.ipc");
+    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::TCP);
+    sub->addAddress("127.0.0.1:5554");
+
+    sub->setTopic(topic);
+    sub->subscribe(&callbackCapnZero);
+
+    // Cap'n Zero: create proto message
+    ::capnp::MallocMessageBuilder msgBuilder;
+    capnzero_eval::EvalMessage::Builder beaconMsgBuilder = msgBuilder.initRoot<capnzero_eval::EvalMessage>();
+    beaconMsgBuilder.setPayload(payload);
+
+    experimentLog = new ExperimentLog("results", "TCP");
+    int16_t counter = 0;
+    while (!interrupted && counter != 1000) {
+        beaconMsgBuilder.setId(++counter);
+        experimentLog->addStartedMeasurement(counter, std::chrono::high_resolution_clock::now());
+        pub->send(msgBuilder);
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    delete sub;
+    delete pub;
+    zmq_ctx_term(ctx);
+}
+
+void callbackCapnZero(::capnp::FlatArrayMessageReader& reader)
 {
     experimentLog->finishMeasurement(reader.getRoot<capnzero_eval::EvalMessage>().getId(), std::chrono::high_resolution_clock::now());
 }
