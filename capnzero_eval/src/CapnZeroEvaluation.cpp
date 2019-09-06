@@ -11,11 +11,13 @@
 #include <kj/array.h>
 
 #include <ros/ros.h>
+#include <ros/serialization.h>
 
 #include <chrono>
 #include <signal.h>
 #include <string>
 #include <thread>
+#include <random>
 
 static bool interrupted = false;
 static void s_signal_handler(int signal_value)
@@ -35,7 +37,7 @@ static void s_catch_signals(void)
 void evalCapnZero(std::string topic, std::string payload);
 void callbackCapnZero(::capnp::FlatArrayMessageReader& reader);
 
-void evalRos(int argc, char** argv, std::string topic, std::string payload);
+void evalRos(int argc, char** argv, std::string topic);
 void callbackRos(const capnzero_eval::EvalMessageRos::ConstPtr& msg);
 
 ExperimentLog* experimentLog;
@@ -53,14 +55,13 @@ int main(int argc, char** argv)
     }
 
     if (std::string("ros").compare(argv[1]) == 0) {
-        evalRos(argc, argv, argv[2], argv[3]);
+        evalRos(argc, argv, argv[2]);
     } else {
         evalCapnZero(argv[2], argv[3]);
     }
 
     // calculate and write results to file
-    experimentLog->calcStatistics();
-    experimentLog->serialise();
+
 
     std::cout << "Cleaning up now. " << std::endl;
     delete experimentLog;
@@ -68,28 +69,53 @@ int main(int argc, char** argv)
     return 0;
 }
 
-void evalRos(int argc, char** argv, std::string topic, std::string payload)
+void evalRos(int argc, char** argv, std::string topic)
 {
     ros::init(argc, argv, "evalRos");
     ros::NodeHandle n;
-    ros::Publisher pub = n.advertise<capnzero_eval::EvalMessageRos>(topic, 10);
-    ros::Subscriber sub = n.subscribe(topic + "back", 10, callbackRos);
+    ros::Publisher pub = n.advertise<capnzero_eval::EvalMessageRos>(topic, 1000);
+    ros::Subscriber sub = n.subscribe(topic + "back", 1000, callbackRos);
     ros::Rate loop_rate(100.0);
     ros::AsyncSpinner spinner(4);
     spinner.start();
 
     capnzero_eval::EvalMessageRos msg;
-    msg.payload = payload;
 
     experimentLog = new ExperimentLog("results", "ROS");
-    int16_t counter = 0;
+    int16_t msgCounter = 0;
+    int payloadBytes = 8;
+    std::random_device engine;
 
-    while (ros::ok() && counter != 1000) {
-        msg.id = ++counter;
-        experimentLog->addStartedMeasurement(counter, std::chrono::high_resolution_clock::now());
-        pub.publish(msg);
-        loop_rate.sleep();
-    }
+//    while (ros::ok() && payloadBytes < pow(2,17)) {
+
+        // fill payload with multiple of 8 bytes
+//        for (int i = 0; i < payloadBytes/4; i++) {
+        for (int i = 0; i < 512; i++) {
+            msg.payload.push_back(engine());
+        }
+
+        std::cout << "CapnZeroEvaluation::callbackRos: Payload Bytes\t" << payloadBytes << "\t Message Size [Bytes]: \t" << ros::serialization::serializationLength(msg) << std::endl;
+
+        while (ros::ok() && msgCounter != 1000) {
+            msg.id = ++msgCounter;
+            experimentLog->addStartedMeasurement(msgCounter, std::chrono::high_resolution_clock::now());
+            pub.publish(msg);
+            ros::spinOnce();
+            loop_rate.sleep();
+        }
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        // log statistics
+        experimentLog->calcStatistics();
+        experimentLog->serialise(std::to_string(ros::serialization::serializationLength(msg)));
+
+        // reset stuff and increase payload
+        experimentLog->reset();
+        msgCounter = 0;
+        msg.payload.clear();
+        payloadBytes *= 2;
+//    }
 
     std::this_thread::sleep_for(std::chrono::seconds(1));
 }

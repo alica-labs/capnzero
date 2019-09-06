@@ -14,7 +14,8 @@ public:
     void finishMeasurement(long id, std::chrono::time_point<std::chrono::high_resolution_clock> end);
     void resetStatistics();
     void calcStatistics();
-    void serialise();
+    void serialise(std::string prefix);
+    void reset();
 
 protected:
     std::string folder;

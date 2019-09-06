@@ -1,2 +1,2 @@
 int64  id
-string payload
+int32[] payload

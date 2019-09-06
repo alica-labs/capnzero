@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.10.2)
 project(capnzero_eval)
 
 add_definitions(-std=c++11)
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 
 find_package(Threads)
 find_package(catkin REQUIRED COMPONENTS capnzero fsystem roscpp message_generation)

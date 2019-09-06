@@ -60,7 +60,7 @@ void evalRos(int argc, char** argv, std::string topic)
 {
     ros::init(argc, argv, "Parrot");
     ros::NodeHandle n;
-    pubRos = n.advertise<capnzero_eval::EvalMessageRos>(topic+"back", 10);
+    pubRos = n.advertise<capnzero_eval::EvalMessageRos>(topic+"back", 1000);
     ros::Subscriber sub = n.subscribe(topic, 1, callbackRos);
     ros::Rate loop_rate(100.0);
     while (ros::ok()) {
