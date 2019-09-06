@@ -19,7 +19,8 @@ public:
 protected:
     std::string folder;
     std::string experimentName;
-    long count;
+    long missedMsgs;
+    long receivedMsgs;
     double max;
     double min;
     double mean;

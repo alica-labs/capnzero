@@ -1,11 +1,8 @@
 #include "ExperimentLog.h"
 
 #include <algorithm>
-#include <cmath>
 #include <iostream>
-#include <vector>
 #include <fstream>
-#include <iostream>
 
 ExperimentLog::ExperimentLog(std::string folder, std::string experimentName)
         : folder(folder)
@@ -49,18 +46,21 @@ void ExperimentLog::calcStatistics()
         }
 
         // mean & stdDev
-        count += 1;
+        receivedMsgs += 1;
         double delta = mapEntry.second.count() - mean;
-        mean += delta / count;
+        mean += delta / receivedMsgs; // (value - oldMean) / (oldMessages + 1)
         double delta2 = mapEntry.second.count() - mean;
         M2 += delta * delta2;
     }
-    this->stdDev = M2 / count;
+    this->stdDev = M2 / receivedMsgs;
+
+    // missed messages
+    this->missedMsgs = this->startedMeasurements.size();
 }
 
 void ExperimentLog::resetStatistics()
 {
-    this->count = 0;
+    this->receivedMsgs = 0;
     this->max = 0;
     this->min = std::numeric_limits<double>::max();
     this->mean = 0;
@@ -70,8 +70,8 @@ void ExperimentLog::resetStatistics()
 void ExperimentLog::serialise()
 {
     std::ofstream fileWriter;
-    fileWriter.open(std::string(experimentName+".csv"), std::ios_base::app);
-    fileWriter << experimentName << "\t" << this->count << "\t" << this->min << "\t" << this->max << "\t" << this->mean << "\t" << this->stdDev << std::endl;
+    fileWriter.open(std::string(this->folder + "/CapnZeroEval.csv"), std::ios_base::app);
+    fileWriter << experimentName << "\t" << this->mean << "\t" << this->stdDev <<  "\t" << this->min << "\t" << this->max << "\t" << this->receivedMsgs << "\t" << this->missedMsgs << std::endl;
     fileWriter.flush();
     fileWriter.close();
 }

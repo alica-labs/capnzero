@@ -44,22 +44,23 @@ int main(int argc, char** argv)
         std::cout << "Param " << i << ": '" << argv[i] << "'" << std::endl;
     }
 
-    // Publisher  part
     void* ctx = zmq_ctx_new();
     //    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::UDP);
-    //    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::IPC);
-    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::TCP);
     //    pub->addAddress("224.0.0.2:5500");
-    //    pub->addAddress("@capnzeroSend.ipc");
-    pub->addAddress("127.0.0.1:5500");
+        capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::IPC);
+        pub->addAddress("@capnzeroSend.ipc");
+//    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::TCP);
+//    pub->addAddress("127.0.0.1:5500");
+
     pub->setDefaultTopic(argv[1]);
 
     //    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::UDP);
-    //    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::IPC);
-    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::TCP);
     //    sub->addAddress("224.0.0.2:5554");
-    //    sub->addAddress("@capnzeroReceive.ipc");
-    sub->addAddress("127.0.0.1:5554");
+        capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::IPC);
+        sub->addAddress("@capnzeroReceive.ipc");
+//    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::TCP);
+//    sub->addAddress("127.0.0.1:5554");
+
     sub->setTopic(argv[1]);
     sub->subscribe(&callback);
 
@@ -68,7 +69,7 @@ int main(int argc, char** argv)
     capnzero_eval::EvalMessage::Builder beaconMsgBuilder = msgBuilder.initRoot<capnzero_eval::EvalMessage>();
     beaconMsgBuilder.setPayload(argv[2]);
 
-    experimentLog = new ExperimentLog("results", "CapnZeroEval-TCP");
+    experimentLog = new ExperimentLog("results", "IPC");
     int16_t counter = 0;
     while (!interrupted && counter != 1000) {
         beaconMsgBuilder.setId(++counter);

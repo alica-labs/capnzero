@@ -8,7 +8,7 @@ const int Subscriber::WORD_SIZE = sizeof(capnp::word);
 Subscriber::Subscriber(void* context, Protocol protocol)
         : socket(nullptr)
         , rcvTimeout(500)
-        , topic("???") // this filter will hopefully never be used
+        , topic("???") // this filter topic will hopefully never be used
         , context(context)
         , protocol(protocol)
         , running(false)
