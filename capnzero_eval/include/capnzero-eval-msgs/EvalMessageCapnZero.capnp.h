@@ -14,22 +14,22 @@
 namespace capnp {
 namespace schemas {
 
-CAPNP_DECLARE_SCHEMA(ad78f33aaf2c63b1);
+CAPNP_DECLARE_SCHEMA(f513b30d5c7ab329);
 
 }  // namespace schemas
 }  // namespace capnp
 
 namespace capnzero_eval {
 
-struct EvalMessage {
-  EvalMessage() = delete;
+struct EvalMessageCapnZero {
+  EvalMessageCapnZero() = delete;
 
   class Reader;
   class Builder;
   class Pipeline;
 
   struct _capnpPrivate {
-    CAPNP_DECLARE_STRUCT_HEADER(ad78f33aaf2c63b1, 1, 1)
+    CAPNP_DECLARE_STRUCT_HEADER(f513b30d5c7ab329, 1, 1)
     #if !CAPNP_LITE
     static constexpr ::capnp::_::RawBrandedSchema const* brand() { return &schema->defaultBrand; }
     #endif  // !CAPNP_LITE
@@ -38,9 +38,9 @@ struct EvalMessage {
 
 // =======================================================================================
 
-class EvalMessage::Reader {
+class EvalMessageCapnZero::Reader {
 public:
-  typedef EvalMessage Reads;
+  typedef EvalMessageCapnZero Reads;
 
   Reader() = default;
   inline explicit Reader(::capnp::_::StructReader base): _reader(base) {}
@@ -56,9 +56,9 @@ public:
 #endif  // !CAPNP_LITE
 
   inline bool hasPayload() const;
-  inline  ::capnp::Text::Reader getPayload() const;
+  inline  ::capnp::List< ::uint32_t>::Reader getPayload() const;
 
-  inline  ::int16_t getId() const;
+  inline  ::uint32_t getId() const;
 
 private:
   ::capnp::_::StructReader _reader;
@@ -72,9 +72,9 @@ private:
   friend class ::capnp::Orphanage;
 };
 
-class EvalMessage::Builder {
+class EvalMessageCapnZero::Builder {
 public:
-  typedef EvalMessage Builds;
+  typedef EvalMessageCapnZero Builds;
 
   Builder() = delete;  // Deleted to discourage incorrect usage.
                        // You can explicitly initialize to nullptr instead.
@@ -89,14 +89,15 @@ public:
 #endif  // !CAPNP_LITE
 
   inline bool hasPayload();
-  inline  ::capnp::Text::Builder getPayload();
-  inline void setPayload( ::capnp::Text::Reader value);
-  inline  ::capnp::Text::Builder initPayload(unsigned int size);
-  inline void adoptPayload(::capnp::Orphan< ::capnp::Text>&& value);
-  inline ::capnp::Orphan< ::capnp::Text> disownPayload();
+  inline  ::capnp::List< ::uint32_t>::Builder getPayload();
+  inline void setPayload( ::capnp::List< ::uint32_t>::Reader value);
+  inline void setPayload(::kj::ArrayPtr<const  ::uint32_t> value);
+  inline  ::capnp::List< ::uint32_t>::Builder initPayload(unsigned int size);
+  inline void adoptPayload(::capnp::Orphan< ::capnp::List< ::uint32_t>>&& value);
+  inline ::capnp::Orphan< ::capnp::List< ::uint32_t>> disownPayload();
 
-  inline  ::int16_t getId();
-  inline void setId( ::int16_t value);
+  inline  ::uint32_t getId();
+  inline void setId( ::uint32_t value);
 
 private:
   ::capnp::_::StructBuilder _builder;
@@ -108,9 +109,9 @@ private:
 };
 
 #if !CAPNP_LITE
-class EvalMessage::Pipeline {
+class EvalMessageCapnZero::Pipeline {
 public:
-  typedef EvalMessage Pipelines;
+  typedef EvalMessageCapnZero Pipelines;
 
   inline Pipeline(decltype(nullptr)): _typeless(nullptr) {}
   inline explicit Pipeline(::capnp::AnyPointer::Pipeline&& typeless)
@@ -126,51 +127,55 @@ private:
 
 // =======================================================================================
 
-inline bool EvalMessage::Reader::hasPayload() const {
+inline bool EvalMessageCapnZero::Reader::hasPayload() const {
   return !_reader.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS).isNull();
 }
-inline bool EvalMessage::Builder::hasPayload() {
+inline bool EvalMessageCapnZero::Builder::hasPayload() {
   return !_builder.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS).isNull();
 }
-inline  ::capnp::Text::Reader EvalMessage::Reader::getPayload() const {
-  return ::capnp::_::PointerHelpers< ::capnp::Text>::get(_reader.getPointerField(
+inline  ::capnp::List< ::uint32_t>::Reader EvalMessageCapnZero::Reader::getPayload() const {
+  return ::capnp::_::PointerHelpers< ::capnp::List< ::uint32_t>>::get(_reader.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS));
 }
-inline  ::capnp::Text::Builder EvalMessage::Builder::getPayload() {
-  return ::capnp::_::PointerHelpers< ::capnp::Text>::get(_builder.getPointerField(
+inline  ::capnp::List< ::uint32_t>::Builder EvalMessageCapnZero::Builder::getPayload() {
+  return ::capnp::_::PointerHelpers< ::capnp::List< ::uint32_t>>::get(_builder.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS));
 }
-inline void EvalMessage::Builder::setPayload( ::capnp::Text::Reader value) {
-  ::capnp::_::PointerHelpers< ::capnp::Text>::set(_builder.getPointerField(
+inline void EvalMessageCapnZero::Builder::setPayload( ::capnp::List< ::uint32_t>::Reader value) {
+  ::capnp::_::PointerHelpers< ::capnp::List< ::uint32_t>>::set(_builder.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS), value);
 }
-inline  ::capnp::Text::Builder EvalMessage::Builder::initPayload(unsigned int size) {
-  return ::capnp::_::PointerHelpers< ::capnp::Text>::init(_builder.getPointerField(
+inline void EvalMessageCapnZero::Builder::setPayload(::kj::ArrayPtr<const  ::uint32_t> value) {
+  ::capnp::_::PointerHelpers< ::capnp::List< ::uint32_t>>::set(_builder.getPointerField(
+      ::capnp::bounded<0>() * ::capnp::POINTERS), value);
+}
+inline  ::capnp::List< ::uint32_t>::Builder EvalMessageCapnZero::Builder::initPayload(unsigned int size) {
+  return ::capnp::_::PointerHelpers< ::capnp::List< ::uint32_t>>::init(_builder.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS), size);
 }
-inline void EvalMessage::Builder::adoptPayload(
-    ::capnp::Orphan< ::capnp::Text>&& value) {
-  ::capnp::_::PointerHelpers< ::capnp::Text>::adopt(_builder.getPointerField(
+inline void EvalMessageCapnZero::Builder::adoptPayload(
+    ::capnp::Orphan< ::capnp::List< ::uint32_t>>&& value) {
+  ::capnp::_::PointerHelpers< ::capnp::List< ::uint32_t>>::adopt(_builder.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS), kj::mv(value));
 }
-inline ::capnp::Orphan< ::capnp::Text> EvalMessage::Builder::disownPayload() {
-  return ::capnp::_::PointerHelpers< ::capnp::Text>::disown(_builder.getPointerField(
+inline ::capnp::Orphan< ::capnp::List< ::uint32_t>> EvalMessageCapnZero::Builder::disownPayload() {
+  return ::capnp::_::PointerHelpers< ::capnp::List< ::uint32_t>>::disown(_builder.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS));
 }
 
-inline  ::int16_t EvalMessage::Reader::getId() const {
-  return _reader.getDataField< ::int16_t>(
+inline  ::uint32_t EvalMessageCapnZero::Reader::getId() const {
+  return _reader.getDataField< ::uint32_t>(
       ::capnp::bounded<0>() * ::capnp::ELEMENTS);
 }
 
-inline  ::int16_t EvalMessage::Builder::getId() {
-  return _builder.getDataField< ::int16_t>(
+inline  ::uint32_t EvalMessageCapnZero::Builder::getId() {
+  return _builder.getDataField< ::uint32_t>(
       ::capnp::bounded<0>() * ::capnp::ELEMENTS);
 }
-inline void EvalMessage::Builder::setId( ::int16_t value) {
-  _builder.setDataField< ::int16_t>(
+inline void EvalMessageCapnZero::Builder::setId( ::uint32_t value) {
+  _builder.setDataField< ::uint32_t>(
       ::capnp::bounded<0>() * ::capnp::ELEMENTS, value);
 }
 

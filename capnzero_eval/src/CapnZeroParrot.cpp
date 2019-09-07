@@ -112,6 +112,6 @@ void callbackCapnZero(::capnp::FlatArrayMessageReader& reader)
     //    capnzero_eval::EvalMessage::Builder msg = msgBuilder.initRoot<capnzero_eval::EvalMessage>();
     //    msg.setPayload(reader.getRoot<capnzero_eval::EvalMessage>().getPayload());
     //    msg.setId(reader.getRoot<capnzero_eval::EvalMessage>().getId());
-    msgBuilder.setRoot<capnzero_eval::EvalMessage::Reader>(reader.getRoot<capnzero_eval::EvalMessage>());
+    msgBuilder.setRoot<capnzero_eval::EvalMessageCapnZero::Reader>(reader.getRoot<capnzero_eval::EvalMessageCapnZero>());
     pubCapnZero->send(msgBuilder);
 }
