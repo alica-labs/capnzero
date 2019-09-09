@@ -132,7 +132,7 @@ void Subscriber::receive()
         }
 
         // Check whether message is memory aligned
-//        assert(reinterpret_cast<uintptr_t>(zmq_msg_data(&msg)) % Subscriber::WORD_SIZE == 0);
+        assert(reinterpret_cast<uintptr_t>(zmq_msg_data(&msg)) % Subscriber::WORD_SIZE == 0);
 
         // Call the callback with Cap'n Proto message
         int msgSize = zmq_msg_size(&msg);
