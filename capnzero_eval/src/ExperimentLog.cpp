@@ -85,5 +85,5 @@ void ExperimentLog::serialise(std::string prefix)
     std::ofstream fileWriter;
 //    essentials::FileSystem::createDirectory(this->folder, S_IRWXU); // setting the rights of the folder did not work for me :(
     fileWriter.open(essentials::FileSystem::combinePaths(this->folder, "CapnZeroEval.csv"), std::ios_base::app);
-    fileWriter << std::fixed << experimentName << "\t" << prefix << "\t\t\t" << this->mean << "\t" << this->stdDev <<  "\t" << this->min << "\t" << this->max << "\t" << this->receivedMsgs << "\t" << this->missedMsgs << std::endl;
+    fileWriter << std::fixed << experimentName << "\t" << prefix << "\t\t\t\t" << this->mean << "\t" << this->stdDev <<  "\t" << this->min << "\t" << this->max << "\t" << this->receivedMsgs << "\t" << this->missedMsgs << std::endl;
 }

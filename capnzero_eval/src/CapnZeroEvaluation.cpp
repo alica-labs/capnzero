@@ -68,6 +68,8 @@ int main(int argc, char** argv)
 
 void evalRos(int argc, char** argv, std::string topic)
 {
+    experimentLog = new ExperimentLog("results", "ROS");
+
     ros::init(argc, argv, "evalRos");
     ros::NodeHandle n;
     ros::Publisher pub = n.advertise<capnzero_eval::EvalMessageRos>(topic, 1000);
@@ -77,13 +79,11 @@ void evalRos(int argc, char** argv, std::string topic)
     spinner.start();
 
     capnzero_eval::EvalMessageRos msg;
-
-    experimentLog = new ExperimentLog("results", "ROS");
     uint32_t msgCounter = 0;
     int payloadBytes = 8;
     std::random_device engine;
 
-    while (ros::ok() && payloadBytes < pow(2,17)) {
+    while (ros::ok() && payloadBytes < pow(2,21)) {
 
         // fill payload with multiple of 8 bytes
         for (int i = 0; i < payloadBytes/8; i++) {
@@ -152,13 +152,15 @@ void evalCapnZero(std::string topic)
     int payloadBytes = 8;
     std::random_device engine;
 
-    while (!interrupted && payloadBytes < pow(2,17)) {
+    while (!interrupted && payloadBytes < pow(2,21)) {
 
         // fill payload with multiple of 8 bytes
         ::capnp::List< ::uint32_t>::Builder payloadBuilder = msg.initPayload(payloadBytes);
         for (int i = 0; i < payloadBytes/8; i++) {
             payloadBuilder.set(i, engine());
         }
+
+        std::cout << "CapnZeroEvaluation::evalCapnZero: Payload Bytes\t" << payloadBytes << "\t Message Size [Bytes]: \t" << std::to_string(msg.totalSize().wordCount*8) << std::endl;
 
         while (!interrupted && msgCounter != 1000) {
             msg.setId(++msgCounter);
@@ -172,7 +174,6 @@ void evalCapnZero(std::string topic)
         // log statistics
         experimentLog->calcStatistics();
         experimentLog->serialise(std::to_string(msg.totalSize().wordCount));
-        std::cout << "CapnZeroEvaluation: " << sizeof(capnp::word) << std::endl;
 
         // reset stuff and increase payload
         experimentLog->reset();
