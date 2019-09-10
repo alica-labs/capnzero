@@ -153,12 +153,10 @@ void evalCapnZero(std::string topic)
     int payloadBytes = 8;
     std::random_device engine;
 
-//    while (!interrupted && payloadBytes < pow(2, 21)) {
-
-        // fill payload with multiple of 8 bytes
-        ::capnp::List<::uint32_t>::Builder payloadBuilder = msg.initPayload(16384);
-//        for (int i = 0; i < payloadBytes / 8; i++) {
-        for (int i = 0; i < 16384; i++) {
+//    while (!interrupted && payloadBytes < pow(2, 14)) {
+        // fill payload with multiple of 4 bytes
+        ::capnp::List<::uint32_t>::Builder payloadBuilder = msg.initPayload(4096);
+        for (int i = 0; i < 4096; i++) {
             payloadBuilder.set(i, engine());
         }
 
@@ -167,8 +165,8 @@ void evalCapnZero(std::string topic)
             msg.setId(++msgCounter);
             experimentLog->addStartedMeasurement(msgCounter, std::chrono::high_resolution_clock::now());
             bytesSent = pub->send(msgBuilder);
-            std::cout << "CapnZeroEvaluation::evalCapnZero: Bytes Sent\t" << bytesSent << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+//            std::cout << "CapnZeroEvaluation::evalCapnZero: Bytes Sent\t" << bytesSent << std::endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
 
         std::cout << "CapnZeroEvaluation::evalCapnZero: Bytes Sent\t" << bytesSent << " Payload Bytes\t" << payloadBytes << "\t Message Size [Bytes]: \t"
@@ -178,7 +176,7 @@ void evalCapnZero(std::string topic)
 
         // log statistics
         experimentLog->calcStatistics();
-        experimentLog->serialise(std::to_string(msg.totalSize().wordCount));
+        experimentLog->serialise(std::to_string(msg.totalSize().wordCount*8));
 
         // reset stuff and increase payload
         experimentLog->reset();

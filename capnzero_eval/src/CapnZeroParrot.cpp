@@ -88,8 +88,8 @@ void evalCapnZero(std::string topic)
     sub->setTopic(topic);
     sub->subscribe(&callbackCapnZero);
 
-        pubCapnZero = new capnzero::Publisher(ctx, capnzero::Protocol::UDP);
-        pubCapnZero->addAddress("224.0.0.2:5554");
+    pubCapnZero = new capnzero::Publisher(ctx, capnzero::Protocol::UDP);
+    pubCapnZero->addAddress("224.0.0.2:5554");
 //    pubCapnZero = new capnzero::Publisher(ctx, capnzero::Protocol::IPC);
 //    pubCapnZero->addAddress("@capnzeroReceive.ipc");
 //    pubCapnZero = new capnzero::Publisher(ctx, capnzero::Protocol::TCP);
