@@ -124,24 +124,24 @@ void callbackRos(const capnzero_eval::EvalMessageRos::ConstPtr& msg)
 
 void evalCapnZero(std::string topic)
 {
-    experimentLog = new ExperimentLog("results", "TCP");
+    experimentLog = new ExperimentLog("results", "UDP");
 
     void* ctx = zmq_ctx_new();
-//    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::UDP);
-//    pub->addAddress("224.0.0.2:5500");
-    //            capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::IPC);
-    //            pub->addAddress("@capnzeroSend.ipc");
-        capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::TCP);
-        pub->addAddress("141.51.122.36:5500");
+    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::UDP);
+    pub->addAddress("224.0.0.2:5500");
+//            capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::IPC);
+//            pub->addAddress("@capnzeroSend.ipc");
+//        capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::TCP);
+//        pub->addAddress("141.51.122.36:5500");
 
     pub->setDefaultTopic(topic);
 
-//    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::UDP);
-//    sub->addAddress("224.0.0.2:5554");
-    //            capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::IPC);
-    //            sub->addAddress("@capnzeroReceive.ipc");
-        capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::TCP);
-        sub->addAddress("141.51.122.62:5554");
+    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::UDP);
+    sub->addAddress("224.0.0.2:5554");
+//            capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::IPC);
+//            sub->addAddress("@capnzeroReceive.ipc");
+//        capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::TCP);
+//        sub->addAddress("141.51.122.62:5554");
 
     sub->setTopic(topic);
     sub->subscribe(&callbackCapnZero);
@@ -153,7 +153,7 @@ void evalCapnZero(std::string topic)
     int payloadBytes = 8;
     std::random_device engine;
 
-    while (!interrupted && payloadBytes < pow(2, 14)) {
+    while (!interrupted && payloadBytes < pow(2, 21)) {
         // fill payload with multiple of 4 bytes
         ::capnp::List<::uint32_t>::Builder payloadBuilder = msg.initPayload(payloadBytes);
         for (int i = 0; i < payloadBytes; i++) {
@@ -166,7 +166,7 @@ void evalCapnZero(std::string topic)
             experimentLog->addStartedMeasurement(msgCounter, std::chrono::high_resolution_clock::now());
             bytesSent = pub->send(msgBuilder);
 //            std::cout << "CapnZeroEvaluation::evalCapnZero: Bytes Sent\t" << bytesSent << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
 
         std::cout << "CapnZeroEvaluation::evalCapnZero: Bytes Sent\t" << bytesSent << " Payload Bytes\t" << payloadBytes << "\t Message Size [Bytes]: \t"
