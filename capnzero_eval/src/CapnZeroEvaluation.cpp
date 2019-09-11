@@ -124,7 +124,7 @@ void callbackRos(const capnzero_eval::EvalMessageRos::ConstPtr& msg)
 
 void evalCapnZero(std::string topic)
 {
-    experimentLog = new ExperimentLog("results", "UDP");
+    experimentLog = new ExperimentLog("results", "TCP");
 
     void* ctx = zmq_ctx_new();
 //    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::UDP);
