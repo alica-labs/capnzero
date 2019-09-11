@@ -86,7 +86,7 @@ void evalRos(int argc, char** argv, std::string topic)
     while (ros::ok() && payloadBytes < pow(2, 21)) {
 
         // fill payload with multiple of 8 bytes
-        for (int i = 0; i < payloadBytes / 8; i++) {
+        for (int i = 0; i < payloadBytes / 4; i++) {
             //        for (int i = 0; i < 512; i++) {
             msg.payload.push_back(engine());
         }
