@@ -74,10 +74,10 @@ void Subscriber::addAddress(std::string address)
         check(zmq_bind(this->socket, ("udp://" + address).c_str()), "zmq_bind");
         break;
     case Protocol::TCP:
-        check(zmq_connect(this->socket, ("tcp://" + address).c_str()), "zmq_connect");
+        check(zmq_bind(this->socket, ("tcp://" + address).c_str()), "zmq_bind");
         break;
     case Protocol::IPC:
-        check(zmq_connect(this->socket, ("ipc://" + address).c_str()), "zmq_connect");
+        check(zmq_bind(this->socket, ("ipc://" + address).c_str()), "zmq_bind");
         break;
     default:
         // Unknown protocol!

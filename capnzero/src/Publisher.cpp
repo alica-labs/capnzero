@@ -51,10 +51,10 @@ void Publisher::addAddress(std::string address)
         check(zmq_connect(this->socket, ("udp://" + address).c_str()), "zmq_connect");
         break;
     case Protocol::TCP:
-        check(zmq_bind(this->socket, ("tcp://" + address).c_str()), "zmq_bind");
+        check(zmq_connect(this->socket, ("tcp://" + address).c_str()), "zmq_connect");
         break;
     case Protocol::IPC:
-        check(zmq_bind(this->socket, ("ipc://" + address).c_str()), "zmq_bind");
+        check(zmq_connect(this->socket, ("ipc://" + address).c_str()), "zmq_connect");
         break;
     default:
         // Unknown protocol!
