@@ -5,7 +5,7 @@ add_definitions(-std=c++11)
 SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 
 find_package(Threads)
-find_package(catkin REQUIRED COMPONENTS capnzero fsystem roscpp message_generation)
+find_package(catkin REQUIRED COMPONENTS capnzero fsystem roscpp message_generation rosmq)
 
 ############# Evaluation Message ROS
 add_message_files(FILES EvalMessageRos.msg)
@@ -14,7 +14,7 @@ generate_messages(DEPENDENCIES std_msgs)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES capnzero-eval-msgs
-  CATKIN_DEPENDS capnzero fsystem roscpp std_msgs message_runtime
+  CATKIN_DEPENDS capnzero fsystem roscpp std_msgs message_runtime rosmq
 )
 
 include_directories(

@@ -15,6 +15,7 @@
   <depend>message_runtime</depend>
   <depend>capnzero</depend>
   <depend>fsystem</depend>
+  <depend>rosmq</depend>
 
   <export>
   </export>

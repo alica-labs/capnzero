@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>rosmq</name>
+  <version>0.0.0</version>
+  <description>The rosmq package</description>
+
+  <maintainer email="opfer@vs.uni-kassel.de">Stephan Opfer</maintainer>
+
+  <license>MIT</license>
+  <depend>roscpp</depend>
+  <depend>message_runtime</depend>
+  <depend>message_generation</depend>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <export>
+  </export>
+</package>
