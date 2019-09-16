@@ -34,7 +34,6 @@ include_directories(
 add_library(${PROJECT_NAME}
   src/Publisher.cpp
   src/Subscriber.cpp
-  include/capnzero/CapnZero.h
 )
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC ZMQ_BUILD_DRAFT_API=1)
