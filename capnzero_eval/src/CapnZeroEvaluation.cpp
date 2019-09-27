@@ -82,40 +82,48 @@ void evalRos(int argc, char** argv, std::string topic)
     ros::NodeHandle n;
     ros::Publisher pub = n.advertise<capnzero_eval::EvalMessageRos>(topic, 1000);
     ros::Subscriber sub = n.subscribe(topic + "back", 1000, callbackRos);
-    ros::Rate loop_rate(100.0);
+//    ros::Rate loop_rate(100.0);
     ros::AsyncSpinner spinner(4);
     spinner.start();
 
     capnzero_eval::EvalMessageRos msg;
     uint32_t msgCounter = 0;
-    int numInts = 1;
+    int numInts = 2048;
     std::random_device engine;
+    int interval;
 
     while (ros::ok() && numInts < pow(2, 21)) {
-        for (int i = 0; i < numInts / 4; i++) {
-            msg.payload.push_back(engine());
+        interval = 5;
+        while (interval <= 100) {
+            for (int i = 0; i < numInts / 4; i++) {
+                msg.payload.push_back(engine());
+            }
+
+            while (ros::ok() && msgCounter != 1000) {
+                msg.id = ++msgCounter;
+                experimentLog->addStartedMeasurement(msgCounter, std::chrono::high_resolution_clock::now());
+                pub.publish(msg);
+                std::this_thread::sleep_for(std::chrono::milliseconds(interval));
+//            loop_rate.sleep();
+            }
+
+            std::this_thread::sleep_for(std::chrono::seconds(5));
+
+            std::cout << "CapnZeroEvaluation::evalRos: Number of Int32\t" << numInts + 1
+                      << "\t Serialised Message Size [Bytes]: \t"
+                      << ros::serialization::serializationLength(msg) << std::endl;
+
+            // log statistics
+            experimentLog->calcStatistics();
+            experimentLog->serialise(std::to_string(1000.0/interval) + "\t" + std::to_string(numInts + 1) );
+
+
+            // reset stuff and increase payload
+            experimentLog->reset();
+            msgCounter = 0;
+            msg.payload.clear();
+            interval += 5;
         }
-
-        while (ros::ok() && msgCounter != 1000) {
-            msg.id = ++msgCounter;
-            experimentLog->addStartedMeasurement(msgCounter, std::chrono::high_resolution_clock::now());
-            pub.publish(msg);
-            loop_rate.sleep();
-        }
-
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-
-        std::cout << "CapnZeroEvaluation::evalRos: Number of Int32\t" << numInts + 1 << "\t Serialised Message Size [Bytes]: \t"
-                  << ros::serialization::serializationLength(msg) << std::endl;
-
-        // log statistics
-        experimentLog->calcStatistics();
-        experimentLog->serialise(std::to_string(numInts + 1));
-
-        // reset stuff and increase payload
-        experimentLog->reset();
-        msgCounter = 0;
-        msg.payload.clear();
         numInts *= 2;
     }
 
@@ -175,7 +183,7 @@ void evalRosMQ(std::string topic)
         std::cout << "CapnZeroEvaluation::evalRosMQ: Bytes Sent\t" << bytesSent << " Number of Int32\t" << numInts + 1
                   << "\t Serialised Message Size [Bytes]: \t" << ros::serialization::serializationLength(msg) << std::endl;
 
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::this_thread::sleep_for(std::chrono::seconds(5));
 
         // log statistics
         experimentLog->calcStatistics();
@@ -247,7 +255,7 @@ void evalCapnZero(std::string topic)
         std::cout << "CapnZeroEvaluation::evalCapnZero: Bytes Sent\t" << bytesSent << " Number of Int32\t" << numInts + 1
                   << "\t Serialised Message Size [Bytes]: \t" << std::to_string(msg.totalSize().wordCount * 8) << std::endl;
 
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::this_thread::sleep_for(std::chrono::seconds(5));
 
         // log statistics
         experimentLog->calcStatistics();

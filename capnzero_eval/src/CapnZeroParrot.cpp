@@ -109,10 +109,11 @@ void evalRos(int argc, char** argv, std::string topic)
     ros::NodeHandle n;
     pubRos = n.advertise<capnzero_eval::EvalMessageRos>(topic+"back", 1000);
     ros::Subscriber sub = n.subscribe(topic, 1, callbackRos);
+    ros::AsyncSpinner spinner(4);
+    spinner.start();
+
     ros::Rate loop_rate(100.0);
     while (ros::ok()) {
-        ros::AsyncSpinner spinner(4);
-        spinner.start();
         loop_rate.sleep();
     }
 }
