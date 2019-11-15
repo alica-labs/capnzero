@@ -18,10 +18,10 @@ include_directories(
 
 #### ID MESSAGES
 find_package(CapnProto REQUIRED)
-set(${PROJECT_NAME}_msgs "${CMAKE_CURRENT_SOURCE_DIR}/include/capnzero")
-file(GLOB_RECURSE capnp_messages ${${PROJECT_NAME}_msgs} *.capnp)
-set(CAPNPC_SRC_PREFIX ${${PROJECT_NAME}_msgs})
-set(CAPNPC_OUTPUT_DIR ${${PROJECT_NAME}_msgs})
+set(${PROJECT_NAME}_msgdir "${CMAKE_CURRENT_SOURCE_DIR}/include/capnzero")
+file(GLOB_RECURSE capnp_messages ${${PROJECT_NAME}_msgdir} *.capnp)
+set(CAPNPC_SRC_PREFIX ${${PROJECT_NAME}_msgdir})
+set(CAPNPC_OUTPUT_DIR ${${PROJECT_NAME}_msgdir})
 capnp_generate_cpp(CAPNP_SRCS CAPNP_HDRS ${capnp_messages})
 
 add_library(${PROJECT_NAME}
