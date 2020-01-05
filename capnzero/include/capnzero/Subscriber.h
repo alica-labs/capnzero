@@ -54,7 +54,19 @@ public:
      * @param defaultTopic
      */
     void setTopic(std::string topic);
+
+    /**
+     * Connects or binds the socket of the subscriber to the given address.
+     * @param address The address.
+     */
     void addAddress(std::string address);
+
+    /**
+     * Sets the receiver high water mark level of the underlying socket of
+     * this subscriber.
+     * @param queueSize
+     */
+    void setReceiveQueueSize(int queueSize);
 
 protected:
     void* context;

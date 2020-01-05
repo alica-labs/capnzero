@@ -48,6 +48,13 @@ public:
      */
     int send(capnp::MallocMessageBuilder& msgBuilder, std::string topic);
 
+    /**
+     * Sets the sender high water mark level of the underlying socket of
+     * this publisher.
+     * @param queueSize
+     */
+    void setSendQueueSize(int queueSize);
+
 protected:
     void* context;
     void* socket;

@@ -62,6 +62,11 @@ void Publisher::addAddress(std::string address)
     }
 }
 
+void Publisher::setSendQueueSize(int queueSize)
+{
+    check( zmq_setsockopt(this->socket, ZMQ_SNDHWM, &queueSize, sizeof(queueSize)), "zmq_setsockopt");
+}
+
 int Publisher::send(::capnp::MallocMessageBuilder& msgBuilder, std::string topic)
 {
     assert(topic.length() < MAX_TOPIC_LENGTH && "Publisher::send: The given topic is too long!");

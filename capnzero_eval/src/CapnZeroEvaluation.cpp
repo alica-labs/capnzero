@@ -76,26 +76,26 @@ int main(int argc, char** argv)
 
 void evalRos(int argc, char** argv, std::string topic)
 {
-    experimentLog = new ExperimentLog("results", "ROS");
+    experimentLog = new ExperimentLog("results", "ROS-TCP/33");
 
     ros::init(argc, argv, "evalRos");
     ros::NodeHandle n;
-    ros::Publisher pub = n.advertise<capnzero_eval::EvalMessageRos>(topic, 1000);
-    ros::Subscriber sub = n.subscribe(topic + "back", 1000, callbackRos);
-//    ros::Rate loop_rate(100.0);
+    ros::Publisher pub = n.advertise<capnzero_eval::EvalMessageRos>(topic, 2000);
+    ros::Subscriber sub = n.subscribe(topic + "back", 2000, callbackRos, ros::TransportHints().tcp().tcpNoDelay(true));
+    ros::Rate loop_rate(33.0);
     ros::AsyncSpinner spinner(4);
     spinner.start();
 
     capnzero_eval::EvalMessageRos msg;
     uint32_t msgCounter = 0;
-    int numInts = 2048;
+    int numInts = 1;
     std::random_device engine;
-    int interval;
+//    int interval;
 
     while (ros::ok() && numInts < pow(2, 21)) {
-        interval = 5;
-        while (interval <= 100) {
-            for (int i = 0; i < numInts / 4; i++) {
+//        interval = 5;
+//        while (interval <= 100) {
+            for (int i = 0; i < numInts; i++) {
                 msg.payload.push_back(engine());
             }
 
@@ -103,8 +103,8 @@ void evalRos(int argc, char** argv, std::string topic)
                 msg.id = ++msgCounter;
                 experimentLog->addStartedMeasurement(msgCounter, std::chrono::high_resolution_clock::now());
                 pub.publish(msg);
-                std::this_thread::sleep_for(std::chrono::milliseconds(interval));
-//            loop_rate.sleep();
+//                std::this_thread::sleep_for(std::chrono::milliseconds(interval));
+                loop_rate.sleep();
             }
 
             std::this_thread::sleep_for(std::chrono::seconds(5));
@@ -115,15 +115,16 @@ void evalRos(int argc, char** argv, std::string topic)
 
             // log statistics
             experimentLog->calcStatistics();
-            experimentLog->serialise(std::to_string(1000.0/interval) + "\t" + std::to_string(numInts + 1) );
+//            experimentLog->serialise(std::to_string(1000.0/interval) + "\t" + std::to_string(numInts + 1) );
+            experimentLog->serialise(std::to_string(numInts + 1) );
 
 
             // reset stuff and increase payload
             experimentLog->reset();
             msgCounter = 0;
             msg.payload.clear();
-            interval += 5;
-        }
+//            interval += 5;
+//        }
         numInts *= 2;
     }
 
@@ -207,26 +208,28 @@ void callbackRosMQ(capnzero_eval::EvalMessageRos& msg)
 
 void evalCapnZero(std::string topic)
 {
-    experimentLog = new ExperimentLog("results", "CAPNZERO-UDP/fast");
+    experimentLog = new ExperimentLog("results", "CAPNZERO-TCP/33");
 
     void* ctx = zmq_ctx_new();
-    //    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::UDP);
-    //    pub->addAddress("224.0.0.2:5500");
-    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::IPC);
-    pub->addAddress("@capnzeroSend.ipc");
-    //        capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::TCP);
-    //        pub->addAddress("141.51.122.36:5500");
+//    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::UDP);
+//    pub->addAddress("224.0.0.2:5500");
+//    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::IPC);
+//    pub->addAddress("@capnzeroSend.ipc");
+            capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::TCP);
+            pub->addAddress("192.168.178.49:5500");
 
+    pub->setSendQueueSize(2000);
     pub->setDefaultTopic(topic);
 
-    //    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::UDP);
-    //    sub->addAddress("224.0.0.2:5554");
-    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::IPC);
-    sub->addAddress("@capnzeroReceive.ipc");
-    //        capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::TCP);
-    //        sub->addAddress("141.51.122.62:5554");
+//        capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::UDP);
+//        sub->addAddress("224.0.0.2:5554");
+//    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::IPC);
+//    sub->addAddress("@capnzeroReceive.ipc");
+            capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::TCP);
+            sub->addAddress("192.168.178.49:5554");
 
     sub->setTopic(topic);
+    sub->setReceiveQueueSize(2000);
     sub->subscribe(&callbackCapnZero);
 
     // Cap'n Zero: create proto message
@@ -249,7 +252,7 @@ void evalCapnZero(std::string topic)
             experimentLog->addStartedMeasurement(msgCounter, std::chrono::high_resolution_clock::now());
             bytesSent = pub->send(msgBuilder);
             //            std::cout << "CapnZeroEvaluation::evalCapnZero: Bytes Sent\t" << bytesSent << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            std::this_thread::sleep_for(std::chrono::milliseconds(33));
         }
 
         std::cout << "CapnZeroEvaluation::evalCapnZero: Bytes Sent\t" << bytesSent << " Number of Int32\t" << numInts + 1

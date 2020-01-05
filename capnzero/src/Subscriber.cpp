@@ -93,6 +93,11 @@ void Subscriber::subscribe(void (*callbackFunction)(::capnp::FlatArrayMessageRea
     }
 }
 
+void Subscriber::setReceiveQueueSize(int queueSize)
+{
+    check( zmq_setsockopt(this->socket, ZMQ_RCVHWM, &queueSize, sizeof(queueSize)), "zmq_setsockopt");
+}
+
 void Subscriber::receive()
 {
     while (this->running) {

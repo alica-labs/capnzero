@@ -107,12 +107,12 @@ void evalRos(int argc, char** argv, std::string topic)
 {
     ros::init(argc, argv, "Parrot");
     ros::NodeHandle n;
-    pubRos = n.advertise<capnzero_eval::EvalMessageRos>(topic+"back", 1000);
-    ros::Subscriber sub = n.subscribe(topic, 1, callbackRos);
+    pubRos = n.advertise<capnzero_eval::EvalMessageRos>(topic+"back", 2000);
+    ros::Subscriber sub = n.subscribe(topic, 2000, callbackRos, ros::TransportHints().tcp().tcpNoDelay(true));
     ros::AsyncSpinner spinner(4);
     spinner.start();
 
-    ros::Rate loop_rate(100.0);
+    ros::Rate loop_rate(30.0);
     while (ros::ok()) {
         loop_rate.sleep();
     }
@@ -126,23 +126,25 @@ void callbackRos(const capnzero_eval::EvalMessageRos::ConstPtr& msg)
 void evalCapnZero(std::string topic)
 {
     void* ctx = zmq_ctx_new();
-//        capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::UDP);
-//        sub->addAddress("224.0.0.2:5500");
-        capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::IPC);
-        sub->addAddress("@capnzeroSend.ipc");
-//    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::TCP);
-//    sub->addAddress("141.51.122.36:5500");
+//    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::UDP);
+//    sub->addAddress("224.0.0.2:5500");
+//    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::IPC);
+//    sub->addAddress("@capnzeroSend.ipc");
+    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::TCP);
+    sub->addAddress("192.168.178.49:5500");
 
+    sub->setReceiveQueueSize(2000);
     sub->setTopic(topic);
     sub->subscribe(&callbackCapnZero);
 
 //    pubCapnZero = new capnzero::Publisher(ctx, capnzero::Protocol::UDP);
 //    pubCapnZero->addAddress("224.0.0.2:5554");
-    pubCapnZero = new capnzero::Publisher(ctx, capnzero::Protocol::IPC);
-    pubCapnZero->addAddress("@capnzeroReceive.ipc");
-//    pubCapnZero = new capnzero::Publisher(ctx, capnzero::Protocol::TCP);
-//    pubCapnZero->addAddress("141.51.122.62:5554");
+//    pubCapnZero = new capnzero::Publisher(ctx, capnzero::Protocol::IPC);
+//    pubCapnZero->addAddress("@capnzeroReceive.ipc");
+    pubCapnZero = new capnzero::Publisher(ctx, capnzero::Protocol::TCP);
+    pubCapnZero->addAddress("192.168.178.49:5554");
 
+    pubCapnZero->setSendQueueSize(2000);
     pubCapnZero->setDefaultTopic(topic);
 
     while (!interrupted) {
