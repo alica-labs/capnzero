@@ -216,7 +216,7 @@ void evalCapnZero(std::string topic)
 //    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::IPC);
 //    pub->addAddress("@capnzeroSend.ipc");
             capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::TCP);
-            pub->addAddress("192.168.178.49:5500");
+            pub->addAddress("192.168.178.52:5500");
 
     pub->setSendQueueSize(2000);
     pub->setDefaultTopic(topic);
