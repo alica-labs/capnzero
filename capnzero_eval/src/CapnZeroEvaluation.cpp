@@ -208,25 +208,25 @@ void callbackRosMQ(capnzero_eval::EvalMessageRos& msg)
 
 void evalCapnZero(std::string topic)
 {
-    experimentLog = new ExperimentLog("results", "CAPNZERO-TCP/33");
+    experimentLog = new ExperimentLog("results", "CAPNZERO-UDP/33");
 
     void* ctx = zmq_ctx_new();
-//    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::UDP);
-//    pub->addAddress("224.0.0.2:5500");
+    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::UDP);
+    pub->addAddress("224.0.0.2:5500");
 //    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::IPC);
 //    pub->addAddress("@capnzeroSend.ipc");
-            capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::TCP);
-            pub->addAddress("192.168.178.52:5500");
+//    capnzero::Publisher* pub = new capnzero::Publisher(ctx, capnzero::Protocol::TCP);
+//    pub->addAddress("192.168.178.52:5500");
 
     pub->setSendQueueSize(2000);
     pub->setDefaultTopic(topic);
 
-//        capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::UDP);
-//        sub->addAddress("224.0.0.2:5554");
+    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::UDP);
+    sub->addAddress("224.0.0.2:5554");
 //    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::IPC);
 //    sub->addAddress("@capnzeroReceive.ipc");
-            capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::TCP);
-            sub->addAddress("192.168.178.52:5554");
+//    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::TCP);
+//    sub->addAddress("192.168.178.49:5554");
 
     sub->setTopic(topic);
     sub->setReceiveQueueSize(2000);
