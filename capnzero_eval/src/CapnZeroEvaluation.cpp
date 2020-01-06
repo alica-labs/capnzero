@@ -76,12 +76,12 @@ int main(int argc, char** argv)
 
 void evalRos(int argc, char** argv, std::string topic)
 {
-    experimentLog = new ExperimentLog("results", "ROS-UDP/33");
+    experimentLog = new ExperimentLog("results", "ROS-TCP/33");
 
     ros::init(argc, argv, "evalRos");
     ros::NodeHandle n;
     ros::Publisher pub = n.advertise<capnzero_eval::EvalMessageRos>(topic, 2000);
-    ros::Subscriber sub = n.subscribe(topic + "back", 2000, callbackRos, ros::TransportHints().udp());
+    ros::Subscriber sub = n.subscribe(topic + "back", 2000, callbackRos, ros::TransportHints().tcp().tcpNoDelay(true));
     ros::Rate loop_rate(33.0);
     ros::AsyncSpinner spinner(4);
     spinner.start();
