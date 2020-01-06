@@ -131,7 +131,7 @@ void evalCapnZero(std::string topic)
 //    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::IPC);
 //    sub->addAddress("@capnzeroSend.ipc");
     capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::TCP);
-    sub->addAddress("192.168.178.52:5500");
+    sub->addAddress("192.168.178.49:5500");
 
     sub->setReceiveQueueSize(2000);
     sub->setTopic(topic);
