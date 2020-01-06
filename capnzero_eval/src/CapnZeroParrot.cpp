@@ -108,7 +108,7 @@ void evalRos(int argc, char** argv, std::string topic)
     ros::init(argc, argv, "Parrot");
     ros::NodeHandle n;
     pubRos = n.advertise<capnzero_eval::EvalMessageRos>(topic+"back", 2000);
-    ros::Subscriber sub = n.subscribe(topic, 2000, callbackRos, ros::TransportHints().tcp().tcpNoDelay(true));
+    ros::Subscriber sub = n.subscribe(topic, 2000, callbackRos, ros::TransportHints().udp());
     ros::AsyncSpinner spinner(4);
     spinner.start();
 
